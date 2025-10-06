@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "titulo": "Presentación de la Filá 2024",
+        "resumen": "La Filá Mariscales se presenta oficialmente para las fiestas de Moros y Cristianos 2024",
+        "contenido": "La Filá Mariscales de Caballeros Templarios se presenta oficialmente para las fiestas de Moros y Cristianos 2024 con nuevas incorporaciones y actividades programadas para toda la temporada. Este año contamos con un programa especial que incluye presentaciones, ensayos y eventos sociales.",
+        "imagen_url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "fecha_publicacion": "2024-10-15",
+        "autor": "Administrador",
+        "destacada": true
+    },
+    {
+        "id": 2,
+        "titulo": "Cena de Hermandad",
+        "resumen": "Celebramos nuestra tradicional cena de hermandad",
+        "contenido": "Celebramos nuestra tradicional cena de hermandad donde todos los miembros de la filá se reúnen para compartir momentos especiales y fortalecer los lazos de amistad que nos unen como familia templaria.",
+        "imagen_url": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "fecha_publicacion": "2024-10-20",
+        "autor": "Administrador",
+        "destacada": false
+    },
+    {
+        "id": 3,
+        "titulo": "Ensayo General",
+        "resumen": "Preparación final para el desfile de Moros y Cristianos",
+        "contenido": "Preparación final para el desfile de Moros y Cristianos con el ensayo general en el punto de encuentro oficial de la ciudad. Todos los miembros deben asistir para coordinar la participación en el desfile.",
+        "imagen_url": "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "fecha_publicacion": "2024-10-25",
+        "autor": "Administrador",
+        "destacada": false
+    }
+]

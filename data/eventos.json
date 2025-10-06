@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "titulo": "Presentación de la Filá",
+        "descripcion": "Presentación oficial de la Filá Mariscales para las fiestas 2024",
+        "fecha": "2024-10-15",
+        "hora": "20:00",
+        "lugar": "Sede Social",
+        "tipo": "presentacion",
+        "imagen_url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "id": 2,
+        "titulo": "Cena de Hermandad",
+        "descripcion": "Cena de hermandad para todos los miembros de la filá",
+        "fecha": "2024-10-20",
+        "hora": "21:00",
+        "lugar": "Restaurante El Rincón",
+        "tipo": "cena",
+        "imagen_url": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "id": 3,
+        "titulo": "Ensayo General",
+        "descripcion": "Ensayo general del desfile de Moros y Cristianos",
+        "fecha": "2024-10-25",
+        "hora": "18:00",
+        "lugar": "Punto de encuentro: Ayuntamiento",
+        "tipo": "ensayo",
+        "imagen_url": "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "id": 4,
+        "titulo": "Desfile de Moros y Cristianos",
+        "descripcion": "Participación en el desfile principal de las fiestas",
+        "fecha": "2024-10-28",
+        "hora": "19:00",
+        "lugar": "Recorrido oficial",
+        "tipo": "desfile",
+        "imagen_url": "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    }
+]

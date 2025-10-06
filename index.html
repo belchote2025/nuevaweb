@@ -3,76 +3,486 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fila Mariscales - Web</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Filá Mariscales de Caballeros Templarios de Elche</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="nav-container">
-                <h1 class="nav-logo">Fila Mariscales</h1>
-                <ul class="nav-menu">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#home">
+                <i class="fas fa-shield-alt me-2"></i>
+                Filá Mariscales
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a href="#inicio" class="nav-link">Inicio</a>
+                        <a class="nav-link" href="#home">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#servicios" class="nav-link">Servicios</a>
+                        <a class="nav-link" href="#historia">Historia</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#contacto" class="nav-link">Contacto</a>
+                        <a class="nav-link" href="#directiva">Directiva</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#noticias">Noticias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#blog">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#calendario">Calendario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#galeria">Galería</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#musica">Música</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#libro">Libro</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#descargas">Descargas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#tienda">Tienda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#patrocinadores">Patrocinadores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#hermanamientos">Hermanamientos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#socios">Socios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#eventos">Eventos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contacto">Contacto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">
+                            <i class="fas fa-user me-1"></i>Login
+                        </a>
                     </li>
                 </ul>
             </div>
+            </div>
         </nav>
-    </header>
 
-    <main>
-        <section id="inicio" class="hero">
-            <div class="hero-content">
-                <h2>Bienvenido a Fila Mariscales</h2>
-                <p>Tu solución web profesional</p>
-                <button class="cta-button">Conoce más</button>
-            </div>
-        </section>
-
-        <section id="servicios" class="services">
-            <div class="container">
-                <h2>Nuestros Servicios</h2>
-                <div class="services-grid">
-                    <div class="service-card">
-                        <h3>Desarrollo Web</h3>
-                        <p>Sitios web modernos y responsivos</p>
-                    </div>
-                    <div class="service-card">
-                        <h3>Aplicaciones Web</h3>
-                        <p>Soluciones personalizadas para tu negocio</p>
-                    </div>
-                    <div class="service-card">
-                        <h3>Mantenimiento</h3>
-                        <p>Soporte técnico continuo</p>
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="container h-100 d-flex align-items-center">
+            <div class="row w-100">
+                <div class="col-lg-8 mx-auto text-center text-white">
+                    <h1 class="display-3 fw-bold mb-4 hero-title">
+                        Filá Mariscales de Caballeros Templarios
+                    </h1>
+                    <p class="lead mb-4 hero-subtitle">
+                        Tradición, honor y hermandad desde Elche
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#historia" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-book me-2"></i>Conoce nuestra historia
+                        </a>
+                        <a href="#eventos" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-calendar me-2"></i>Próximos eventos
+                        </a>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="contacto" class="contact">
-            <div class="container">
-                <h2>Contacto</h2>
-                <p>¿Tienes un proyecto en mente? ¡Contáctanos!</p>
-                <div class="contact-info">
-                    <p>📧 info@filamariscales.com</p>
-                    <p>📞 +1 (555) 123-4567</p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
+    <!-- Historia Section -->
+    <section id="historia" class="py-5">
         <div class="container">
-            <p>&copy; 2024 Fila Mariscales. Todos los derechos reservados.</p>
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Nuestra Historia</h2>
+                    <p class="section-subtitle">Conoce los orígenes y tradición de la Filá Mariscales</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="historia-content">
+                        <h3>Orígenes de la Filá</h3>
+                        <p>La Filá Mariscales de Caballeros Templarios de Elche tiene sus raíces en la rica tradición de las fiestas de Moros y Cristianos de nuestra ciudad. Fundada con el propósito de mantener viva la tradición templaria y fomentar la hermandad entre sus miembros.</p>
+                        <p>Desde nuestros inicios, hemos trabajado incansablemente para preservar las costumbres y valores que nos caracterizan como filá, siempre con el respeto y la dignidad que merece nuestra tradición.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="historia-image">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             alt="Historia de la Filá" class="img-fluid rounded">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Directiva Section -->
+    <section id="directiva" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Directiva</h2>
+                    <p class="section-subtitle">Conoce a los miembros de nuestra directiva</p>
+                </div>
+            </div>
+            <div class="row" id="directiva-container">
+                <!-- La directiva se cargará dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando directiva...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Noticias Section -->
+    <section id="noticias" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Últimas Noticias</h2>
+                    <p class="section-subtitle">Mantente informado de todas las novedades de la Filá</p>
+                </div>
+            </div>
+            <div class="row" id="noticias-container">
+                <!-- Las noticias se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando noticias...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Blog</h2>
+                    <p class="section-subtitle">Artículos y publicaciones de la Filá Mariscales</p>
+                </div>
+            </div>
+            <div class="row" id="blog-container">
+                <!-- Los artículos del blog se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando blog...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calendario Section -->
+    <section id="calendario" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Calendario</h2>
+                    <p class="section-subtitle">Calendario de eventos de la Filá Mariscales</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div id="calendar-container">
+                        <!-- El calendario se cargará dinámicamente -->
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando calendario...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galería Section -->
+    <section id="galeria" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Galería</h2>
+                    <p class="section-subtitle">Momentos especiales de nuestra hermandad</p>
+                </div>
+            </div>
+            <div class="row" id="galeria-container">
+                <!-- Las imágenes se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando galería...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Música Section -->
+    <section id="musica" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Música</h2>
+                    <p class="section-subtitle">Nuestra banda y repertorio musical</p>
+                </div>
+            </div>
+            <div class="row" id="musica-container">
+                <!-- El contenido musical se cargará dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando música...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Libro Section -->
+    <section id="libro" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Libro de la Filá</h2>
+                    <p class="section-subtitle">Nuestro libro digital interactivo</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div id="libro-container">
+                        <!-- El libro se cargará dinámicamente -->
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando libro...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Descargas Section -->
+    <section id="descargas" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Descargas</h2>
+                    <p class="section-subtitle">Documentos y archivos de la Filá</p>
+                </div>
+            </div>
+            <div class="row" id="descargas-container">
+                <!-- Los documentos se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando descargas...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tienda Section -->
+    <section id="tienda" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Tienda Online</h2>
+                    <p class="section-subtitle">Artículos oficiales de la Filá Mariscales</p>
+                </div>
+            </div>
+            <div class="row" id="productos-container">
+                <!-- Los productos se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando productos...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Patrocinadores Section -->
+    <section id="patrocinadores" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Patrocinadores</h2>
+                    <p class="section-subtitle">Agradecemos el apoyo de nuestros patrocinadores</p>
+                </div>
+            </div>
+            <div class="row" id="patrocinadores-container">
+                <!-- Los patrocinadores se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando patrocinadores...</span>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+
+    <!-- Hermanamientos Section -->
+    <section id="hermanamientos" class="py-5 bg-light">
+            <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Hermanamientos</h2>
+                    <p class="section-subtitle">Nuestras filás hermanas</p>
+                </div>
+            </div>
+            <div class="row" id="hermanamientos-container">
+                <!-- Los hermanamientos se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando hermanamientos...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Socios Section -->
+    <section id="socios" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Socios</h2>
+                    <p class="section-subtitle">Información para socios de la Filá</p>
+                </div>
+            </div>
+            <div class="row" id="socios-container">
+                <!-- El contenido para socios se cargará dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando información de socios...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Eventos Section -->
+    <section id="eventos" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Próximos Eventos</h2>
+                    <p class="section-subtitle">No te pierdas nuestras actividades y celebraciones</p>
+                </div>
+            </div>
+            <div class="row" id="eventos-container">
+                <!-- Los eventos se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando eventos...</span>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!-- Contacto Section -->
+    <section id="contacto" class="py-5 bg-dark text-white">
+            <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title text-white">Contacto</h2>
+                    <p class="section-subtitle">Ponte en contacto con nosotros</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                <div class="contact-info">
+                        <h4>Información de Contacto</h4>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt me-3"></i>
+                            <span>Elche, Alicante, España</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope me-3"></i>
+                            <span>info@filamariscales.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone me-3"></i>
+                            <span>+34 965 123 456</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <form id="contacto-form">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="nombre" placeholder="Nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" id="email" placeholder="Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="mensaje" rows="4" placeholder="Mensaje" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
+                        </button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Filá Mariscales</h5>
+                    <p class="mb-0">Caballeros Templarios de Elche</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="social-links">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2024 Filá Mariscales. Todos los derechos reservados.</p>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <script src="assets/js/script.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="assets/js/main.js"></script>
 </body>
 </html>

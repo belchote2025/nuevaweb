@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "nombre": "Juan Pérez",
+        "cargo": "Presidente",
+        "imagen": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
+        "descripcion": "Presidente de la Filá Mariscales desde 2020"
+    },
+    {
+        "id": 2,
+        "nombre": "María García",
+        "cargo": "Vicepresidenta",
+        "imagen": "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
+        "descripcion": "Vicepresidenta y responsable de eventos"
+    },
+    {
+        "id": 3,
+        "nombre": "Carlos López",
+        "cargo": "Secretario",
+        "imagen": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
+        "descripcion": "Secretario y coordinador de actividades"
+    },
+    {
+        "id": 4,
+        "nombre": "Ana Martínez",
+        "cargo": "Tesorera",
+        "imagen": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
+        "descripcion": "Tesorera y responsable financiera"
+    }
+]
