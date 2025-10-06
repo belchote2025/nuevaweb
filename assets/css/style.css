@@ -16,8 +16,8 @@ body {
 
 /* Fondo global en TODAS las páginas */
 :root {
-    /* Cambia esta ruta si subes la imagen localmente: assets/images/backgrounds/templario.jpg */
-    --site-bg-image: url('https://static.vecteezy.com/system/resources/thumbnails/050/082/559/small_2x/templar-knight-warrior-in-armor-and-helmet-with-red-cross-warrior-portrait-in-smoke-generative-ai-photo.jpg');
+    /* Ruta local de la imagen de fondo */
+    --site-bg-image: url('assets/images/backgrounds/templario.jpg');
     --site-bg-darken: rgba(0, 0, 0, 0.35);
 }
 

@@ -127,7 +127,9 @@ class AdminApp {
             'galeria': 'Galería',
             'productos': 'Productos',
             'directiva': 'Directiva',
-            'contactos': 'Contactos'
+            'contactos': 'Contactos',
+            'users': 'Usuarios',
+            'carousel': 'Carrusel'
         };
         
         document.getElementById('section-title').textContent = titles[section] || 'Dashboard';
@@ -178,7 +180,8 @@ class AdminApp {
     }
 
     async fetchData(type) {
-        const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php?type=${type}`);
+        const endpoint = type === 'users' ? 'users.php' : 'admin.php';
+        const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}?type=${type}`);
         const result = await response.json();
         
         if (result.success) {
@@ -248,6 +251,19 @@ class AdminApp {
 
     getColumnsConfig(section) {
         const configs = {
+            'users': [
+                { key: 'name', title: 'Nombre', type: 'text' },
+                { key: 'email', title: 'Email', type: 'text' },
+                { key: 'role', title: 'Rol', type: 'text' },
+                { key: 'active', title: 'Activo', type: 'boolean' }
+            ],
+            'carousel': [
+                { key: 'titulo', title: 'Título', type: 'text' },
+                { key: 'subtitulo', title: 'Subtítulo', type: 'text' },
+                { key: 'imagen_url', title: 'Imagen', type: 'image' },
+                { key: 'enlace', title: 'Enlace', type: 'text' },
+                { key: 'activo', title: 'Activo', type: 'boolean' }
+            ],
             'noticias': [
                 { key: 'titulo', title: 'Título', type: 'text' },
                 { key: 'resumen', title: 'Resumen', type: 'text' },
@@ -360,6 +376,24 @@ class AdminApp {
 
     getFormFields(section) {
         const fields = {
+            'users': [
+                { key: 'name', label: 'Nombre', type: 'text', required: true },
+                { key: 'email', label: 'Email', type: 'email', required: true },
+                { key: 'role', label: 'Rol', type: 'select', options: [
+                    { value: 'admin', label: 'Administrador' },
+                    { value: 'editor', label: 'Editor' },
+                    { value: 'viewer', label: 'Lector' }
+                ], required: true },
+                { key: 'password', label: 'Contraseña (dejar en blanco para mantener)', type: 'text' },
+                { key: 'active', label: 'Activo', type: 'checkbox' }
+            ],
+            'carousel': [
+                { key: 'titulo', label: 'Título', type: 'text', required: true },
+                { key: 'subtitulo', label: 'Subtítulo', type: 'text' },
+                { key: 'imagen_url', label: 'URL de Imagen', type: 'url' },
+                { key: 'enlace', label: 'Enlace', type: 'text' },
+                { key: 'activo', label: 'Activo', type: 'checkbox' }
+            ],
             'noticias': [
                 { key: 'titulo', label: 'Título', type: 'text', required: true },
                 { key: 'resumen', label: 'Resumen', type: 'textarea', required: true },
@@ -428,7 +462,8 @@ class AdminApp {
                 payload.edit_id = ADMIN_CONFIG.EDITING_ITEM.id;
             }
             
-            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php`, {
+            const endpoint = section === 'users' ? 'users.php' : 'admin.php';
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -476,7 +511,8 @@ class AdminApp {
         }
         
         try {
-            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php`, {
+            const endpoint = ADMIN_CONFIG.CURRENT_SECTION === 'users' ? 'users.php' : 'admin.php';
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
