@@ -206,3 +206,4 @@ Este proyecto está bajo la licencia MIT. Ver archivo `LICENSE` para más detall
 **Desarrollado con ❤️ para la Filá Mariscales**
 
 *Versión 2.0 - Enero 2025*
+

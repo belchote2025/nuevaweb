@@ -48,6 +48,7 @@ class FilaMariscalesApp {
     async loadInitialData() {
         try {
             await Promise.all([
+                this.loadCarousel(),
                 this.loadDirectiva(),
                 this.loadNoticias(),
                 this.loadBlog(),
@@ -65,6 +66,126 @@ class FilaMariscalesApp {
         } catch (error) {
             console.error('Error cargando datos iniciales:', error);
             this.showError('Error al cargar los datos. Por favor, recarga la página.');
+        }
+    }
+
+    // ===== CARRUSEL HOME =====
+    async loadCarousel() {
+        const container = document.getElementById('home-carousel');
+        if (!container) return;
+
+        try {
+            const response = await fetch(`${CONFIG.DATA_BASE_URL}carousel.json`);
+            const data = await response.json();
+            this.renderCarousel(data, container);
+        } catch (error) {
+            console.error('Error cargando carrusel:', error);
+            container.innerHTML = '';
+        }
+    }
+
+    renderCarousel(data, container) {
+        const { config, slides } = data;
+        
+        if (!slides || slides.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        const carouselId = 'carouselHome';
+        const indicators = config.show_indicators ? slides.map((s, i) => `
+            <button type="button" data-bs-target="#${carouselId}" data-bs-slide-to="${i}" ${s.activo || i === 0 ? 'class="active" aria-current="true"' : ''} aria-label="Slide ${i+1}"></button>
+        `).join('') : '';
+
+        const items = slides.map((s, i) => `
+            <div class="carousel-item ${s.activo || i === 0 ? 'active' : ''}">
+                <div class="carousel-image" style="background-image: url('${s.imagen_url}');"></div>
+                <div class="carousel-overlay" style="opacity: ${s.overlay_opacity || 0.4};"></div>
+                <div class="carousel-caption d-none d-md-block">
+                    <div class="carousel-content">
+                        <h2 class="display-4 fw-bold mb-3 carousel-title">${s.titulo}</h2>
+                        <p class="lead mb-4 carousel-subtitle">${s.subtitulo || ''}</p>
+                        ${s.enlace ? `<a href="${s.enlace}" class="btn btn-primary btn-lg carousel-btn" onclick="app.handleCarouselClick('${s.enlace}')">
+                            <i class="fas fa-arrow-right me-2"></i>${s.texto_boton || 'Ver más'}
+                        </a>` : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        const controls = config.show_controls ? `
+            <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+        ` : '';
+
+        container.innerHTML = `
+            <div id="${carouselId}" 
+                 class="carousel slide" 
+                 data-bs-ride="${config.auto_slide ? 'carousel' : 'false'}"
+                 data-bs-interval="${config.interval || 5000}"
+                 data-bs-pause="${config.pause_on_hover ? 'hover' : 'false'}">
+                ${indicators ? `<div class="carousel-indicators">${indicators}</div>` : ''}
+                <div class="carousel-inner">
+                    ${items}
+                </div>
+                ${controls}
+            </div>
+        `;
+
+        // Configurar eventos personalizados
+        this.setupCarouselEvents(carouselId, config);
+    }
+
+    setupCarouselEvents(carouselId, config) {
+        const carousel = document.getElementById(carouselId);
+        if (!carousel) return;
+
+        // Pausar en hover si está configurado
+        if (config.pause_on_hover) {
+            carousel.addEventListener('mouseenter', () => {
+                const bsCarousel = bootstrap.Carousel.getInstance(carousel);
+                if (bsCarousel) bsCarousel.pause();
+            });
+
+            carousel.addEventListener('mouseleave', () => {
+                const bsCarousel = bootstrap.Carousel.getInstance(carousel);
+                if (bsCarousel && config.auto_slide) bsCarousel.cycle();
+            });
+        }
+
+        // Efectos de transición personalizados
+        carousel.addEventListener('slide.bs.carousel', (e) => {
+            const activeItem = e.target.querySelector('.carousel-item.active');
+            const nextItem = e.relatedTarget;
+            
+            // Añadir clase de animación
+            if (activeItem) activeItem.classList.add('fade-out');
+            if (nextItem) nextItem.classList.add('fade-in');
+        });
+
+        carousel.addEventListener('slid.bs.carousel', (e) => {
+            // Limpiar clases de animación
+            e.target.querySelectorAll('.carousel-item').forEach(item => {
+                item.classList.remove('fade-out', 'fade-in');
+            });
+        });
+    }
+
+    handleCarouselClick(enlace) {
+        // Manejar clics en botones del carrusel
+        if (enlace.startsWith('#')) {
+            const targetElement = document.querySelector(enlace);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        } else {
+            window.location.href = enlace;
         }
     }
 

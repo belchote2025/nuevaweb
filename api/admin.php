@@ -160,3 +160,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
 response(false, 'Método no permitido');
 ?>
+

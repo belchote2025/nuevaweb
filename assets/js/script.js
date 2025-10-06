@@ -133,3 +133,4 @@ function showNotification(message, type = 'info') {
         }, 300);
     }, 3000);
 }
+

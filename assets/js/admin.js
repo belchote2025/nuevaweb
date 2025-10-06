@@ -600,3 +600,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ===== FUNCIONES GLOBALES =====
 window.adminApp = adminApp;
+
