@@ -1,0 +1,55 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Logs
+*.log
+logs/
+
+# Archivos de configuración local
+config.local.php
+.env
+.env.local
+
+# Backup files
+*.bak
+*.backup
+backup-*
+*_backup
+
+# Archivos de subida (mantener estructura pero no contenido)
+uploads/*
+!uploads/.gitkeep
+
+# Archivos temporales de PHP
+*.php~
+*.php.bak
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (si se añaden en el futuro)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de compilación
+dist/
+build/
+
+# Archivos de cache
+cache/
+*.cache
+
+# Archivos de sesión
+sessions/
+
+# Archivos de error
+error_log
+php_errors.log
