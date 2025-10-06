@@ -9,7 +9,42 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: #333;
-    background-color: #f8f9fa;
+    background-color: #0b0b0b; /* fallback */
+    position: relative;
+    min-height: 100vh;
+}
+
+/* Fondo global en TODAS las páginas */
+:root {
+    /* Cambia esta ruta si subes la imagen localmente: assets/images/backgrounds/templario.jpg */
+    --site-bg-image: url('https://static.vecteezy.com/system/resources/thumbnails/050/082/559/small_2x/templar-knight-warrior-in-armor-and-helmet-with-red-cross-warrior-portrait-in-smoke-generative-ai-photo.jpg');
+    --site-bg-darken: rgba(0, 0, 0, 0.35);
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: var(--site-bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    z-index: -2;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(0deg, var(--site-bg-darken), var(--site-bg-darken));
+    z-index: -1;
 }
 
 .container {
@@ -20,9 +55,12 @@ body {
 
 /* Header y Navegación */
 .navbar {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: rgba(15, 15, 20, 0.55) !important; /* translúcido */
+    backdrop-filter: saturate(140%) blur(8px);
+    -webkit-backdrop-filter: saturate(140%) blur(8px);
     padding: 1rem 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 18px rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
     position: fixed;
     width: 100%;
     top: 0;
@@ -61,13 +99,29 @@ body {
     color: #ffd700;
 }
 
-/* Hero Section */
+/* Hero Section + encabezado de home translúcido */
 .hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: transparent;
     color: white;
     padding: 120px 0 80px;
     text-align: center;
     margin-top: 80px;
+}
+
+/* Secciones translúcidas para dejar ver el fondo */
+section {
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 12px;
+}
+
+/* Para secciones oscuras (como contacto) mantener contraste pero translúcidas */
+section.bg-dark, .bg-dark.section, #contacto.bg-dark {
+    background: rgba(15, 15, 20, 0.65) !important;
+    color: #fff;
+    border-color: rgba(255,255,255,0.08);
 }
 
 /* Home Carousel */
@@ -307,7 +361,7 @@ body {
 /* Services Section */
 .services {
     padding: 80px 0;
-    background: white;
+    background: rgba(255,255,255,0.78);
 }
 
 .services h2 {
