@@ -23,6 +23,8 @@ class AdminApp {
             const result = await response.json();
             
             if (result.success) {
+                // Almacenar información del usuario
+                window.currentUserRole = result.data.role;
                 this.showDashboard(result.data.email);
             } else {
                 this.showLogin();
@@ -46,6 +48,8 @@ class AdminApp {
             const result = await response.json();
             
             if (result.success) {
+                // Almacenar información del usuario
+                window.currentUserRole = result.data.role;
                 this.showDashboard(result.data.email);
                 this.showNotification('Login exitoso', 'success');
             } else {
@@ -362,10 +366,27 @@ class AdminApp {
                     break;
             }
             
+            // Añadir botón de subir imagen para campos de imagen
+            let uploadButton = '';
+            if (field.key === 'imagen_url' && (ADMIN_CONFIG.CURRENT_SECTION === 'carousel' || ADMIN_CONFIG.CURRENT_SECTION === 'galeria')) {
+                const uploadType = ADMIN_CONFIG.CURRENT_SECTION === 'carousel' ? 'carousel' : 'gallery';
+                uploadButton = `
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="adminApp.uploadImage('${field.key}', '${uploadType}')">
+                            <i class="fas fa-upload me-1"></i>Subir Imagen
+                        </button>
+                        <div id="${field.key}-preview" class="mt-2" style="display: none;">
+                            <img src="" alt="Preview" style="max-width: 200px; max-height: 150px; border-radius: 8px;">
+                        </div>
+                    </div>
+                `;
+            }
+            
             return `
                 <div class="mb-3">
                     <label for="${field.key}" class="form-label">${field.label} ${field.required ? '<span class="text-danger">*</span>' : ''}</label>
                     ${inputHtml}
+                    ${uploadButton}
                 </div>
             `;
         }).join('');
@@ -596,6 +617,90 @@ class AdminApp {
             'Elemento': 'file'
         };
         return icons[type] || 'file';
+    }
+
+    // ===== SUBIDA DE IMÁGENES =====
+    async uploadImage(fieldKey, uploadType) {
+        // Verificar que el usuario es administrador
+        if (!this.isAdmin()) {
+            this.showNotification('Solo los administradores pueden subir imágenes', 'error');
+            return;
+        }
+
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Validar tamaño (máximo 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                this.showNotification('La imagen no puede superar los 5MB', 'error');
+                return;
+            }
+
+            // Validar tipo
+            if (!file.type.startsWith('image/')) {
+                this.showNotification('Solo se permiten archivos de imagen', 'error');
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('type', uploadType);
+
+                this.showNotification('Subiendo imagen...', 'info');
+
+                const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}upload.php`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Rellenar el campo con la URL de la imagen
+                    const field = document.getElementById(fieldKey);
+                    if (field) {
+                        field.value = result.data.path;
+                    }
+
+                    // Mostrar preview
+                    const preview = document.getElementById(`${fieldKey}-preview`);
+                    if (preview) {
+                        const img = preview.querySelector('img');
+                        if (img) {
+                            img.src = result.data.path;
+                            preview.style.display = 'block';
+                        }
+                    }
+
+                    this.showNotification('Imagen subida correctamente', 'success');
+                } else {
+                    this.showNotification(result.message || 'Error subiendo imagen', 'error');
+                }
+            } catch (error) {
+                console.error('Error subiendo imagen:', error);
+                this.showNotification('Error subiendo imagen', 'error');
+            }
+        };
+
+        input.click();
+    }
+
+    isAdmin() {
+        // Verificar si el usuario actual es administrador
+        // Obtener el rol desde la sesión almacenada
+        const userRole = this.getCurrentUserRole();
+        return userRole === 'admin';
+    }
+
+    getCurrentUserRole() {
+        // Obtener el rol del usuario desde la sesión
+        // Esto se puede mejorar almacenando la info en localStorage o sessionStorage
+        return window.currentUserRole || 'admin'; // Fallback a admin por compatibilidad
     }
 
     // ===== NOTIFICACIONES =====

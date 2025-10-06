@@ -11,11 +11,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Configuración de admin (en producción usar hash de contraseña)
-$admin_credentials = [
-    'email' => 'admin@filamariscales.com',
-    'password' => 'admin123' // En producción usar password_hash()
-];
+// Cargar usuarios desde JSON
+function loadUsers() {
+    $users_file = '../data/users.json';
+    if (!file_exists($users_file)) return [];
+    $data = json_decode(file_get_contents($users_file), true);
+    return $data ?: [];
+}
 
 function response($success, $message, $data = null) {
     echo json_encode([
@@ -34,19 +36,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         response(false, 'Email y contraseña requeridos');
     }
     
-    if ($input['email'] === $admin_credentials['email'] && 
-        $input['password'] === $admin_credentials['password']) {
-        
+    $email = $input['email'];
+    $password = $input['password'];
+    
+    // Buscar usuario en la base de datos
+    $users = loadUsers();
+    $user = null;
+    
+    foreach ($users as $u) {
+        if ($u['email'] === $email && $u['active']) {
+            $user = $u;
+            break;
+        }
+    }
+    
+    if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION['admin_logged_in'] = true;
-        $_SESSION['admin_email'] = $input['email'];
+        $_SESSION['admin_email'] = $email;
+        $_SESSION['admin_role'] = $user['role'];
+        $_SESSION['admin_user_id'] = $user['id'];
         $_SESSION['login_time'] = time();
         
         response(true, 'Login exitoso', [
-            'email' => $input['email'],
+            'email' => $email,
+            'role' => $user['role'],
+            'name' => $user['name'],
             'login_time' => $_SESSION['login_time']
         ]);
     } else {
-        response(false, 'Credenciales incorrectas');
+        response(false, 'Credenciales incorrectas o usuario inactivo');
     }
 }
 
@@ -61,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
         response(true, 'Sesión activa', [
             'email' => $_SESSION['admin_email'],
+            'role' => $_SESSION['admin_role'] ?? 'admin',
             'login_time' => $_SESSION['login_time']
         ]);
     } else {

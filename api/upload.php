@@ -20,6 +20,13 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
+// Verificar que el usuario es administrador (no editor ni viewer)
+if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] !== 'admin') {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Solo los administradores pueden subir imágenes']);
+    exit();
+}
+
 function respond($ok, $message, $data = null) {
     echo json_encode(['success' => $ok, 'message' => $message, 'data' => $data]);
     exit();
