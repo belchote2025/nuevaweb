@@ -368,60 +368,7 @@
                                 </tr>
                             </thead>
                             <tbody id="newsTableBody">
-                                <tr>
-                                    <td>Preparativos para las Fiestas de Moros y Cristianos</td>
-                                    <td>Admin</td>
-                                    <td>2024-01-15</td>
-                                    <td>245</td>
-                                    <td><span class="badge bg-success">Publicado</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editNews(1)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewNews(1)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteNews(1)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Nueva directiva elegida para 2024</td>
-                                    <td>Admin</td>
-                                    <td>2024-01-10</td>
-                                    <td>189</td>
-                                    <td><span class="badge bg-warning">Borrador</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editNews(2)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewNews(2)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteNews(2)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Reunión mensual de socios</td>
-                                    <td>Admin</td>
-                                    <td>2024-01-08</td>
-                                    <td>156</td>
-                                    <td><span class="badge bg-success">Publicado</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editNews(3)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewNews(3)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteNews(3)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                <!-- Filas de noticias generadas dinámicamente -->
                             </tbody>
                         </table>
                     </div>
@@ -1780,6 +1727,9 @@
             // Cargar fotos del carrusel
             loadCarouselPhotosMain();
             
+            // Render inicial de noticias
+            renderNewsTable();
+
             // Navegación del sidebar
             const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
             const contentSections = document.querySelectorAll('.content-section');
@@ -1823,42 +1773,113 @@
         }
         
         // Funcionalidades de Noticias
+        let newsData = [
+            { id: 1, title: 'Preparativos para las Fiestas de Moros y Cristianos', author: 'Admin', date: '2024-01-15', views: 245, status: 'publicado', category: 'eventos', content: 'Contenido de la noticia 1', image: '' },
+            { id: 2, title: 'Nueva directiva elegida para 2024', author: 'Admin', date: '2024-01-10', views: 189, status: 'borrador', category: 'directiva', content: 'Contenido de la noticia 2', image: '' },
+            { id: 3, title: 'Reunión mensual de socios', author: 'Admin', date: '2024-01-08', views: 156, status: 'publicado', category: 'socios', content: 'Contenido de la noticia 3', image: '' }
+        ];
+        let editingNewsId = null;
+
+        function renderNewsTable() {
+            const tbody = document.getElementById('newsTableBody');
+            tbody.innerHTML = '';
+            const search = (document.getElementById('searchNews').value || '').toLowerCase();
+            const statusFilter = document.getElementById('filterStatus').value;
+            const dateFilter = document.getElementById('filterDate').value;
+
+            const filtered = newsData.filter(n => {
+                const matchesSearch = !search || n.title.toLowerCase().includes(search) || n.author.toLowerCase().includes(search) || n.category.toLowerCase().includes(search);
+                const matchesStatus = !statusFilter || n.status === statusFilter;
+                const matchesDate = !dateFilter || n.date === dateFilter;
+                return matchesSearch && matchesStatus && matchesDate;
+            });
+
+            filtered.forEach(n => {
+                const tr = document.createElement('tr');
+                const statusBadge = n.status === 'publicado' ? 'bg-success' : (n.status === 'borrador' ? 'bg-warning' : 'bg-secondary');
+                tr.innerHTML = `
+                    <td>${n.title}</td>
+                    <td>${n.author}</td>
+                    <td>${n.date}</td>
+                    <td>${n.views}</td>
+                    <td><span class="badge ${statusBadge}">${capitalize(n.status)}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editNews(${n.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewNews(${n.id})"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteNews(${n.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
         function showNewsModal() {
+            editingNewsId = null;
+            document.getElementById('newsForm').reset();
+            document.querySelector('#newsModal .modal-title').textContent = 'Nueva Noticia';
             const modal = new bootstrap.Modal(document.getElementById('newsModal'));
             modal.show();
         }
         
         function saveNews() {
-            const title = document.getElementById('newsTitle').value;
-            const content = document.getElementById('newsContent').value;
+            const title = document.getElementById('newsTitle').value.trim();
+            const content = document.getElementById('newsContent').value.trim();
             const category = document.getElementById('newsCategory').value;
             const status = document.getElementById('newsStatus').value;
-            
+            const imageFile = document.getElementById('newsImage').files[0];
+
             if (!title || !content) {
-                alert('Por favor, completa todos los campos obligatorios.');
+                alert('Por favor, completa título y contenido.');
                 return;
             }
-            
-            // Simular guardado
-            alert('Noticia guardada correctamente!');
+
+            let image = '';
+            if (imageFile) {
+                image = URL.createObjectURL(imageFile);
+            }
+
+            if (editingNewsId) {
+                const idx = newsData.findIndex(n => n.id === editingNewsId);
+                if (idx !== -1) {
+                    newsData[idx] = { ...newsData[idx], title, content, category, status, image: image || newsData[idx].image };
+                }
+            } else {
+                const newId = Math.max(0, ...newsData.map(n => n.id)) + 1;
+                const today = new Date().toISOString().slice(0,10);
+                newsData.unshift({ id: newId, title, author: 'Admin', date: today, views: 0, status, category, content, image });
+            }
+
+            renderNewsTable();
             bootstrap.Modal.getInstance(document.getElementById('newsModal')).hide();
-            
-            // Limpiar formulario
             document.getElementById('newsForm').reset();
         }
         
         function editNews(id) {
-            alert('Editando noticia ID: ' + id);
+            const n = newsData.find(x => x.id === id);
+            if (!n) return;
+            editingNewsId = id;
+            document.querySelector('#newsModal .modal-title').textContent = 'Editar Noticia';
+            document.getElementById('newsTitle').value = n.title;
+            document.getElementById('newsContent').value = n.content;
+            document.getElementById('newsCategory').value = n.category;
+            document.getElementById('newsStatus').value = n.status;
+            document.getElementById('newsImage').value = '';
+            const modal = new bootstrap.Modal(document.getElementById('newsModal'));
+            modal.show();
         }
         
         function viewNews(id) {
-            alert('Viendo noticia ID: ' + id);
+            const n = newsData.find(x => x.id === id);
+            if (!n) return;
+            alert(`${n.title}\n\n${n.content.substring(0, 300)}...`);
         }
         
         function deleteNews(id) {
-            if (confirm('¿Estás seguro de que quieres eliminar esta noticia?')) {
-                alert('Noticia eliminada correctamente!');
-            }
+            if (!confirm('¿Eliminar esta noticia?')) return;
+            newsData = newsData.filter(n => n.id !== id);
+            renderNewsTable();
         }
         
         // Funcionalidades de Eventos
@@ -1990,21 +2011,14 @@
         }
         
         function initializeSearch() {
-            // Búsqueda en noticias
-            document.getElementById('searchNews').addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#newsTableBody tr');
-                
-                rows.forEach(row => {
-                    const title = row.cells[0].textContent.toLowerCase();
-                    if (title.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-            
+            // Búsqueda y filtros en noticias (render dinámico)
+            const searchNewsEl = document.getElementById('searchNews');
+            if (searchNewsEl) searchNewsEl.addEventListener('input', renderNewsTable);
+            const filterStatusEl = document.getElementById('filterStatus');
+            if (filterStatusEl) filterStatusEl.addEventListener('change', renderNewsTable);
+            const filterDateEl = document.getElementById('filterDate');
+            if (filterDateEl) filterDateEl.addEventListener('change', renderNewsTable);
+
             // Búsqueda en eventos
             document.getElementById('searchEvents').addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
@@ -2025,10 +2039,7 @@
             document.getElementById('searchNews').value = '';
             document.getElementById('filterStatus').value = '';
             document.getElementById('filterDate').value = '';
-            
-            // Mostrar todas las filas
-            const rows = document.querySelectorAll('#newsTableBody tr');
-            rows.forEach(row => row.style.display = '');
+            renderNewsTable();
         }
         
         function clearGalleryFilters() {
