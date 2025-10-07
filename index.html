@@ -28,58 +28,101 @@
             </button>
             
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav mx-auto">
+                    <!-- Inicio -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#home">Inicio</a>
+                        <a class="nav-link" href="#home">
+                            <i class="fas fa-home me-1"></i>Inicio
+                        </a>
                     </li>
+                    
+                    <!-- La Filá -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-shield-alt me-1"></i>La Filá
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#historia">
+                                <i class="fas fa-history me-2"></i>Historia
+                            </a></li>
+                            <li><a class="dropdown-item" href="#directiva">
+                                <i class="fas fa-users me-2"></i>Directiva
+                            </a></li>
+                            <li><a class="dropdown-item" href="#socios">
+                                <i class="fas fa-user-friends me-2"></i>Socios
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Actividades -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-calendar-alt me-1"></i>Actividades
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#calendario">
+                                <i class="fas fa-calendar me-2"></i>Calendario
+                            </a></li>
+                            <li><a class="dropdown-item" href="#eventos">
+                                <i class="fas fa-calendar-check me-2"></i>Eventos
+                            </a></li>
+                            <li><a class="dropdown-item" href="#galeria">
+                                <i class="fas fa-images me-2"></i>Galería
+                            </a></li>
+                            <li><a class="dropdown-item" href="#musica">
+                                <i class="fas fa-music me-2"></i>Música
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Noticias -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#historia">Historia</a>
+                        <a class="nav-link" href="#noticias">
+                            <i class="fas fa-newspaper me-1"></i>Noticias
+                        </a>
                     </li>
+                    
+                    <!-- Recursos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-toolbox me-1"></i>Recursos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#tienda">
+                                <i class="fas fa-store me-2"></i>Tienda
+                            </a></li>
+                            <li><a class="dropdown-item" href="libro.html">
+                                <i class="fas fa-book me-2"></i>Libro
+                            </a></li>
+                            <li><a class="dropdown-item" href="#descargas">
+                                <i class="fas fa-download me-2"></i>Descargas
+                            </a></li>
+                            <li><a class="dropdown-item" href="#blog">
+                                <i class="fas fa-blog me-2"></i>Blog
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#patrocinadores">
+                                <i class="fas fa-star me-2"></i>Patrocinadores
+                            </a></li>
+                            <li><a class="dropdown-item" href="#hermanamientos">
+                                <i class="fas fa-heart me-2"></i>Hermanamientos
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Contacto -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#directiva">Directiva</a>
+                        <a class="nav-link" href="#contacto">
+                            <i class="fas fa-envelope me-1"></i>Contacto
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#noticias">Noticias</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#blog">Blog</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#calendario">Calendario</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#galeria">Galería</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#musica">Música</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#libro">Libro</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#descargas">Descargas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#tienda">Tienda</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#patrocinadores">Patrocinadores</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#hermanamientos">Hermanamientos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#socios">Socios</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#eventos">Eventos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contacto">Contacto</a>
-                    </li>
+                </ul>
+                
+                <!-- Login -->
+                <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="login.html">
-                            <i class="fas fa-user me-1"></i>Login
+                            <i class="fas fa-user me-1"></i>Admin
                         </a>
                     </li>
                 </ul>
@@ -87,39 +130,74 @@
             </div>
         </nav>
 
-    <!-- Hero Section / Carousel Wrapper -->
+    <!-- Hero Section with Carousel -->
     <section id="home" class="hero-section">
-        <!-- Carousel Home -->
-        <div id="home-carousel" class="mb-4">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="text-center text-white">
-                            <div class="spinner-border text-light" role="status">
-                                <span class="visually-hidden">Cargando carrusel...</span>
-                            </div>
-                        </div>
+        <!-- Carrusel de Fotos -->
+        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-inner">
+                <!-- Slide 1 -->
+                <div class="carousel-item active">
+                    <div class="carousel-image" style="background-image: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');"></div>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h2 class="display-4 fw-bold mb-3">Filá Mariscales</h2>
+                        <p class="lead">Caballeros Templarios de Elche</p>
+                    </div>
+                </div>
+                <!-- Slide 2 -->
+                <div class="carousel-item">
+                    <div class="carousel-image" style="background-image: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');"></div>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h2 class="display-4 fw-bold mb-3">Tradición y Honor</h2>
+                        <p class="lead">Desde 1985 manteniendo viva nuestra historia</p>
+                    </div>
+                </div>
+                <!-- Slide 3 -->
+                <div class="carousel-item">
+                    <div class="carousel-image" style="background-image: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');"></div>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h2 class="display-4 fw-bold mb-3">Hermandad Templaria</h2>
+                        <p class="lead">Unidos por la tradición y la amistad</p>
                     </div>
                 </div>
             </div>
+            
+            <!-- Controles del Carrusel -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+            
+            <!-- Indicadores del Carrusel -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
         </div>
-        <div class="hero-overlay"></div>
-        <div class="container h-100 d-flex align-items-center">
-            <div class="row w-100">
-                <div class="col-lg-8 mx-auto text-center text-white">
-                    <h1 class="display-3 fw-bold mb-4 hero-title">
-                        Filá Mariscales de Caballeros Templarios
-                    </h1>
-                    <p class="lead mb-4 hero-subtitle">
-                        Tradición, honor y hermandad desde Elche
-                    </p>
-                    <div class="hero-buttons">
-                        <a href="#historia" class="btn btn-primary btn-lg me-3">
-                            <i class="fas fa-book me-2"></i>Conoce nuestra historia
-                        </a>
-                        <a href="#eventos" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-calendar me-2"></i>Próximos eventos
-                        </a>
+        
+        <!-- Contenido del Hero -->
+        <div class="hero-content">
+            <div class="container h-100 d-flex align-items-center">
+                <div class="row w-100">
+                    <div class="col-lg-8 mx-auto text-center text-white">
+                        <h1 class="display-3 fw-bold mb-4 hero-title">
+                            Filá Mariscales de Caballeros Templarios
+                        </h1>
+                        <p class="lead mb-4 hero-subtitle">
+                            Tradición, honor y hermandad desde Elche
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="#historia" class="btn btn-primary btn-lg me-3">
+                                <i class="fas fa-book me-2"></i>Conoce nuestra historia
+                            </a>
+                            <a href="#eventos" class="btn btn-outline-light btn-lg">
+                                <i class="fas fa-calendar me-2"></i>Próximos eventos
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -500,3 +578,4 @@
     <script src="assets/js/main.js"></script>
 </body>
 </html>
+

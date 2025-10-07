@@ -2,7 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // Smooth scrolling para los enlaces de navegación
-    const navLinks = document.querySelectorAll('.nav-link');
+    const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
     
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -27,13 +27,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     window.addEventListener('scroll', function() {
         if (window.scrollY > 100) {
-            navbar.style.background = 'rgba(102, 126, 234, 0.95)';
+            navbar.style.background = 'rgba(15, 15, 20, 0.95)';
             navbar.style.backdropFilter = 'blur(10px)';
         } else {
-            navbar.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-            navbar.style.backdropFilter = 'none';
+            navbar.style.background = 'rgba(15, 15, 20, 0.55)';
+            navbar.style.backdropFilter = 'saturate(140%) blur(8px)';
         }
     });
+
+    // Inicializar el carrusel
+    const carousel = document.querySelector('#heroCarousel');
+    if (carousel) {
+        // El carrusel se inicializa automáticamente con Bootstrap
+        console.log('🎠 Carrusel inicializado correctamente');
+        
+        // Añadir efectos adicionales al carrusel
+        carousel.addEventListener('slide.bs.carousel', function (e) {
+            console.log('Carrusel cambiando a slide:', e.to);
+        });
+    }
 
     // Animación de entrada para las tarjetas de servicios
     const observerOptions = {
@@ -133,4 +145,5 @@ function showNotification(message, type = 'info') {
         }, 300);
     }, 3000);
 }
+
 
