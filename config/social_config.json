@@ -1,0 +1,72 @@
+{
+  "platforms": {
+    "facebook": {
+      "enabled": true,
+      "name": "Facebook",
+      "url": "https://facebook.com/filamariscales",
+      "icon": "fab fa-facebook-f",
+      "color": "#1877F2",
+      "app_id": "",
+      "app_secret": "",
+      "access_token": ""
+    },
+    "twitter": {
+      "enabled": true,
+      "name": "Twitter",
+      "url": "https://twitter.com/filamariscales",
+      "icon": "fab fa-twitter",
+      "color": "#1DA1F2",
+      "api_key": "",
+      "api_secret": "",
+      "access_token": "",
+      "access_token_secret": ""
+    },
+    "instagram": {
+      "enabled": true,
+      "name": "Instagram",
+      "url": "https://instagram.com/filamariscales",
+      "icon": "fab fa-instagram",
+      "color": "#E4405F",
+      "access_token": ""
+    },
+    "youtube": {
+      "enabled": true,
+      "name": "YouTube",
+      "url": "https://youtube.com/@filamariscales",
+      "icon": "fab fa-youtube",
+      "color": "#FF0000",
+      "api_key": "",
+      "channel_id": ""
+    },
+    "whatsapp": {
+      "enabled": true,
+      "name": "WhatsApp",
+      "url": "https://wa.me/34965123456",
+      "icon": "fab fa-whatsapp",
+      "color": "#25D366"
+    },
+    "telegram": {
+      "enabled": true,
+      "name": "Telegram",
+      "url": "https://t.me/filamariscales",
+      "icon": "fab fa-telegram-plane",
+      "color": "#0088CC"
+    }
+  },
+  "settings": {
+    "auto_share_news": true,
+    "auto_share_events": true,
+    "auto_share_gallery": false,
+    "default_hashtags": "#FiláMariscales #Templarios #Elche #MorosyCristianos",
+    "share_template": "¡Nueva noticia de la Filá Mariscales! {title} - {description}",
+    "event_template": "¡No te pierdas este evento! {title} el {date} en {location}",
+    "gallery_template": "Mira estas increíbles fotos de la Filá Mariscales: {title}"
+  },
+  "widgets": {
+    "show_share_buttons": true,
+    "show_social_feed": true,
+    "show_follow_buttons": true,
+    "share_buttons_position": "bottom",
+    "social_feed_position": "sidebar"
+  }
+}

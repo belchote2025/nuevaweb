@@ -1,0 +1,26 @@
+{
+  "facebook": {
+    "followers": 1250,
+    "posts": 45,
+    "engagement": 8.5,
+    "last_updated": "2024-01-15 10:30:00"
+  },
+  "twitter": {
+    "followers": 890,
+    "posts": 32,
+    "engagement": 6.2,
+    "last_updated": "2024-01-15 10:30:00"
+  },
+  "instagram": {
+    "followers": 2100,
+    "posts": 78,
+    "engagement": 12.3,
+    "last_updated": "2024-01-15 10:30:00"
+  },
+  "youtube": {
+    "subscribers": 450,
+    "videos": 15,
+    "views": 12500,
+    "last_updated": "2024-01-15 10:30:00"
+  }
+}

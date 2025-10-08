@@ -1,0 +1,58 @@
+[
+  {
+    "id": "post_001",
+    "platform": "facebook",
+    "content": "¡Gran desfile de la Filá Mariscales en las fiestas de Moros y Cristianos! 🏰⚔️ #FiláMariscales #Templarios #Elche",
+    "media": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=800&q=80",
+    "status": "published",
+    "created_at": "2024-01-14 18:30:00",
+    "scheduled_at": null,
+    "published_at": "2024-01-14 18:30:00",
+    "engagement": {
+      "likes": 45,
+      "shares": 12,
+      "comments": 8
+    }
+  },
+  {
+    "id": "post_002",
+    "platform": "instagram",
+    "content": "Momentos únicos del último ensayo de la Filá Mariscales 📸✨ #FiláMariscales #Templarios #Ensayo",
+    "media": "https://images.unsplash.com/photo-1520975922203-b5e2577e76b3?auto=format&fit=crop&w=800&q=80",
+    "status": "published",
+    "created_at": "2024-01-13 16:45:00",
+    "scheduled_at": null,
+    "published_at": "2024-01-13 16:45:00",
+    "engagement": {
+      "likes": 78,
+      "shares": 15,
+      "comments": 12
+    }
+  },
+  {
+    "id": "post_003",
+    "platform": "twitter",
+    "content": "¡Nueva incorporación a la Filá Mariscales! Bienvenido a nuestra hermandad templaria 🏰⚔️ #FiláMariscales #NuevoSocio",
+    "media": null,
+    "status": "published",
+    "created_at": "2024-01-12 14:20:00",
+    "scheduled_at": null,
+    "published_at": "2024-01-12 14:20:00",
+    "engagement": {
+      "likes": 23,
+      "shares": 5,
+      "comments": 3
+    }
+  },
+  {
+    "id": "post_004",
+    "platform": "facebook",
+    "content": "Recordando los mejores momentos de las pasadas fiestas de Moros y Cristianos 🎭🎪 #FiláMariscales #Recuerdos",
+    "media": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80",
+    "status": "scheduled",
+    "created_at": "2024-01-15 09:00:00",
+    "scheduled_at": "2024-01-16 20:00:00",
+    "published_at": null,
+    "engagement": null
+  }
+]

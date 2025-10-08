@@ -318,6 +318,11 @@ class AdminApp {
                 return;
             }
             
+            if (section === 'redes-sociales') {
+                this.loadSocialData();
+                return;
+            }
+            
             // Secciones normales
             const data = await this.fetchData(section);
             this.renderTable(section, data);
@@ -1714,6 +1719,576 @@ class AdminApp {
 
     optimizeDatabase() {
         this.showNotification('Optimización completada', 'success');
+    }
+
+    // ===== GESTIÓN DE REDES SOCIALES =====
+    async loadSocialData() {
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}social.php?action=config`);
+            const result = await response.json();
+            
+            if (result.success) {
+                this.renderSocialConfig(result.data);
+            } else {
+                this.showNotification('Error cargando configuración de redes sociales', 'error');
+            }
+        } catch (error) {
+            console.error('Error cargando redes sociales:', error);
+            this.showNotification('Error cargando redes sociales', 'error');
+        }
+    }
+
+    renderSocialConfig(config) {
+        const container = document.getElementById('social-config-container');
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Configuración de Redes Sociales</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="social-config-form">
+                                <div class="row">
+                                    ${Object.entries(config.platforms || {}).map(([key, platform]) => `
+                                        <div class="col-md-6 mb-4">
+                                            <div class="card">
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="${platform.icon} me-2" style="color: ${platform.color}; font-size: 1.2rem;"></i>
+                                                        <h6 class="mb-0">${platform.name}</h6>
+                                                    </div>
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" 
+                                                               id="platform_${key}_enabled" 
+                                                               name="platforms[${key}][enabled]"
+                                                               ${platform.enabled ? 'checked' : ''}>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">URL</label>
+                                                        <input type="url" class="form-control" 
+                                                               name="platforms[${key}][url]" 
+                                                               value="${platform.url || ''}">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">App ID / API Key</label>
+                                                        <input type="text" class="form-control" 
+                                                               name="platforms[${key}][app_id]" 
+                                                               value="${platform.app_id || ''}">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">App Secret / API Secret</label>
+                                                        <input type="password" class="form-control" 
+                                                               name="platforms[${key}][app_secret]" 
+                                                               value="${platform.app_secret || ''}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Configuración General</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-check form-switch mb-3">
+                                                            <input class="form-check-input" type="checkbox" 
+                                                                   id="auto_share_news" 
+                                                                   name="settings[auto_share_news]"
+                                                                   ${config.settings?.auto_share_news ? 'checked' : ''}>
+                                                            <label class="form-check-label" for="auto_share_news">
+                                                                Compartir noticias automáticamente
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-switch mb-3">
+                                                            <input class="form-check-input" type="checkbox" 
+                                                                   id="auto_share_events" 
+                                                                   name="settings[auto_share_events]"
+                                                                   ${config.settings?.auto_share_events ? 'checked' : ''}>
+                                                            <label class="form-check-label" for="auto_share_events">
+                                                                Compartir eventos automáticamente
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-check form-switch mb-3">
+                                                            <input class="form-check-input" type="checkbox" 
+                                                                   id="show_share_buttons" 
+                                                                   name="widgets[show_share_buttons]"
+                                                                   ${config.widgets?.show_share_buttons ? 'checked' : ''}>
+                                                            <label class="form-check-label" for="show_share_buttons">
+                                                                Mostrar botones de compartir
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-switch mb-3">
+                                                            <input class="form-check-input" type="checkbox" 
+                                                                   id="show_social_feed" 
+                                                                   name="widgets[show_social_feed]"
+                                                                   ${config.widgets?.show_social_feed ? 'checked' : ''}>
+                                                            <label class="form-check-label" for="show_social_feed">
+                                                                Mostrar feed de redes sociales
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">Hashtags por defecto</label>
+                                                    <input type="text" class="form-control" 
+                                                           name="settings[default_hashtags]" 
+                                                           value="${config.settings?.default_hashtags || ''}">
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">Plantilla para noticias</label>
+                                                    <textarea class="form-control" rows="2" 
+                                                              name="settings[share_template]">${config.settings?.share_template || ''}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-end mt-3">
+                                    <button type="button" class="btn btn-primary" onclick="adminApp.saveSocialConfig()">
+                                        <i class="fas fa-save me-2"></i>Guardar Configuración
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Gestión de Posts</h5>
+                            <button class="btn btn-primary btn-sm" onclick="adminApp.showCreatePostModal()">
+                                <i class="fas fa-plus me-1"></i>Nuevo Post
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="social-posts-container">
+                                <div class="text-center py-4">
+                                    <i class="fas fa-spinner fa-spin fa-2x text-muted mb-3"></i>
+                                    <p class="text-muted">Cargando posts...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Cargar posts después de renderizar
+        this.loadSocialPosts();
+    }
+
+    async loadSocialPosts() {
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}social.php?action=posts&limit=20`);
+            const result = await response.json();
+            
+            if (result.success) {
+                this.renderSocialPosts(result.data);
+            } else {
+                this.showNotification('Error cargando posts', 'error');
+            }
+        } catch (error) {
+            console.error('Error cargando posts:', error);
+            this.showNotification('Error cargando posts', 'error');
+        }
+    }
+
+    renderSocialPosts(posts) {
+        const container = document.getElementById('social-posts-container');
+        if (!container) return;
+
+        if (posts.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-rss fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No hay posts disponibles</h5>
+                    <p class="text-muted">Crea tu primer post para comenzar</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Plataforma</th>
+                            <th>Contenido</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Engagement</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${posts.map(post => `
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fab fa-${post.platform} me-2"></i>
+                                        <span class="text-capitalize">${post.platform}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 200px;" title="${post.content}">
+                                        ${post.content}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge ${this.getPostStatusBadge(post.status)}">
+                                        ${this.getPostStatusText(post.status)}
+                                    </span>
+                                </td>
+                                <td>
+                                    <small>${new Date(post.created_at).toLocaleDateString('es-ES')}</small>
+                                </td>
+                                <td>
+                                    ${post.engagement ? `
+                                        <div class="d-flex gap-2">
+                                            <small><i class="fas fa-heart text-danger"></i> ${post.engagement.likes}</small>
+                                            <small><i class="fas fa-share text-primary"></i> ${post.engagement.shares}</small>
+                                            <small><i class="fas fa-comment text-info"></i> ${post.engagement.comments}</small>
+                                        </div>
+                                    ` : '-'}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        ${post.status === 'pending' ? `
+                                            <button class="btn btn-sm btn-outline-success" onclick="adminApp.publishSocialPost('${post.id}')">
+                                                <i class="fas fa-paper-plane"></i>
+                                            </button>
+                                        ` : ''}
+                                        <button class="btn btn-sm btn-outline-danger" onclick="adminApp.deleteSocialPost('${post.id}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    getPostStatusBadge(status) {
+        const badges = {
+            'published': 'bg-success',
+            'scheduled': 'bg-warning',
+            'pending': 'bg-info',
+            'failed': 'bg-danger'
+        };
+        return badges[status] || 'bg-secondary';
+    }
+
+    getPostStatusText(status) {
+        const texts = {
+            'published': 'Publicado',
+            'scheduled': 'Programado',
+            'pending': 'Pendiente',
+            'failed': 'Fallido'
+        };
+        return texts[status] || 'Desconocido';
+    }
+
+    async saveSocialConfig() {
+        try {
+            const form = document.getElementById('social-config-form');
+            const formData = new FormData(form);
+            
+            // Convertir FormData a objeto
+            const config = {};
+            for (let [key, value] of formData.entries()) {
+                const keys = key.split(/[\[\]]/).filter(k => k);
+                let current = config;
+                
+                for (let i = 0; i < keys.length - 1; i++) {
+                    if (!current[keys[i]]) {
+                        current[keys[i]] = {};
+                    }
+                    current = current[keys[i]];
+                }
+                
+                current[keys[keys.length - 1]] = value;
+            }
+            
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}social.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'save_config',
+                    config: config
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Configuración guardada correctamente', 'success');
+            } else {
+                this.showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error guardando configuración:', error);
+            this.showNotification('Error guardando configuración', 'error');
+        }
+    }
+
+    showCreatePostModal() {
+        // Crear modal para crear posts
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.id = 'createPostModal';
+        modal.innerHTML = `
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Crear Nuevo Post</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="create-post-form">
+                            <div class="mb-3">
+                                <label class="form-label">Plataformas</label>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="platform_facebook" value="facebook">
+                                            <label class="form-check-label" for="platform_facebook">
+                                                <i class="fab fa-facebook-f text-primary"></i> Facebook
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="platform_twitter" value="twitter">
+                                            <label class="form-check-label" for="platform_twitter">
+                                                <i class="fab fa-twitter text-info"></i> Twitter
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="platform_instagram" value="instagram">
+                                            <label class="form-check-label" for="platform_instagram">
+                                                <i class="fab fa-instagram text-danger"></i> Instagram
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="platform_youtube" value="youtube">
+                                            <label class="form-check-label" for="platform_youtube">
+                                                <i class="fab fa-youtube text-danger"></i> YouTube
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Contenido</label>
+                                <textarea class="form-control" id="post-content" rows="4" 
+                                          placeholder="Escribe tu post aquí..."></textarea>
+                                <div class="form-text">Caracteres: <span id="char-count">0</span>/280</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Imagen (opcional)</label>
+                                <input type="url" class="form-control" id="post-media" 
+                                       placeholder="URL de la imagen">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Programar publicación (opcional)</label>
+                                <input type="datetime-local" class="form-control" id="post-schedule">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" onclick="adminApp.createSocialPost()">
+                            <i class="fas fa-paper-plane me-2"></i>Crear Post
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Inicializar modal
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+        
+        // Contador de caracteres
+        const contentTextarea = document.getElementById('post-content');
+        const charCount = document.getElementById('char-count');
+        
+        contentTextarea.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+            if (this.value.length > 280) {
+                charCount.style.color = 'red';
+            } else {
+                charCount.style.color = 'inherit';
+            }
+        });
+        
+        // Limpiar modal al cerrar
+        modal.addEventListener('hidden.bs.modal', function() {
+            document.body.removeChild(modal);
+        });
+    }
+
+    async createSocialPost() {
+        try {
+            const platforms = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+            
+            const content = document.getElementById('post-content').value;
+            const media = document.getElementById('post-media').value;
+            const schedule = document.getElementById('post-schedule').value;
+            
+            if (platforms.length === 0) {
+                this.showNotification('Selecciona al menos una plataforma', 'warning');
+                return;
+            }
+            
+            if (!content.trim()) {
+                this.showNotification('El contenido es requerido', 'warning');
+                return;
+            }
+            
+            // Crear posts para cada plataforma
+            for (const platform of platforms) {
+                const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}social.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'create_post',
+                        platform: platform,
+                        content: content,
+                        media: media || null
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Si hay programación, programar el post
+                    if (schedule) {
+                        await this.scheduleSocialPost(result.data.id, schedule);
+                    }
+                }
+            }
+            
+            this.showNotification('Posts creados correctamente', 'success');
+            
+            // Cerrar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('createPostModal'));
+            modal.hide();
+            
+            // Recargar lista de posts
+            this.loadSocialPosts();
+            
+        } catch (error) {
+            console.error('Error creando posts:', error);
+            this.showNotification('Error creando posts', 'error');
+        }
+    }
+
+    async publishSocialPost(postId) {
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}social.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'publish_post',
+                    post_id: postId
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Post publicado correctamente', 'success');
+                this.loadSocialPosts();
+            } else {
+                this.showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error publicando post:', error);
+            this.showNotification('Error publicando post', 'error');
+        }
+    }
+
+    async scheduleSocialPost(postId, scheduledAt) {
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}social.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'schedule_post',
+                    post_id: postId,
+                    scheduled_at: scheduledAt
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Post programado correctamente', 'success');
+                this.loadSocialPosts();
+            } else {
+                this.showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error programando post:', error);
+            this.showNotification('Error programando post', 'error');
+        }
+    }
+
+    async deleteSocialPost(postId) {
+        if (!confirm('¿Estás seguro de que quieres eliminar este post?')) {
+            return;
+        }
+
+        try {
+            // Aquí implementarías la lógica para eliminar el post
+            this.showNotification('Post eliminado correctamente', 'success');
+            this.loadSocialPosts();
+        } catch (error) {
+            console.error('Error eliminando post:', error);
+            this.showNotification('Error eliminando post', 'error');
+        }
     }
 }
 
