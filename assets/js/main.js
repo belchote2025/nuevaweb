@@ -19,6 +19,7 @@ class FilaMariscalesApp {
         this.setupNavbarScroll();
         this.setupFormHandlers();
         this.setupAnimations();
+        this.initDarkMode();
     }
 
     // ===== CONFIGURACIÓN DE EVENTOS =====
@@ -389,16 +390,24 @@ class FilaMariscalesApp {
     }
 
     renderGaleria(imagenes, container) {
-        container.innerHTML = imagenes.map(imagen => `
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="gallery-item" onclick="app.showImageModal('${imagen.imagen_url}', '${imagen.titulo}')">
-                    <img src="${imagen.thumb_url}" alt="${imagen.titulo}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
-                    <div class="gallery-overlay">
-                        <i class="fas fa-search-plus"></i>
+        // Almacenar imágenes para el lightbox
+        this.galleryImages = imagenes;
+        
+        container.innerHTML = `
+            <div class="gallery-grid">
+                ${imagenes.map((imagen, index) => `
+                    <div class="gallery-item" onclick="app.openLightbox(${index})">
+                        <img src="${imagen.thumb_url}" alt="${imagen.titulo}">
+                        <div class="gallery-overlay">
+                            <div class="gallery-info">
+                                <div class="gallery-title">${imagen.titulo}</div>
+                                <div class="gallery-description">${imagen.descripcion}</div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                `).join('')}
             </div>
-        `).join('');
+        `;
     }
 
     renderGaleriaDefault(container) {
@@ -1079,6 +1088,116 @@ class FilaMariscalesApp {
             }
         }, 5000);
     }
+
+    // ===== LIGHTBOX GALLERY =====
+    openLightbox(index) {
+        if (!this.galleryImages || this.galleryImages.length === 0) return;
+        
+        this.currentImageIndex = index;
+        this.updateLightbox();
+        this.showLightbox();
+    }
+
+    showLightbox() {
+        const overlay = document.getElementById('lightbox-overlay');
+        if (overlay) {
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll
+        }
+    }
+
+    closeLightbox() {
+        const overlay = document.getElementById('lightbox-overlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+            document.body.style.overflow = ''; // Restaurar scroll
+        }
+    }
+
+    updateLightbox() {
+        if (!this.galleryImages || this.currentImageIndex === undefined) return;
+        
+        const image = this.galleryImages[this.currentImageIndex];
+        const lightboxImage = document.getElementById('lightbox-image');
+        const lightboxTitle = document.getElementById('lightbox-title');
+        const lightboxDescription = document.getElementById('lightbox-description');
+        const lightboxCurrent = document.getElementById('lightbox-current');
+        const lightboxTotal = document.getElementById('lightbox-total');
+        
+        if (lightboxImage) lightboxImage.src = image.imagen_url;
+        if (lightboxImage) lightboxImage.alt = image.titulo;
+        if (lightboxTitle) lightboxTitle.textContent = image.titulo;
+        if (lightboxDescription) lightboxDescription.textContent = image.descripcion;
+        if (lightboxCurrent) lightboxCurrent.textContent = this.currentImageIndex + 1;
+        if (lightboxTotal) lightboxTotal.textContent = this.galleryImages.length;
+    }
+
+    nextImage() {
+        if (!this.galleryImages || this.galleryImages.length === 0) return;
+        
+        this.currentImageIndex = (this.currentImageIndex + 1) % this.galleryImages.length;
+        this.updateLightbox();
+    }
+
+    prevImage() {
+        if (!this.galleryImages || this.galleryImages.length === 0) return;
+        
+        this.currentImageIndex = this.currentImageIndex === 0 
+            ? this.galleryImages.length - 1 
+            : this.currentImageIndex - 1;
+        this.updateLightbox();
+    }
+
+    // Manejar teclado para navegación del lightbox
+    handleLightboxKeyboard(event) {
+        if (!document.getElementById('lightbox-overlay').classList.contains('active')) return;
+        
+        switch(event.key) {
+            case 'Escape':
+                this.closeLightbox();
+                break;
+            case 'ArrowLeft':
+                this.prevImage();
+                break;
+            case 'ArrowRight':
+                this.nextImage();
+                break;
+        }
+    }
+
+    // ===== DARK MODE =====
+    initDarkMode() {
+        // Cargar preferencia guardada
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        this.setTheme(savedTheme);
+    }
+
+    toggleDarkMode() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        this.setTheme(newTheme);
+        
+        // Guardar preferencia
+        localStorage.setItem('theme', newTheme);
+    }
+
+    setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        this.updateDarkModeButton(theme);
+    }
+
+    updateDarkModeButton(theme) {
+        const icon = document.getElementById('dark-mode-icon');
+        const text = document.getElementById('dark-mode-text');
+        
+        if (theme === 'dark') {
+            if (icon) icon.className = 'fas fa-sun me-1';
+            if (text) text.textContent = 'Modo Claro';
+        } else {
+            if (icon) icon.className = 'fas fa-moon me-1';
+            if (text) text.textContent = 'Modo Oscuro';
+        }
+    }
 }
 
 // ===== INICIALIZACIÓN =====
@@ -1094,6 +1213,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Configurar eventos del lightbox
+    document.addEventListener('keydown', function(event) {
+        if (app && app.handleLightboxKeyboard) {
+            app.handleLightboxKeyboard(event);
+        }
+    });
+
+    // Cerrar lightbox al hacer clic en el overlay
+    document.getElementById('lightbox-overlay')?.addEventListener('click', function(event) {
+        if (event.target === this) {
+            app.closeLightbox();
+        }
     });
 });
 

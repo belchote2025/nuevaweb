@@ -236,7 +236,7 @@
                                         <i class="fas fa-newspaper"></i>
                                     </div>
                                     <div>
-                                        <h3 class="mb-0">12</h3>
+                                        <h3 class="mb-0" id="noticias-count">0</h3>
                                         <p class="text-muted mb-0">Noticias</p>
                                     </div>
                                 </div>
@@ -249,7 +249,7 @@
                                         <i class="fas fa-calendar"></i>
                                     </div>
                                     <div>
-                                        <h3 class="mb-0">8</h3>
+                                        <h3 class="mb-0" id="eventos-count">0</h3>
                                         <p class="text-muted mb-0">Eventos</p>
                                     </div>
                                 </div>
@@ -262,7 +262,7 @@
                                         <i class="fas fa-images"></i>
                                     </div>
                                     <div>
-                                        <h3 class="mb-0">45</h3>
+                                        <h3 class="mb-0" id="galeria-count">0</h3>
                                         <p class="text-muted mb-0">Fotos</p>
                                     </div>
                                 </div>
@@ -275,8 +275,85 @@
                                         <i class="fas fa-users"></i>
                                     </div>
                                     <div>
-                                        <h3 class="mb-0">156</h3>
+                                        <h3 class="mb-0" id="usuarios-count">0</h3>
                                         <p class="text-muted mb-0">Usuarios</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Segunda fila de estadísticas -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="stats-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon bg-danger me-3">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0" id="productos-count">0</h3>
+                                        <p class="text-muted mb-0">Productos</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stats-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon bg-secondary me-3">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0" id="contactos-count">0</h3>
+                                        <p class="text-muted mb-0">Contactos</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stats-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon bg-dark me-3">
+                                        <i class="fas fa-user-friends"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0" id="socios-count">0</h3>
+                                        <p class="text-muted mb-0">Socios</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stats-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon bg-primary me-3">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0" id="directiva-count">0</h3>
+                                        <p class="text-muted mb-0">Directiva</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información del sistema -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="stats-card">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">Información del Sistema</h5>
+                                        <div id="system-info">
+                                            <small class="text-muted">Cargando información del sistema...</small>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-outline-primary btn-sm" onclick="adminApp.refreshStats()">
+                                            <i class="fas fa-sync-alt me-1"></i>Actualizar
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -285,33 +362,26 @@
 
                     <div class="row">
                         <div class="col-md-8">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>Últimas Actividades</th>
-                                            <th>Fecha</th>
-                                            <th>Estado</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Nueva noticia publicada</td>
-                                            <td>Hoy</td>
-                                            <td><span class="badge bg-success">Activo</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Evento "Fiesta de Moros y Cristianos" creado</td>
-                                            <td>Ayer</td>
-                                            <td><span class="badge bg-warning">Pendiente</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>5 nuevas fotos subidas a la galería</td>
-                                            <td>Hace 2 días</td>
-                                            <td><span class="badge bg-success">Activo</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="stats-card">
+                                <h5 class="mb-3">Actividad Reciente</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Archivo</th>
+                                                <th>Última Modificación</th>
+                                                <th>Tamaño</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recent-activity-table">
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted">
+                                                    <i class="fas fa-spinner fa-spin me-2"></i>Cargando actividad reciente...
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-4">

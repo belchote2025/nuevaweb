@@ -163,6 +163,27 @@ class AdminApp {
     // ===== CARGA DE DATOS =====
     async loadDashboardData() {
         try {
+            // Cargar estadísticas desde la nueva API
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}stats.php`);
+            const result = await response.json();
+            
+            if (result.success) {
+                this.updateDashboardStats(result.data);
+                this.showRecentActivity(result.data.recent_activity);
+            } else {
+                console.error('Error cargando estadísticas:', result.message);
+                // Fallback al método anterior
+                this.loadDashboardDataFallback();
+            }
+        } catch (error) {
+            console.error('Error cargando datos del dashboard:', error);
+            // Fallback al método anterior
+            this.loadDashboardDataFallback();
+        }
+    }
+
+    async loadDashboardDataFallback() {
+        try {
             const [noticias, eventos, productos, contactos] = await Promise.all([
                 this.fetchData('noticias'),
                 this.fetchData('eventos'),
@@ -177,8 +198,104 @@ class AdminApp {
 
             this.showRecentActivity([...noticias, ...eventos, ...productos, ...contactos]);
         } catch (error) {
-            console.error('Error cargando datos del dashboard:', error);
+            console.error('Error cargando datos del dashboard (fallback):', error);
         }
+    }
+
+    updateDashboardStats(stats) {
+        // Actualizar contadores principales
+        const elements = {
+            'noticias-count': stats.noticias,
+            'eventos-count': stats.eventos,
+            'productos-count': stats.productos,
+            'contactos-count': stats.contactos,
+            'galeria-count': stats.galeria,
+            'socios-count': stats.socios,
+            'usuarios-count': stats.usuarios,
+            'directiva-count': stats.directiva
+        };
+
+        Object.entries(elements).forEach(([id, count]) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = count;
+            }
+        });
+
+        // Actualizar información del sistema si existe
+        if (stats.system) {
+            const systemInfo = document.getElementById('system-info');
+            if (systemInfo) {
+                systemInfo.innerHTML = `
+                    <small class="text-muted">
+                        PHP ${stats.system.php_version} | 
+                        Tamaño datos: ${this.formatBytes(stats.system.data_size)} | 
+                        ${stats.system.server_time}
+                    </small>
+                `;
+            }
+        }
+    }
+
+    formatBytes(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    async refreshStats() {
+        const button = document.querySelector('button[onclick="adminApp.refreshStats()"]');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Actualizando...';
+        button.disabled = true;
+
+        try {
+            await this.loadDashboardData();
+            this.showNotification('Estadísticas actualizadas', 'success');
+        } catch (error) {
+            console.error('Error actualizando estadísticas:', error);
+            this.showNotification('Error al actualizar estadísticas', 'error');
+        } finally {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }
+
+    showRecentActivity(activity) {
+        const tableBody = document.getElementById('recent-activity-table');
+        if (!tableBody) return;
+
+        if (!activity || activity.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="text-center text-muted">
+                        <i class="fas fa-info-circle me-2"></i>No hay actividad reciente
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        const rows = activity.map(item => {
+            const fileName = item.file.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const lastModified = new Date(item.last_modified).toLocaleString('es-ES');
+            const size = this.formatBytes(item.size);
+            
+            return `
+                <tr>
+                    <td>
+                        <i class="fas fa-file-alt me-2 text-primary"></i>
+                        ${fileName}
+                    </td>
+                    <td>${lastModified}</td>
+                    <td>${size}</td>
+                </tr>
+            `;
+        }).join('');
+
+        tableBody.innerHTML = rows;
     }
 
     async loadSectionData(section) {

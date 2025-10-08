@@ -118,8 +118,14 @@
                     </li>
                 </ul>
                 
-                <!-- Login -->
+                <!-- Login y Dark Mode -->
                 <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <button class="nav-link btn btn-link text-white border-0" id="dark-mode-toggle" onclick="app.toggleDarkMode()">
+                            <i class="fas fa-moon me-1" id="dark-mode-icon"></i>
+                            <span id="dark-mode-text">Modo Oscuro</span>
+                        </button>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="login.html">
                             <i class="fas fa-user me-1"></i>Admin
@@ -529,6 +535,29 @@
             </div>
         </div>
     </footer>
+
+    <!-- Lightbox Gallery -->
+    <div id="lightbox-overlay" class="lightbox-overlay">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="app.closeLightbox()">
+                <i class="fas fa-times"></i>
+            </button>
+            <button class="lightbox-controls lightbox-prev" onclick="app.prevImage()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="lightbox-controls lightbox-next" onclick="app.nextImage()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="lightbox-counter">
+                <span id="lightbox-current">1</span> / <span id="lightbox-total">1</span>
+            </div>
+            <img id="lightbox-image" class="lightbox-image" src="" alt="">
+            <div class="lightbox-info">
+                <div class="lightbox-title" id="lightbox-title"></div>
+                <div class="lightbox-description" id="lightbox-description"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
