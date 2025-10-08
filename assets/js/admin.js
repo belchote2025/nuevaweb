@@ -115,6 +115,12 @@ class AdminApp {
 
     // ===== NAVEGACIÓN =====
     showSection(section) {
+        // Verificar acceso a secciones restringidas
+        if (section === 'socios' && !this.canAccessSocios()) {
+            this.showNotification('No tienes permisos para acceder a esta sección', 'error');
+            return;
+        }
+        
         ADMIN_CONFIG.CURRENT_SECTION = section;
         
         // Update navigation
@@ -133,7 +139,8 @@ class AdminApp {
             'directiva': 'Directiva',
             'contactos': 'Contactos',
             'users': 'Usuarios',
-            'carousel': 'Carrusel'
+            'carousel': 'Carrusel',
+            'socios': 'Socios'
         };
         
         document.getElementById('section-title').textContent = titles[section] || 'Dashboard';
@@ -302,6 +309,13 @@ class AdminApp {
                 { key: 'email', title: 'Email', type: 'text' },
                 { key: 'fecha', title: 'Fecha', type: 'date' },
                 { key: 'mensaje', title: 'Mensaje', type: 'text' }
+            ],
+            'socios': [
+                { key: 'nombre', title: 'Nombre', type: 'text' },
+                { key: 'email', title: 'Email', type: 'text' },
+                { key: 'telefono', title: 'Teléfono', type: 'text' },
+                { key: 'fecha_ingreso', title: 'Fecha de Ingreso', type: 'date' },
+                { key: 'activo', title: 'Activo', type: 'boolean' }
             ]
         };
         
@@ -310,6 +324,12 @@ class AdminApp {
 
     // ===== MODALES =====
     showAddModal() {
+        // Verificar permisos para crear socios
+        if (ADMIN_CONFIG.CURRENT_SECTION === 'socios' && !this.isAdmin()) {
+            this.showNotification('Solo los administradores pueden crear socios', 'error');
+            return;
+        }
+        
         ADMIN_CONFIG.EDITING_ITEM = null;
         this.showItemModal('Añadir', this.getFormFields(ADMIN_CONFIG.CURRENT_SECTION));
     }
@@ -400,11 +420,7 @@ class AdminApp {
             'users': [
                 { key: 'name', label: 'Nombre', type: 'text', required: true },
                 { key: 'email', label: 'Email', type: 'email', required: true },
-                { key: 'role', label: 'Rol', type: 'select', options: [
-                    { value: 'admin', label: 'Administrador' },
-                    { value: 'editor', label: 'Editor' },
-                    { value: 'viewer', label: 'Lector' }
-                ], required: true },
+                { key: 'role', label: 'Rol', type: 'select', options: this.getRoleOptions(), required: true },
                 { key: 'password', label: 'Contraseña (dejar en blanco para mantener)', type: 'text' },
                 { key: 'active', label: 'Activo', type: 'checkbox' }
             ],
@@ -462,6 +478,15 @@ class AdminApp {
                 { key: 'cargo', label: 'Cargo', type: 'text', required: true },
                 { key: 'imagen', label: 'URL de Imagen', type: 'url' },
                 { key: 'descripcion', label: 'Descripción', type: 'textarea' }
+            ],
+            'socios': [
+                { key: 'nombre', label: 'Nombre', type: 'text', required: true },
+                { key: 'email', label: 'Email', type: 'email', required: true },
+                { key: 'telefono', label: 'Teléfono', type: 'text' },
+                { key: 'direccion', label: 'Dirección', type: 'textarea' },
+                { key: 'fecha_ingreso', label: 'Fecha de Ingreso', type: 'date', required: true },
+                { key: 'numero_socio', label: 'Número de Socio', type: 'text' },
+                { key: 'activo', label: 'Activo', type: 'checkbox' }
             ]
         };
         
@@ -701,6 +726,29 @@ class AdminApp {
         // Obtener el rol del usuario desde la sesión
         // Esto se puede mejorar almacenando la info en localStorage o sessionStorage
         return window.currentUserRole || 'admin'; // Fallback a admin por compatibilidad
+    }
+
+    getRoleOptions() {
+        const currentRole = this.getCurrentUserRole();
+        const baseOptions = [
+            { value: 'editor', label: 'Editor' },
+            { value: 'viewer', label: 'Lector' }
+        ];
+        
+        // Solo los administradores pueden crear otros administradores y socios
+        if (currentRole === 'admin') {
+            baseOptions.unshift(
+                { value: 'admin', label: 'Administrador' },
+                { value: 'socio', label: 'Socio' }
+            );
+        }
+        
+        return baseOptions;
+    }
+
+    canAccessSocios() {
+        const currentRole = this.getCurrentUserRole();
+        return currentRole === 'admin' || currentRole === 'socio';
     }
 
     // ===== NOTIFICACIONES =====

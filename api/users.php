@@ -47,11 +47,18 @@ if ($method === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
     if (!$input) response(false, 'Datos inválidos');
 
+    // Verificar que solo los administradores pueden crear socios
+    $current_user_role = $_SESSION['admin_role'] ?? 'admin';
+    $role = $input['role'] ?? 'editor';
+    
+    if ($role === 'socio' && $current_user_role !== 'admin') {
+        response(false, 'Solo los administradores pueden crear socios');
+    }
+
     $users = load_users($users_file);
     $id = $input['id'] ?? uniqid('user-');
     $name = trim($input['name'] ?? '');
     $email = trim($input['email'] ?? '');
-    $role = $input['role'] ?? 'editor';
     $password = $input['password'] ?? '';
     $active = $input['active'] ?? true;
 

@@ -1,63 +1,62 @@
 {
-  "config": {
-    "auto_slide": true,
-    "interval": 5000,
-    "pause_on_hover": true,
-    "show_indicators": true,
-    "show_controls": true,
-    "animation": "slide"
-  },
-  "slides": [
-    {
-      "id": 1,
-      "titulo": "Desfile de Moros y Cristianos",
-      "subtitulo": "Orgullo templario en las calles de Elche",
-      "imagen_url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1600&q=80",
-      "texto_boton": "Ver galería",
-      "enlace": "#galeria",
-      "activo": true,
-      "overlay_opacity": 0.4
+    "config": {
+        "auto_slide": true,
+        "interval": 5000,
+        "pause_on_hover": true,
+        "show_indicators": true,
+        "show_controls": true,
+        "animation": "slide"
     },
-    {
-      "id": 2,
-      "titulo": "Hermandad y Tradición",
-      "subtitulo": "Una familia unida por los valores templarios",
-      "imagen_url": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1600&q=80",
-      "texto_boton": "Conócenos",
-      "enlace": "#historia",
-      "activo": false,
-      "overlay_opacity": 0.3
-    },
-    {
-      "id": 3,
-      "titulo": "Próximos Eventos",
-      "subtitulo": "Participa en nuestras actividades y celebraciones",
-      "imagen_url": "https://images.unsplash.com/photo-1520975922203-b5e2577e76b3?auto=format&fit=crop&w=1600&q=80",
-      "texto_boton": "Ver eventos",
-      "enlace": "#eventos",
-      "activo": false,
-      "overlay_opacity": 0.5
-    },
-    {
-      "id": 4,
-      "titulo": "Tienda Online",
-      "subtitulo": "Artículos oficiales de la Filá Mariscales",
-      "imagen_url": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1600&q=80",
-      "texto_boton": "Comprar ahora",
-      "enlace": "#tienda",
-      "activo": false,
-      "overlay_opacity": 0.4
-    },
-    {
-      "id": 5,
-      "titulo": "Únete a Nosotros",
-      "subtitulo": "Forma parte de nuestra hermandad templaria",
-      "imagen_url": "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1600&q=80",
-      "texto_boton": "Hazte socio",
-      "enlace": "#socios",
-      "activo": false,
-      "overlay_opacity": 0.3
-    }
-  ]
+    "slides": [
+        {
+            "id": 1,
+            "titulo": "Desfile de Moros y Cristianos",
+            "subtitulo": "Orgullo templario en las calles de Elche",
+            "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1600&q=80",
+            "texto_boton": "Ver galer\u00eda",
+            "enlace": "#galeria",
+            "activo": true,
+            "overlay_opacity": 0.4
+        },
+        {
+            "id": 2,
+            "titulo": "Hermandad y Tradici\u00f3n",
+            "subtitulo": "Una familia unida por los valores templarios",
+            "imagen_url": "https:\/\/images.unsplash.com\/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1600&q=80",
+            "texto_boton": "Con\u00f3cenos",
+            "enlace": "#historia",
+            "activo": false,
+            "overlay_opacity": 0.3
+        },
+        {
+            "id": 3,
+            "titulo": "Pr\u00f3ximos Eventos",
+            "subtitulo": "Participa en nuestras actividades y celebraciones",
+            "imagen_url": "https:\/\/images.unsplash.com\/photo-1520975922203-b5e2577e76b3?auto=format&fit=crop&w=1600&q=80",
+            "texto_boton": "Ver eventos",
+            "enlace": "#eventos",
+            "activo": false,
+            "overlay_opacity": 0.5
+        },
+        {
+            "id": 4,
+            "titulo": "Tienda Online",
+            "subtitulo": "Art\u00edculos oficiales de la Fil\u00e1 Mariscales",
+            "imagen_url": "https:\/\/images.unsplash.com\/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1600&q=80",
+            "texto_boton": "Comprar ahora",
+            "enlace": "#tienda",
+            "activo": false,
+            "overlay_opacity": 0.4
+        },
+        {
+            "id": 5,
+            "titulo": "\u00danete a Nosotros",
+            "subtitulo": "Forma parte de nuestra hermandad templaria",
+            "imagen_url": "https:\/\/images.unsplash.com\/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1600&q=80",
+            "texto_boton": "Hazte socio",
+            "enlace": "#socios",
+            "activo": false,
+            "overlay_opacity": 0.3
+        }
+    ]
 }
-

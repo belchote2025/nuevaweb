@@ -34,7 +34,9 @@ function getDataFile($type) {
         'galeria' => '../data/galeria.json',
         'productos' => '../data/productos.json',
         'directiva' => '../data/directiva.json',
-        'contactos' => '../data/contactos.json'
+        'contactos' => '../data/contactos.json',
+        'carousel' => '../data/carousel.json',
+        'socios' => '../data/socios.json'
     ];
     
     return $files[$type] ?? null;
@@ -47,13 +49,41 @@ function loadData($type) {
     }
     
     $content = file_get_contents($file);
-    return json_decode($content, true) ?: [];
+    $data = json_decode($content, true) ?: [];
+    
+    // Para el carrusel, devolver solo los slides
+    if ($type === 'carousel' && isset($data['slides'])) {
+        return $data['slides'];
+    }
+    
+    return $data;
 }
 
 function saveData($type, $data) {
     $file = getDataFile($type);
     if (!$file) {
         return false;
+    }
+    
+    // Para el carrusel, mantener la estructura original con config y slides
+    if ($type === 'carousel') {
+        $originalContent = file_get_contents($file);
+        $originalData = json_decode($originalContent, true) ?: [];
+        
+        // Mantener la configuración original
+        $carouselData = [
+            'config' => $originalData['config'] ?? [
+                'auto_slide' => true,
+                'interval' => 5000,
+                'pause_on_hover' => true,
+                'show_indicators' => true,
+                'show_controls' => true,
+                'animation' => 'slide'
+            ],
+            'slides' => $data
+        ];
+        
+        return file_put_contents($file, json_encode($carouselData, JSON_PRETTY_PRINT)) !== false;
     }
     
     return file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT)) !== false;
@@ -65,6 +95,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     
     if (empty($type)) {
         response(false, 'Tipo de datos requerido');
+    }
+    
+    // Verificar acceso a secciones restringidas
+    if ($type === 'socios') {
+        $current_role = $_SESSION['admin_role'] ?? 'admin';
+        if ($current_role !== 'admin' && $current_role !== 'socio') {
+            response(false, 'No tienes permisos para acceder a esta sección');
+        }
     }
     
     $data = loadData($type);
@@ -84,6 +122,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (empty($item)) {
         response(false, 'Datos del elemento requeridos');
+    }
+    
+    // Verificar permisos para operaciones en socios
+    if ($type === 'socios') {
+        $current_role = $_SESSION['admin_role'] ?? 'admin';
+        if ($current_role !== 'admin') {
+            response(false, 'Solo los administradores pueden gestionar socios');
+        }
     }
     
     $data = loadData($type);
@@ -134,6 +180,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     
     $type = $input['type'];
     $id = $input['id'];
+    
+    // Verificar permisos para eliminar socios
+    if ($type === 'socios') {
+        $current_role = $_SESSION['admin_role'] ?? 'admin';
+        if ($current_role !== 'admin') {
+            response(false, 'Solo los administradores pueden eliminar socios');
+        }
+    }
     
     $data = loadData($type);
     $found = false;
