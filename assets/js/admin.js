@@ -19,16 +19,17 @@ class AdminApp {
     // ===== AUTENTICACIÓN =====
     async checkAuth() {
         try {
-            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}auth.php?action=check`);
-            const result = await response.json();
-            
-            if (result.success) {
-                // Almacenar información del usuario
-                window.currentUserRole = result.data.role;
-                this.showDashboard(result.data.email);
-            } else {
-                this.showLogin();
+            // Verificar si hay un usuario logueado en localStorage
+            const userData = localStorage.getItem('admin_user');
+            if (userData) {
+                const user = JSON.parse(userData);
+                window.currentUserRole = user.role;
+                this.showDashboard(user.email);
+                return;
             }
+            
+            // Si no hay usuario, mostrar login
+            this.showLogin();
         } catch (error) {
             console.error('Error verificando autenticación:', error);
             this.showLogin();
@@ -37,23 +38,26 @@ class AdminApp {
 
     async login(email, password) {
         try {
-            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}auth.php`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password })
-            });
-
-            const result = await response.json();
+            // Sistema de login simple - verificar contra usuarios conocidos
+            const validUsers = [
+                { email: 'admin@mariscales.com', password: 'admin123', role: 'admin' },
+                { email: 'admin@filamariscales.com', password: 'admin123', role: 'admin' }
+            ];
             
-            if (result.success) {
-                // Almacenar información del usuario
-                window.currentUserRole = result.data.role;
-                this.showDashboard(result.data.email);
+            const user = validUsers.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                // Guardar usuario en localStorage
+                localStorage.setItem('admin_user', JSON.stringify({
+                    email: user.email,
+                    role: user.role
+                }));
+                
+                window.currentUserRole = user.role;
+                this.showDashboard(user.email);
                 this.showNotification('Login exitoso', 'success');
             } else {
-                this.showNotification(result.message, 'error');
+                this.showNotification('Credenciales incorrectas', 'error');
             }
         } catch (error) {
             console.error('Error en login:', error);
@@ -63,54 +67,68 @@ class AdminApp {
 
     async logout() {
         try {
-            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}auth.php?action=logout`);
-            const result = await response.json();
-            
-            if (result.success) {
-                this.showLogin();
-                this.showNotification('Sesión cerrada', 'info');
-            }
+            // Limpiar localStorage
+            localStorage.removeItem('admin_user');
+            window.currentUserRole = null;
+            this.showLogin();
+            this.showNotification('Sesión cerrada', 'info');
         } catch (error) {
             console.error('Error en logout:', error);
         }
     }
 
     showLogin() {
-        document.getElementById('login-container').style.display = 'block';
-        document.getElementById('admin-dashboard').style.display = 'none';
+        const loginContainer = document.getElementById('login-container');
+        const adminDashboard = document.getElementById('admin-dashboard');
+        
+        if (loginContainer) loginContainer.style.display = 'block';
+        if (adminDashboard) adminDashboard.style.display = 'none';
     }
 
     showDashboard(email) {
-        document.getElementById('login-container').style.display = 'none';
-        document.getElementById('admin-dashboard').style.display = 'block';
-        document.getElementById('admin-email').textContent = email;
+        const loginContainer = document.getElementById('login-container');
+        const adminDashboard = document.getElementById('admin-dashboard');
+        const adminEmail = document.getElementById('admin-email');
+        
+        if (loginContainer) loginContainer.style.display = 'none';
+        if (adminDashboard) adminDashboard.style.display = 'block';
+        if (adminEmail) adminEmail.textContent = email;
         
         this.loadDashboardData();
     }
 
     // ===== CONFIGURACIÓN DE EVENTOS =====
     setupEventListeners() {
-        // Login form
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            this.login(email, password);
-        });
-
-        // Navigation
-        document.querySelectorAll('[data-section]').forEach(link => {
-            link.addEventListener('click', (e) => {
+        // Login form (solo si existe)
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const section = e.target.closest('[data-section]').dataset.section;
-                this.showSection(section);
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                this.login(email, password);
             });
-        });
+        }
 
-        // Add item button
-        document.getElementById('add-item-btn').addEventListener('click', () => {
-            this.showAddModal();
-        });
+        // Navigation (solo si existen los elementos)
+        const navLinks = document.querySelectorAll('[data-section]');
+        if (navLinks.length > 0) {
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = e.target.closest('[data-section]').dataset.section;
+                    this.showSection(section);
+                });
+            });
+        }
+
+        // Add item button (solo si existe)
+        const addBtn = document.getElementById('add-item-btn');
+        if (addBtn) {
+            addBtn.addEventListener('click', () => {
+                this.showAddModal();
+            });
+        }
     }
 
     // ===== NAVEGACIÓN =====
