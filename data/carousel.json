@@ -25,7 +25,7 @@
             "imagen_url": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1600&q=80",
             "texto_boton": "Ver galería",
             "enlace": "#galeria",
-            "activo": true,
+            "activo": false,
             "overlay_opacity": 0.3
         },
         {
@@ -35,7 +35,7 @@
             "imagen_url": "https://images.unsplash.com/photo-1520975922203-b5e2577e76b3?auto=format&fit=crop&w=1600&q=80",
             "texto_boton": "Únete a nosotros",
             "enlace": "#socios",
-            "activo": true,
+            "activo": false,
             "overlay_opacity": 0.5
         }
     ]
