@@ -1366,20 +1366,47 @@ class AdminApp {
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <button class="btn btn-outline-primary w-100 mb-2" onclick="adminApp.clearCache()">
                                         <i class="fas fa-broom me-2"></i>Limpiar Caché
                                     </button>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <button class="btn btn-outline-success w-100 mb-2" onclick="adminApp.backupData()">
                                         <i class="fas fa-download me-2"></i>Hacer Backup
                                     </button>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <button class="btn btn-outline-warning w-100 mb-2" onclick="adminApp.optimizeDatabase()">
                                         <i class="fas fa-tools me-2"></i>Optimizar Datos
                                     </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-outline-info w-100 mb-2" onclick="adminApp.loadBackupList()">
+                                        <i class="fas fa-archive me-2"></i>Ver Backups
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Gestión de Backups</h5>
+                            <button class="btn btn-sm btn-primary" onclick="adminApp.loadBackupList()">
+                                <i class="fas fa-sync me-1"></i>Actualizar
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="backup-list-container">
+                                <div class="text-center py-4">
+                                    <i class="fas fa-archive fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">Cargando backups...</h5>
+                                    <p class="text-muted">Haz clic en "Ver Backups" para cargar la lista</p>
                                 </div>
                             </div>
                         </div>
@@ -1461,8 +1488,228 @@ class AdminApp {
         this.showNotification('Caché limpiado correctamente', 'success');
     }
 
-    backupData() {
-        this.showNotification('Backup iniciado correctamente', 'success');
+    async backupData() {
+        try {
+            this.showNotification('Creando backup...', 'info');
+            
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}backup.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'create'
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification(`Backup creado: ${result.backup_name} (${result.size})`, 'success');
+                // Recargar lista de backups si estamos en la sección de configuración
+                if (ADMIN_CONFIG.CURRENT_SECTION === 'configuracion') {
+                    this.loadBackupList();
+                }
+            } else {
+                this.showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error creando backup:', error);
+            this.showNotification('Error creando backup', 'error');
+        }
+    }
+
+    // ===== GESTIÓN DE BACKUPS =====
+    async loadBackupList() {
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}backup.php?action=list`);
+            const result = await response.json();
+            
+            if (result.success) {
+                this.renderBackupList(result.data);
+            } else {
+                this.showNotification('Error cargando lista de backups', 'error');
+            }
+        } catch (error) {
+            console.error('Error cargando backups:', error);
+            this.showNotification('Error cargando backups', 'error');
+        }
+    }
+
+    renderBackupList(backups) {
+        const container = document.getElementById('backup-list-container');
+        if (!container) return;
+
+        if (backups.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-archive fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No hay backups disponibles</h5>
+                    <p class="text-muted">Crea tu primer backup para proteger los datos</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Fecha</th>
+                            <th>Archivos</th>
+                            <th>Tamaño</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${backups.map(backup => `
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-archive text-primary me-2"></i>
+                                        <div>
+                                            <strong>${backup.name}</strong>
+                                            <br>
+                                            <small class="text-muted">${backup.timestamp}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    ${new Date(backup.timestamp.replace('_', ' ')).toLocaleDateString('es-ES', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">${backup.files_count} archivos</span>
+                                </td>
+                                <td>
+                                    ${backup.zip_size_formatted || 'N/A'}
+                                </td>
+                                <td>
+                                    <span class="badge ${backup.zip_exists ? 'bg-success' : 'bg-warning'}">
+                                        ${backup.zip_exists ? 'Disponible' : 'No encontrado'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="adminApp.downloadBackup('${backup.name}')" 
+                                                ${!backup.zip_exists ? 'disabled' : ''}>
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success" onclick="adminApp.restoreBackup('${backup.name}')"
+                                                ${!backup.zip_exists ? 'disabled' : ''}>
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="adminApp.deleteBackup('${backup.name}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    async downloadBackup(backupName) {
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}backup.php?action=download&name=${backupName}`);
+            
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${backupName}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                this.showNotification('Descarga iniciada', 'success');
+            } else {
+                this.showNotification('Error descargando backup', 'error');
+            }
+        } catch (error) {
+            console.error('Error descargando backup:', error);
+            this.showNotification('Error descargando backup', 'error');
+        }
+    }
+
+    async restoreBackup(backupName) {
+        if (!confirm(`¿Estás seguro de que quieres restaurar el backup "${backupName}"? Esta acción sobrescribirá los datos actuales.`)) {
+            return;
+        }
+
+        try {
+            this.showNotification('Restaurando backup...', 'info');
+            
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}backup.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'restore',
+                    name: backupName
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Backup restaurado correctamente', 'success');
+                // Recargar la página para reflejar los cambios
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                this.showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error restaurando backup:', error);
+            this.showNotification('Error restaurando backup', 'error');
+        }
+    }
+
+    async deleteBackup(backupName) {
+        if (!confirm(`¿Estás seguro de que quieres eliminar el backup "${backupName}"? Esta acción no se puede deshacer.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}backup.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'delete',
+                    name: backupName
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Backup eliminado correctamente', 'success');
+                this.loadBackupList();
+            } else {
+                this.showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error eliminando backup:', error);
+            this.showNotification('Error eliminando backup', 'error');
+        }
     }
 
     optimizeDatabase() {

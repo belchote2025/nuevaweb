@@ -1,0 +1,36 @@
+{
+  "auto_backup": {
+    "enabled": true,
+    "frequency": "daily",
+    "time": "02:00",
+    "max_backups": 10,
+    "retention_days": 30
+  },
+  "backup_items": {
+    "data": {
+      "enabled": true,
+      "path": "../data/",
+      "description": "Datos de la aplicación (JSON files)"
+    },
+    "uploads": {
+      "enabled": true,
+      "path": "../uploads/",
+      "description": "Archivos subidos por usuarios"
+    },
+    "config": {
+      "enabled": true,
+      "path": "../config/",
+      "description": "Archivos de configuración"
+    }
+  },
+  "notifications": {
+    "email_on_success": true,
+    "email_on_error": true,
+    "email_recipients": ["admin@filamariscales.com"]
+  },
+  "compression": {
+    "enabled": true,
+    "level": 6,
+    "format": "zip"
+  }
+}
