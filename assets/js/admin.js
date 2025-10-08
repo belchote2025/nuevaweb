@@ -357,7 +357,7 @@ class AdminApp {
 
     async fetchData(type) {
         console.log('fetchData called with type:', type);
-        const endpoint = type === 'users' ? 'users.php' : 'admin.php';
+        const endpoint = (type === 'users' || type === 'usuarios') ? 'users.php' : 'admin.php';
         const url = `${ADMIN_CONFIG.API_BASE_URL}${endpoint}?type=${type}`;
         console.log('Fetching from URL:', url);
         
@@ -467,6 +467,12 @@ class AdminApp {
     getColumnsConfig(section) {
         const configs = {
             'users': [
+                { key: 'name', title: 'Nombre', type: 'text' },
+                { key: 'email', title: 'Email', type: 'text' },
+                { key: 'role', title: 'Rol', type: 'text' },
+                { key: 'active', title: 'Activo', type: 'boolean' }
+            ],
+            'usuarios': [
                 { key: 'name', title: 'Nombre', type: 'text' },
                 { key: 'email', title: 'Email', type: 'text' },
                 { key: 'role', title: 'Rol', type: 'text' },
