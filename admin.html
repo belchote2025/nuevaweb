@@ -1233,7 +1233,7 @@
                 <div id="libros" class="content-section">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2>Gestión de Libros</h2>
-                        <button class="btn btn-admin" onclick="showBookModal()">
+                        <button class="btn btn-admin" onclick="adminApp.showAddLibroModal()">
                             <i class="fas fa-plus me-2"></i>Nuevo Libro
                         </button>
                     </div>
@@ -1295,18 +1295,14 @@
                     </div>
                     
                     <!-- Lista de libros -->
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Libro</th>
-                                    <th>Tipo</th>
-                                    <th>Páginas</th>
-                                    <th>Visualizaciones</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
+                    <div id="libros-table-container">
+                        <!-- Los libros se cargarán dinámicamente -->
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando libros...</span>
+                            </div>
+                        </div>
+                    </div>
                             <tbody>
                                 <tr>
                                     <td>

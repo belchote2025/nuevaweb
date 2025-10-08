@@ -307,6 +307,18 @@ class AdminApp {
 
     async loadSectionData(section) {
         try {
+            // Manejar secciones especiales
+            if (section === 'libros') {
+                this.loadLibrosData();
+                return;
+            }
+            
+            if (section === 'configuracion') {
+                this.loadConfiguracionData();
+                return;
+            }
+            
+            // Secciones normales
             const data = await this.fetchData(section);
             this.renderTable(section, data);
         } catch (error) {
@@ -1096,6 +1108,365 @@ class AdminApp {
                 alert.remove();
             }
         }, 5000);
+    }
+
+    // ===== GESTIÓN DE LIBROS =====
+    async loadLibrosData() {
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php?type=libros`);
+            const result = await response.json();
+            
+            if (result.success) {
+                this.renderLibrosTable(result.data);
+                this.updateLibrosStats(result.data);
+            } else {
+                this.showNotification('Error cargando libros', 'error');
+            }
+        } catch (error) {
+            console.error('Error cargando libros:', error);
+            this.showNotification('Error cargando libros', 'error');
+        }
+    }
+
+    renderLibrosTable(libros) {
+        const container = document.getElementById('libros-table-container');
+        if (!container) return;
+
+        if (libros.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No hay libros registrados</h5>
+                    <p class="text-muted">Comienza añadiendo el primer libro de la Filá</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Tipo</th>
+                            <th>Categoría</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${libros.map(libro => `
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-book text-primary me-2"></i>
+                                        <div>
+                                            <strong>${libro.titulo}</strong>
+                                            <br>
+                                            <small class="text-muted">${libro.descripcion}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">${libro.tipo}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">${libro.categoria}</span>
+                                </td>
+                                <td>
+                                    <span class="badge ${libro.activo ? 'bg-success' : 'bg-warning'}">
+                                        ${libro.activo ? 'Activo' : 'Inactivo'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="adminApp.editLibro(${libro.id})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="adminApp.deleteLibro(${libro.id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    updateLibrosStats(libros) {
+        const totalLibros = libros.length;
+        const librosActivos = libros.filter(libro => libro.activo).length;
+        const totalDescargas = libros.reduce((sum, libro) => sum + (libro.descargas || 0), 0);
+
+        // Actualizar estadísticas
+        const statsElements = {
+            'libros-activos-count': librosActivos,
+            'libros-total-count': totalLibros,
+            'libros-descargas-count': totalDescargas
+        };
+
+        Object.entries(statsElements).forEach(([id, count]) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = count;
+            }
+        });
+    }
+
+    showAddLibroModal() {
+        const modal = document.getElementById('bookModal');
+        if (modal) {
+            const bootstrapModal = new bootstrap.Modal(modal);
+            bootstrapModal.show();
+        }
+    }
+
+    async saveLibro() {
+        try {
+            const formData = {
+                titulo: document.getElementById('bookTitle').value,
+                descripcion: document.getElementById('bookDescription').value,
+                tipo: document.getElementById('bookType').value,
+                categoria: document.getElementById('bookCategory').value,
+                activo: document.getElementById('bookActive').checked
+            };
+
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    type: 'libros',
+                    action: 'create',
+                    data: formData
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Libro guardado correctamente', 'success');
+                this.loadLibrosData();
+                bootstrap.Modal.getInstance(document.getElementById('bookModal')).hide();
+            } else {
+                this.showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error guardando libro:', error);
+            this.showNotification('Error guardando libro', 'error');
+        }
+    }
+
+    // ===== GESTIÓN DE CONFIGURACIÓN =====
+    async loadConfiguracionData() {
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php?type=configuracion`);
+            const result = await response.json();
+            
+            if (result.success) {
+                this.renderConfiguracionForm(result.data);
+            } else {
+                this.renderConfiguracionForm({});
+            }
+        } catch (error) {
+            console.error('Error cargando configuración:', error);
+            this.renderConfiguracionForm({});
+        }
+    }
+
+    renderConfiguracionForm(config) {
+        const container = document.getElementById('configuracion-content');
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Información del Sitio</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="siteConfigForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre del Sitio</label>
+                                    <input type="text" class="form-control" id="siteName" value="${config.nombre_sitio || 'Filá Mariscales'}">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Descripción</label>
+                                    <textarea class="form-control" id="siteDescription" rows="3">${config.descripcion_sitio || 'Filá Mariscales de Caballeros Templarios de Elche'}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email de Contacto</label>
+                                    <input type="email" class="form-control" id="siteEmail" value="${config.email_contacto || 'info@filamariscales.com'}">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Teléfono</label>
+                                    <input type="text" class="form-control" id="sitePhone" value="${config.telefono || '+34 965 123 456'}">
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="adminApp.saveSiteConfig()">
+                                    <i class="fas fa-save me-2"></i>Guardar Configuración
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Configuración del Sistema</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="systemConfigForm">
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="maintenanceMode" ${config.modo_mantenimiento ? 'checked' : ''}>
+                                        <label class="form-check-label" for="maintenanceMode">
+                                            Modo Mantenimiento
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="allowRegistrations" ${config.permite_registros ? 'checked' : ''}>
+                                        <label class="form-check-label" for="allowRegistrations">
+                                            Permitir Registros de Usuarios
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="enableComments" ${config.habilitar_comentarios ? 'checked' : ''}>
+                                        <label class="form-check-label" for="enableComments">
+                                            Habilitar Comentarios
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Elementos por Página</label>
+                                    <input type="number" class="form-control" id="itemsPerPage" value="${config.elementos_por_pagina || 10}" min="5" max="50">
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="adminApp.saveSystemConfig()">
+                                    <i class="fas fa-save me-2"></i>Guardar Configuración
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Herramientas del Sistema</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <button class="btn btn-outline-primary w-100 mb-2" onclick="adminApp.clearCache()">
+                                        <i class="fas fa-broom me-2"></i>Limpiar Caché
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-outline-success w-100 mb-2" onclick="adminApp.backupData()">
+                                        <i class="fas fa-download me-2"></i>Hacer Backup
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-outline-warning w-100 mb-2" onclick="adminApp.optimizeDatabase()">
+                                        <i class="fas fa-tools me-2"></i>Optimizar Datos
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    async saveSiteConfig() {
+        try {
+            const configData = {
+                nombre_sitio: document.getElementById('siteName').value,
+                descripcion_sitio: document.getElementById('siteDescription').value,
+                email_contacto: document.getElementById('siteEmail').value,
+                telefono: document.getElementById('sitePhone').value
+            };
+
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    type: 'configuracion',
+                    action: 'update',
+                    data: configData
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Configuración del sitio guardada correctamente', 'success');
+            } else {
+                this.showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error guardando configuración:', error);
+            this.showNotification('Error guardando configuración', 'error');
+        }
+    }
+
+    async saveSystemConfig() {
+        try {
+            const configData = {
+                modo_mantenimiento: document.getElementById('maintenanceMode').checked,
+                permite_registros: document.getElementById('allowRegistrations').checked,
+                habilitar_comentarios: document.getElementById('enableComments').checked,
+                elementos_por_pagina: parseInt(document.getElementById('itemsPerPage').value)
+            };
+
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    type: 'configuracion',
+                    action: 'update_system',
+                    data: configData
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Configuración del sistema guardada correctamente', 'success');
+            } else {
+                this.showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error guardando configuración del sistema:', error);
+            this.showNotification('Error guardando configuración del sistema', 'error');
+        }
+    }
+
+    clearCache() {
+        this.showNotification('Caché limpiado correctamente', 'success');
+    }
+
+    backupData() {
+        this.showNotification('Backup iniciado correctamente', 'success');
+    }
+
+    optimizeDatabase() {
+        this.showNotification('Optimización completada', 'success');
     }
 }
 

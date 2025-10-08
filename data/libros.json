@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "titulo": "Historia de la Filá Mariscales",
+    "descripcion": "Crónica completa desde 1985",
+    "tipo": "Histórico",
+    "categoria": "Historia",
+    "activo": true,
+    "descargas": 1234,
+    "fecha_creacion": "2024-01-15",
+    "autor": "Comisión de Historia"
+  },
+  {
+    "id": 2,
+    "titulo": "Manual del Templario",
+    "descripcion": "Guía de tradiciones y ceremonias",
+    "tipo": "Educativo",
+    "categoria": "Manual",
+    "activo": true,
+    "descargas": 856,
+    "fecha_creacion": "2024-02-20",
+    "autor": "Directiva"
+  },
+  {
+    "id": 3,
+    "titulo": "Memorias de Fiestas",
+    "descripcion": "Recopilación de eventos y celebraciones",
+    "tipo": "Interactivo",
+    "categoria": "Memorias",
+    "activo": false,
+    "descargas": 423,
+    "fecha_creacion": "2024-03-10",
+    "autor": "Comisión de Fiestas"
+  }
+]

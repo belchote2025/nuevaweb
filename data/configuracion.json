@@ -1,0 +1,26 @@
+{
+  "nombre_sitio": "Filá Mariscales",
+  "descripcion_sitio": "Filá Mariscales de Caballeros Templarios de Elche",
+  "email_contacto": "info@filamariscales.com",
+  "telefono": "+34 965 123 456",
+  "modo_mantenimiento": false,
+  "permite_registros": true,
+  "habilitar_comentarios": true,
+  "elementos_por_pagina": 10,
+  "configuracion_carrusel": {
+    "velocidad_transicion": 5000,
+    "auto_slide": true,
+    "mostrar_indicadores": true,
+    "mostrar_controles": true
+  },
+  "configuracion_galeria": {
+    "imagenes_por_pagina": 12,
+    "habilitar_lightbox": true,
+    "mostrar_descripciones": true
+  },
+  "configuracion_noticias": {
+    "noticias_por_pagina": 6,
+    "habilitar_comentarios": true,
+    "mostrar_autor": true
+  }
+}
