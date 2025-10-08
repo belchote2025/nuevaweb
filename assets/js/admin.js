@@ -129,41 +129,20 @@ class AdminApp {
         });
         document.querySelector(`[data-section="${section}"]`).classList.add('active');
         
-        // Update title
-        const titles = {
-            'dashboard': 'Dashboard',
-            'noticias': 'Noticias',
-            'eventos': 'Eventos',
-            'galeria': 'Galería',
-            'productos': 'Productos',
-            'directiva': 'Directiva',
-            'contactos': 'Contactos',
-            'users': 'Usuarios',
-            'carousel': 'Carrusel',
-            'socios': 'Socios',
-            'textos': 'Textos'
-        };
+        // Show/hide content sections
+        document.querySelectorAll('.content-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        document.getElementById(section).classList.add('active');
         
-        document.getElementById('section-title').textContent = titles[section] || 'Dashboard';
+        // Load data for the section
+        this.loadSectionData(section);
         
-        // Show/hide content
-        if (section === 'dashboard') {
-            document.getElementById('dashboard-content').style.display = 'block';
-            document.getElementById('section-content').style.display = 'none';
-            document.getElementById('add-item-btn').style.display = 'none';
-            this.loadDashboardData();
-        } else {
-            document.getElementById('dashboard-content').style.display = 'none';
-            document.getElementById('section-content').style.display = 'block';
-            document.getElementById('add-item-btn').style.display = 'block';
-            this.loadSectionData(section);
-            
-            // Si es la sección de textos, cargar automáticamente la sección "home"
-            if (section === 'textos') {
-                setTimeout(() => {
-                    this.showTextSection('home');
-                }, 100);
-            }
+        // Si es la sección de textos, cargar automáticamente la sección "home"
+        if (section === 'textos') {
+            setTimeout(() => {
+                this.showTextSection('home');
+            }, 100);
         }
     }
 
@@ -354,60 +333,90 @@ class AdminApp {
 
     // ===== RENDERIZADO DE TABLAS =====
     renderTable(section, data) {
-        const tableHead = document.getElementById('table-head');
-        const tableBody = document.getElementById('table-body');
+        const container = document.getElementById(`${section}-table-container`);
+        if (!container) {
+            console.error(`Container not found: ${section}-table-container`);
+            return;
+        }
         
         // Configuración de columnas por sección
         const columns = this.getColumnsConfig(section);
         
-        // Header
-        tableHead.innerHTML = `
-            <tr>
-                ${columns.map(col => `<th>${col.title}</th>`).join('')}
-                <th>Acciones</th>
-            </tr>
-        `;
-        
-        // Body
+        // Renderizar contenido
         if (data.length === 0) {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="${columns.length + 1}" class="text-center text-muted">
-                        No hay datos disponibles
-                    </td>
-                </tr>
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No hay datos disponibles</h5>
+                    <p class="text-muted">Los datos aparecerán aquí cuando se añadan</p>
+                </div>
             `;
             return;
         }
-        
-        tableBody.innerHTML = data.map(item => `
-            <tr>
-                ${columns.map(col => {
-                    let value = item[col.key] || '';
-                    
-                    // Formatear valores especiales
-                    if (col.type === 'image' && value) {
-                        value = `<img src="${value}" style="width: 50px; height: 50px; object-fit: cover;" class="rounded">`;
-                    } else if (col.type === 'date' && value) {
-                        value = new Date(value).toLocaleDateString('es-ES');
-                    } else if (col.type === 'price' && value) {
-                        value = `${value}€`;
-                    } else if (col.type === 'text' && value.length > 50) {
-                        value = value.substring(0, 50) + '...';
-                    }
-                    
-                    return `<td>${value}</td>`;
-                }).join('')}
-                <td>
-                    <button class="btn btn-sm btn-outline-primary me-1" onclick="adminApp.editItem('${item.id}')">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="adminApp.deleteItem('${item.id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+
+        container.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5>Lista de ${this.getSectionTitle(section)} (${data.length})</h5>
+                <button class="btn btn-primary" onclick="adminApp.showAddModal()">
+                    <i class="fas fa-plus me-2"></i>Nuevo ${this.getSectionTitle(section).slice(0, -1)}
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            ${columns.map(col => `<th>${col.title}</th>`).join('')}
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(item => `
+                            <tr>
+                                ${columns.map(col => {
+                                    let value = item[col.key] || '';
+                                    
+                                    // Formatear valores especiales
+                                    if (col.type === 'image' && value) {
+                                        value = `<img src="${value}" style="width: 50px; height: 50px; object-fit: cover;" class="rounded">`;
+                                    } else if (col.type === 'date' && value) {
+                                        value = new Date(value).toLocaleDateString('es-ES');
+                                    } else if (col.type === 'price' && value) {
+                                        value = `${value}€`;
+                                    } else if (col.type === 'text' && value.length > 50) {
+                                        value = value.substring(0, 50) + '...';
+                                    }
+                                    
+                                    return `<td>${value}</td>`;
+                                }).join('')}
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="adminApp.editItem('${item.id}')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="adminApp.deleteItem('${item.id}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    getSectionTitle(section) {
+        const titles = {
+            'noticias': 'Noticias',
+            'eventos': 'Eventos',
+            'galeria': 'Fotos',
+            'usuarios': 'Usuarios',
+            'productos': 'Productos',
+            'directiva': 'Directiva',
+            'contactos': 'Contactos'
+        };
+        return titles[section] || 'Elementos';
     }
 
     getColumnsConfig(section) {
