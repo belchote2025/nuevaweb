@@ -16,8 +16,8 @@ body {
 
 /* Fondo global en TODAS las páginas */
 :root {
-    /* Ruta local de la imagen de fondo */
-    --site-bg-image: url('assets/images/backgrounds/templario.jpg');
+    /* Fondo sólido en lugar de imagen inexistente */
+    --site-bg-color: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     --site-bg-darken: rgba(0, 0, 0, 0.35);
 }
 
@@ -28,11 +28,7 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: var(--site-bg-image);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background: var(--site-bg-color);
     z-index: -2;
 }
 
