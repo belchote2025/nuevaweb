@@ -1,10 +1,10 @@
 [
     {
         "id": 1,
-        "titulo": "Filá Mariscales 2025: Nueva Temporada",
-        "resumen": "La Filá Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y actividades programadas.",
-        "contenido": "La Filá Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y un programa especial de actividades que incluye presentaciones, ensayos, eventos sociales y la participación en las fiestas de Moros y Cristianos de Elche. Este año contamos con un equipo renovado y nuevas propuestas para mantener viva la tradición templaria.",
-        "imagen_url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "titulo": "Fil\u00e1 Mariscales 2025: Nueva Temporada",
+        "resumen": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y actividades programadas.",
+        "contenido": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y un programa especial de actividades que incluye presentaciones, ensayos, eventos sociales y la participaci\u00f3n en las fiestas de Moros y Cristianos de Elche. Este a\u00f1o contamos con un equipo renovado y nuevas propuestas para mantener viva la tradici\u00f3n templaria.",
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         "fecha_publicacion": "2025-01-15",
         "autor": "Administrador",
         "destacada": true
@@ -13,28 +13,28 @@
         "id": 2,
         "titulo": "Cena de Hermandad Templaria",
         "resumen": "Celebramos nuestra tradicional cena de hermandad donde fortalecemos los lazos de amistad templaria.",
-        "contenido": "Celebramos nuestra tradicional cena de hermandad templaria donde todos los miembros de la filá se reúnen para compartir momentos especiales y fortalecer los lazos de amistad que nos unen como familia templaria. Un evento que refuerza nuestros valores de honor, lealtad y tradición.",
-        "imagen_url": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "contenido": "Celebramos nuestra tradicional cena de hermandad templaria donde todos los miembros de la fil\u00e1 se re\u00fanen para compartir momentos especiales y fortalecer los lazos de amistad que nos unen como familia templaria. Un evento que refuerza nuestros valores de honor, lealtad y tradici\u00f3n.",
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         "fecha_publicacion": "2025-01-10",
         "autor": "Administrador",
         "destacada": false
     },
     {
         "id": 3,
-        "titulo": "Preparación para Moros y Cristianos 2025",
-        "resumen": "Iniciamos los preparativos para nuestra participación en las fiestas de Moros y Cristianos de Elche.",
-        "contenido": "Iniciamos los preparativos para nuestra participación en las fiestas de Moros y Cristianos de Elche. Los ensayos comenzarán próximamente y todos los miembros están invitados a participar en la preparación del desfile y las actividades programadas para esta importante celebración.",
-        "imagen_url": "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "titulo": "Preparaci\u00f3n para Moros y Cristianos 2025",
+        "resumen": "Iniciamos los preparativos para nuestra participaci\u00f3n en las fiestas de Moros y Cristianos de Elche.",
+        "contenido": "Iniciamos los preparativos para nuestra participaci\u00f3n en las fiestas de Moros y Cristianos de Elche. Los ensayos comenzar\u00e1n pr\u00f3ximamente y todos los miembros est\u00e1n invitados a participar en la preparaci\u00f3n del desfile y las actividades programadas para esta importante celebraci\u00f3n.",
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         "fecha_publicacion": "2025-01-05",
         "autor": "Administrador",
         "destacada": false
     },
     {
         "id": 4,
-        "titulo": "Nuevas Incorporaciones a la Filá",
+        "titulo": "Nuevas Incorporaciones a la Fil\u00e1",
         "resumen": "Damos la bienvenida a nuevos miembros que se unen a nuestra hermandad templaria.",
-        "contenido": "Damos la bienvenida a nuevos miembros que se unen a nuestra hermandad templaria. Estos nuevos templarios aportan energía y entusiasmo a nuestra filá, manteniendo viva la tradición y los valores que nos caracterizan como Filá Mariscales de Caballeros Templarios.",
-        "imagen_url": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "contenido": "Damos la bienvenida a nuevos miembros que se unen a nuestra hermandad templaria. Estos nuevos templarios aportan energ\u00eda y entusiasmo a nuestra fil\u00e1, manteniendo viva la tradici\u00f3n y los valores que nos caracterizan como Fil\u00e1 Mariscales de Caballeros Templarios.",
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         "fecha_publicacion": "2024-12-28",
         "autor": "Administrador",
         "destacada": false

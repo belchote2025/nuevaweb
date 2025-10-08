@@ -62,7 +62,8 @@ if ($method === 'POST') {
     $password = $input['password'] ?? '';
     $active = $input['active'] ?? true;
 
-    if (!$name || !$email || (!$input['edit'] && !$password)) response(false, 'Campos requeridos');
+    $is_edit = isset($input['id']) && !empty($input['id']);
+    if (!$name || !$email || (!$is_edit && !$password)) response(false, 'Campos requeridos');
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) response(false, 'Email no válido');
 
     // Crear o actualizar

@@ -279,8 +279,7 @@ class NewsletterSystem {
 
     // ===== VALIDACIONES =====
     isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+        return Utils.isValidEmail(email);
     }
 
     isSubscribed(email) {
@@ -419,28 +418,7 @@ class NewsletterSystem {
 
     // ===== NOTIFICACIONES =====
     showNotification(message, type) {
-        const alertClass = {
-            'success': 'alert-success',
-            'error': 'alert-danger',
-            'info': 'alert-info'
-        }[type] || 'alert-info';
-        
-        const alertHtml = `
-            <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
-                 style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-        
-        document.body.insertAdjacentHTML('beforeend', alertHtml);
-        
-        setTimeout(() => {
-            const alert = document.querySelector('.alert');
-            if (alert) {
-                alert.remove();
-            }
-        }, 5000);
+        Utils.showNotification(message, type);
     }
 }
 

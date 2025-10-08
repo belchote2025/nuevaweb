@@ -60,7 +60,7 @@ function loadData($type) {
     return $data;
 }
 
-function saveData($type, $data) {
+function saveData($type, $data, $input = null) {
     $file = getDataFile($type);
     if (!$file) {
         return false;
@@ -88,7 +88,7 @@ function saveData($type, $data) {
     }
     
     // Para textos, manejar actualización por sección
-    if ($type === 'textos') {
+    if ($type === 'textos' && $input) {
         $originalContent = file_get_contents($file);
         $originalData = json_decode($originalContent, true) ?: [];
         
@@ -97,9 +97,6 @@ function saveData($type, $data) {
             $originalData[$input['section']] = $input['data'];
             return file_put_contents($file, json_encode($originalData, JSON_PRETTY_PRINT)) !== false;
         }
-        
-        // Si no, actualizar todo el archivo
-        return file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT)) !== false;
     }
     
     return file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT)) !== false;
@@ -179,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     
-    if (saveData($type, $data)) {
+    if (saveData($type, $data, $input)) {
         response(true, 'Datos guardados correctamente', $item);
     } else {
         response(false, 'Error al guardar los datos');
@@ -221,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         response(false, 'Elemento no encontrado');
     }
     
-    if (saveData($type, $data)) {
+    if (saveData($type, $data, $input)) {
         response(true, 'Elemento eliminado correctamente');
     } else {
         response(false, 'Error al eliminar el elemento');

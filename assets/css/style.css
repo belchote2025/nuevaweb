@@ -16,9 +16,17 @@ body {
 
 /* Fondo global en TODAS las páginas */
 :root {
-    /* Ruta local de la imagen de fondo */
-    --site-bg-image: url('assets/images/backgrounds/templario.jpg');
+    /* Ruta local de la imagen de fondo con fallback a color sólido */
+    --site-bg-color: #1a1a2e;
+    --site-bg-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                     url('../../assets/images/backgrounds/templario.jpg') center/cover no-repeat fixed;
     --site-bg-darken: rgba(0, 0, 0, 0.35);
+}
+
+/* Fallback en caso de que la imagen no se cargue */
+body {
+    background: var(--site-bg-color);
+    background: var(--site-bg-image, var(--site-bg-color));
 }
 
 body::before {

@@ -745,12 +745,7 @@ class FilaMariscalesApp {
 
     // ===== FUNCIONES DE UTILIDAD =====
     formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        return Utils.formatDate(dateString);
     }
 
     groupEventsByMonth(eventos) {
@@ -932,8 +927,7 @@ class FilaMariscalesApp {
     }
 
     isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+        return Utils.isValidEmail(email);
     }
 
     // ===== MODALES =====
@@ -1049,35 +1043,15 @@ class FilaMariscalesApp {
 
     // ===== NOTIFICACIONES =====
     showSuccess(message) {
-        this.showNotification(message, 'success');
+        Utils.showNotification(message, 'success');
     }
 
     showError(message) {
-        this.showNotification(message, 'danger');
+        Utils.showNotification(message, 'danger');
     }
 
     showInfo(message) {
-        this.showNotification(message, 'info');
-    }
-
-    showNotification(message, type) {
-        const alertHtml = `
-            <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
-                 style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-
-        document.body.insertAdjacentHTML('beforeend', alertHtml);
-
-        // Auto-remove after 5 seconds
-        setTimeout(() => {
-            const alert = document.querySelector('.alert');
-            if (alert) {
-                alert.remove();
-            }
-        }, 5000);
+        Utils.showNotification(message, 'info');
     }
 }
 

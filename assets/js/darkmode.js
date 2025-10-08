@@ -331,24 +331,7 @@ class DarkModeSystem {
     // ===== NOTIFICACIÓN =====
     showNotification() {
         const message = this.isDarkMode ? 'Modo oscuro activado' : 'Modo claro activado';
-        const icon = this.isDarkMode ? 'fa-moon' : 'fa-sun';
-        
-        const notificationHtml = `
-            <div class="alert alert-info alert-dismissible fade show position-fixed" 
-                 style="top: 20px; right: 20px; z-index: 9999; min-width: 250px;">
-                <i class="fas ${icon} me-2"></i>${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-        
-        document.body.insertAdjacentHTML('beforeend', notificationHtml);
-        
-        setTimeout(() => {
-            const alert = document.querySelector('.alert');
-            if (alert) {
-                alert.remove();
-            }
-        }, 3000);
+        Utils.showNotification(message, 'info');
     }
 
     // ===== API PÚBLICA =====

@@ -7,1879 +7,296 @@
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="assets/css/style.css" rel="stylesheet">
     
-    <style>
-        body {
-            background: #f8f9fa;
-            font-family: 'Open Sans', sans-serif;
-        }
-        
-        .admin-header {
-            background: linear-gradient(135deg, #DC143C, #8B0000);
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .admin-sidebar {
-            background: white;
-            min-height: calc(100vh - 80px);
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            padding: 0;
-        }
-        
-        .admin-content {
-            padding: 2rem;
-            min-height: calc(100vh - 80px);
-        }
-        
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .sidebar-menu li {
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .sidebar-menu a {
-            display: block;
-            padding: 1rem 1.5rem;
-            color: #333;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        
-        .sidebar-menu a:hover,
-        .sidebar-menu a.active {
-            background: #DC143C;
-            color: white;
-        }
-        
-        .sidebar-menu i {
-            width: 20px;
-            margin-right: 10px;
-        }
-        
-        .stats-card {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .stats-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .carousel-photo-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid #e9ecef;
-        }
-
-        .carousel-photo-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .carousel-preview {
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            background: #f8f9fa;
-        }
-
-        .carousel-preview img {
-            max-height: 200px;
-            width: auto;
-        }
-        
-        .stats-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-        }
-        
-        .content-section {
-            display: none;
-        }
-        
-        .content-section.active {
-            display: block;
-        }
-        
-        .table-responsive {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        
-        .btn-admin {
-            background: linear-gradient(135deg, #DC143C, #8B0000);
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-admin:hover {
-            background: linear-gradient(135deg, #8B0000, #DC143C);
-            transform: translateY(-2px);
-            color: white;
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link href="assets/css/admin.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Admin Header -->
-    <div class="admin-header">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h1 class="h3 mb-0">
-                        <i class="fas fa-shield-alt me-2"></i>
-                        Panel de Administración - Filá Mariscales
-                    </h1>
-                </div>
-                <div class="col-md-6 text-end">
-                    <span class="me-3">
-                        <i class="fas fa-user me-1"></i>
-                        <span id="adminEmail">admin@mariscales.com</span>
-                    </span>
-                    <button class="btn btn-outline-light btn-sm" onclick="logout()">
-                        <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
-                    </button>
+    <!-- Login Form (mostrado por defecto) -->
+    <div id="login-container" class="login-container">
+        <div class="container">
+            <div class="row justify-content-center align-items-center min-vh-100">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card shadow">
+                        <div class="card-body p-5">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                                <h3>Panel de Administración</h3>
+                                <p class="text-muted">Filá Mariscales</p>
+                            </div>
+                            
+                            <form id="login-form">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Contraseña</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                                </button>
+                            </form>
+                            
+                            <div class="text-center mt-3">
+                                <a href="index.html" class="text-decoration-none">
+                                    <i class="fas fa-arrow-left me-2"></i>Volver al sitio
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Admin Dashboard (oculto por defecto) -->
+    <div id="admin-dashboard" class="admin-dashboard" style="display: none;">
+        <!-- Navigation -->
+        <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+                <span class="navbar-brand">
+                        <i class="fas fa-shield-alt me-2"></i>
+                    Panel de Administración
+                    </span>
+                <div class="d-flex">
+                    <span class="navbar-text me-3" id="admin-email"></span>
+                    <button class="btn btn-outline-light btn-sm" onclick="adminApp.logout()">
+                        <i class="fas fa-sign-out-alt me-1"></i>Salir
+                    </button>
+                </div>
+            </div>
+        </nav>
 
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 admin-sidebar">
-                <ul class="sidebar-menu">
-                    <li>
-                        <a href="#" class="active" data-section="dashboard">
-                            <i class="fas fa-tachometer-alt"></i>Dashboard
+                <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                    <div class="position-sticky pt-3">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#" data-section="dashboard">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                         </a>
                     </li>
-                    <li>
-                        <a href="#" data-section="noticias">
-                            <i class="fas fa-newspaper"></i>Noticias
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="noticias">
+                                    <i class="fas fa-newspaper me-2"></i>Noticias
                         </a>
                     </li>
-                    <li>
-                        <a href="#" data-section="eventos">
-                            <i class="fas fa-calendar"></i>Eventos
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="eventos">
+                                    <i class="fas fa-calendar me-2"></i>Eventos
                         </a>
                     </li>
-                    <li>
-                        <a href="#" data-section="galeria">
-                            <i class="fas fa-images"></i>Galería
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="galeria">
+                                    <i class="fas fa-images me-2"></i>Galería
                         </a>
                     </li>
-                    <li>
-                        <a href="#" data-section="usuarios">
-                            <i class="fas fa-users"></i>Usuarios
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="productos">
+                                    <i class="fas fa-shopping-cart me-2"></i>Productos
                         </a>
                     </li>
-                    <li>
-                        <a href="#" data-section="socios">
-                            <i class="fas fa-user-friends"></i>Socios
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="directiva">
+                                    <i class="fas fa-users me-2"></i>Directiva
                         </a>
                     </li>
-                    <li>
-                        <a href="#" data-section="textos">
-                            <i class="fas fa-edit"></i>Textos
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="contactos">
+                                    <i class="fas fa-envelope me-2"></i>Contactos
                         </a>
                     </li>
-                    <li>
-                        <a href="#" data-section="libros">
-                            <i class="fas fa-book"></i>Libros
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="users">
+                                    <i class="fas fa-users-cog me-2"></i>Usuarios
                         </a>
                     </li>
-                    <li>
-                        <a href="#" data-section="configuracion">
-                            <i class="fas fa-cog"></i>Configuración
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="carousel">
+                                    <i class="fas fa-images me-2"></i>Carrusel
                         </a>
                     </li>
-                </ul>
-            </div>
-
-            <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 admin-content">
-                <!-- Dashboard Section -->
-                <div id="dashboard" class="content-section active">
-                    <h2 class="mb-4">Dashboard</h2>
-                    
-                    <div class="row mb-4">
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-primary me-3">
-                                        <i class="fas fa-newspaper"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0">12</h3>
-                                        <p class="text-muted mb-0">Noticias</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-success me-3">
-                                        <i class="fas fa-calendar"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0">8</h3>
-                                        <p class="text-muted mb-0">Eventos</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-warning me-3">
-                                        <i class="fas fa-images"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0">45</h3>
-                                        <p class="text-muted mb-0">Fotos</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-info me-3">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0">156</h3>
-                                        <p class="text-muted mb-0">Usuarios</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>Últimas Actividades</th>
-                                            <th>Fecha</th>
-                                            <th>Estado</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Nueva noticia publicada</td>
-                                            <td>Hoy</td>
-                                            <td><span class="badge bg-success">Activo</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Evento "Fiesta de Moros y Cristianos" creado</td>
-                                            <td>Ayer</td>
-                                            <td><span class="badge bg-warning">Pendiente</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>5 nuevas fotos subidas a la galería</td>
-                                            <td>Hace 2 días</td>
-                                            <td><span class="badge bg-success">Activo</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stats-card">
-                                <h5 class="mb-3">Acciones Rápidas</h5>
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-admin">
-                                        <i class="fas fa-plus me-2"></i>Nueva Noticia
-                                    </button>
-                                    <button class="btn btn-admin">
-                                        <i class="fas fa-calendar-plus me-2"></i>Crear Evento
-                                    </button>
-                                    <button class="btn btn-admin">
-                                        <i class="fas fa-upload me-2"></i>Subir Fotos
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="socios">
+                                    <i class="fas fa-user-friends me-2"></i>Socios
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="textos">
+                                    <i class="fas fa-edit me-2"></i>Textos
+                                </a>
+                            </li>
+                        </ul>
                 </div>
+                    </nav>
 
-                <!-- Noticias Section -->
-                <div id="noticias" class="content-section">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2>Gestión de Noticias</h2>
-                        <button class="btn btn-admin" onclick="showNewsModal()">
-                            <i class="fas fa-plus me-2"></i>Nueva Noticia
-                        </button>
-                    </div>
-                    
-                    <!-- Filtros -->
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="searchNews" placeholder="Buscar noticias...">
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="filterStatus">
-                                <option value="">Todos los estados</option>
-                                <option value="publicado">Publicado</option>
-                                <option value="borrador">Borrador</option>
-                                <option value="archivado">Archivado</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control" id="filterDate">
-                        </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
-                                <i class="fas fa-times"></i> Limpiar
+                <!-- Main content -->
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2" id="section-title">Dashboard</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <button class="btn btn-primary" id="add-item-btn" style="display: none;">
+                                <i class="fas fa-plus me-2"></i>Añadir
                             </button>
                         </div>
                     </div>
                     
+                    <!-- Dashboard Content -->
+                    <div id="dashboard-content">
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-primary shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                    Noticias</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="noticias-count">0</div>
+                                    </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-newspaper fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                    Eventos</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="eventos-count">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                            </div>
+                                            </div>
+                    </div>
+                    
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-info shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                    Productos</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="productos-count">0</div>
+                </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                    </div>
+                        </div>
+                        </div>
+                        </div>
+                    </div>
+                    
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                    Contactos</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="contactos-count">0</div>
+                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-envelope fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Actividad Reciente</h6>
+                                    </div>
+                        <div class="card-body">
+                                        <div id="recent-activity">
+                                            <p class="text-muted">Cargando actividad reciente...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section Content -->
+                    <div id="section-content" style="display: none;">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0" id="newsTable">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Título</th>
-                                    <th>Autor</th>
-                                    <th>Fecha</th>
-                                    <th>Vistas</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
+                            <table class="table table-striped table-hover">
+                                <thead id="table-head">
                             </thead>
-                            <tbody id="newsTableBody">
-                                <!-- Filas de noticias generadas dinámicamente -->
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Paginación -->
-                    <nav aria-label="Paginación de noticias" class="mt-3">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1">Anterior</a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">Siguiente</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-
-                <!-- Eventos Section -->
-                <div id="eventos" class="content-section">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2>Gestión de Eventos</h2>
-                        <button class="btn btn-admin" onclick="showEventModal()">
-                            <i class="fas fa-plus me-2"></i>Nuevo Evento
-                        </button>
-                    </div>
-                    
-                    <!-- Vista de calendario/lista -->
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-outline-primary active" id="listView">
-                                    <i class="fas fa-list me-1"></i>Lista
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" id="calendarView">
-                                    <i class="fas fa-calendar me-1"></i>Calendario
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" id="searchEvents" placeholder="Buscar eventos...">
-                        </div>
-                    </div>
-                    
-                    <!-- Vista de Lista -->
-                    <div id="eventsListView">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0" id="eventsTable">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Evento</th>
-                                        <th>Fecha</th>
-                                        <th>Hora</th>
-                                        <th>Lugar</th>
-                                        <th>Asistentes</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="eventsTableBody">
-                                    <tr>
-                                        <td>Fiesta de Moros y Cristianos 2024</td>
-                                        <td>2024-08-15</td>
-                                        <td>19:00</td>
-                                        <td>Centro de Elche</td>
-                                        <td>150/200</td>
-                                        <td><span class="badge bg-success">Confirmado</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editEvent(1)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-info me-1" onclick="viewEvent(1)">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-warning me-1" onclick="manageAttendees(1)">
-                                                <i class="fas fa-users"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteEvent(1)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Reunión de Directiva</td>
-                                        <td>2024-02-10</td>
-                                        <td>18:00</td>
-                                        <td>Sede Social</td>
-                                        <td>12/15</td>
-                                        <td><span class="badge bg-warning">Pendiente</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editEvent(2)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-info me-1" onclick="viewEvent(2)">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-warning me-1" onclick="manageAttendees(2)">
-                                                <i class="fas fa-users"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteEvent(2)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ensayo General</td>
-                                        <td>2024-02-05</td>
-                                        <td>20:00</td>
-                                        <td>Plaza Mayor</td>
-                                        <td>80/100</td>
-                                        <td><span class="badge bg-info">En curso</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editEvent(3)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-info me-1" onclick="viewEvent(3)">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-warning me-1" onclick="manageAttendees(3)">
-                                                <i class="fas fa-users"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteEvent(3)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <!-- Vista de Calendario -->
-                    <div id="eventsCalendarView" style="display: none;">
-                        <div class="stats-card">
-                            <div id="calendar"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Galería Section -->
-                <div id="galeria" class="content-section">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2>Gestión de Galería</h2>
-                        <div class="btn-group">
-                            <button class="btn btn-admin" onclick="showUploadModal()">
-                                <i class="fas fa-upload me-2"></i>Subir Fotos
-                            </button>
-                            <button class="btn btn-outline-primary" onclick="showCarouselModal()">
-                                <i class="fas fa-images me-2"></i>Gestionar Carrusel
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Filtros y búsqueda -->
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="searchGallery" placeholder="Buscar fotos...">
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="filterCategory">
-                                <option value="">Todas las categorías</option>
-                                <option value="eventos">Eventos</option>
-                                <option value="directiva">Directiva</option>
-                                <option value="socios">Socios</option>
-                                <option value="historia">Historia</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control" id="filterDateGallery">
-                        </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-outline-secondary w-100" onclick="clearGalleryFilters()">
-                                <i class="fas fa-times"></i> Limpiar
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Sección de Carrusel -->
-                    <div class="stats-card mb-4">
-                        <h5 class="mb-3">
-                            <i class="fas fa-images me-2"></i>Fotos del Carrusel Principal
-                        </h5>
-                        <div class="row" id="carouselPhotos">
-                            <!-- Las fotos del carrusel se cargarán aquí dinámicamente -->
-                        </div>
-                    </div>
-
-                    <!-- Vista de galería -->
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-outline-primary active" id="gridView">
-                                    <i class="fas fa-th me-1"></i>Cuadrícula
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" id="listViewGallery">
-                                    <i class="fas fa-list me-1"></i>Lista
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-6 text-end">
-                            <span class="text-muted">45 fotos encontradas</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Vista de cuadrícula -->
-                    <div id="galleryGridView">
-                        <div class="row" id="galleryGrid">
-                            <div class="col-md-3 mb-3">
-                                <div class="card gallery-item">
-                                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
-                                         class="card-img-top" alt="Foto 1">
-                                    <div class="card-body p-2">
-                                        <h6 class="card-title mb-1">Fiesta 2024</h6>
-                                        <small class="text-muted">15/01/2024</small>
-                                        <div class="btn-group w-100 mt-2" role="group">
-                                            <button class="btn btn-sm btn-outline-primary" onclick="editPhoto(1)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-info" onclick="viewPhoto(1)">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" onclick="deletePhoto(1)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="card gallery-item">
-                                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
-                                         class="card-img-top" alt="Foto 2">
-                                    <div class="card-body p-2">
-                                        <h6 class="card-title mb-1">Reunión Directiva</h6>
-                                        <small class="text-muted">10/01/2024</small>
-                                        <div class="btn-group w-100 mt-2" role="group">
-                                            <button class="btn btn-sm btn-outline-primary" onclick="editPhoto(2)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-info" onclick="viewPhoto(2)">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" onclick="deletePhoto(2)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="card gallery-item">
-                                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
-                                         class="card-img-top" alt="Foto 3">
-                                    <div class="card-body p-2">
-                                        <h6 class="card-title mb-1">Ensayo General</h6>
-                                        <small class="text-muted">08/01/2024</small>
-                                        <div class="btn-group w-100 mt-2" role="group">
-                                            <button class="btn btn-sm btn-outline-primary" onclick="editPhoto(3)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-info" onclick="viewPhoto(3)">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" onclick="deletePhoto(3)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="card gallery-item">
-                                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
-                                         class="card-img-top" alt="Foto 4">
-                                    <div class="card-body p-2">
-                                        <h6 class="card-title mb-1">Historia Filá</h6>
-                                        <small class="text-muted">05/01/2024</small>
-                                        <div class="btn-group w-100 mt-2" role="group">
-                                            <button class="btn btn-sm btn-outline-primary" onclick="editPhoto(4)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-info" onclick="viewPhoto(4)">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" onclick="deletePhoto(4)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Vista de lista -->
-                    <div id="galleryListView" style="display: none;">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Imagen</th>
-                                        <th>Título</th>
-                                        <th>Categoría</th>
-                                        <th>Fecha</th>
-                                        <th>Tamaño</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&q=80" 
-                                                 class="rounded" width="50" height="50" alt="Foto 1">
-                                        </td>
-                                        <td>Fiesta 2024</td>
-                                        <td><span class="badge bg-primary">Eventos</span></td>
-                                        <td>15/01/2024</td>
-                                        <td>2.3 MB</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editPhoto(1)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-info me-1" onclick="viewPhoto(1)">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" onclick="deletePhoto(1)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <!-- Paginación -->
-                    <nav aria-label="Paginación de galería" class="mt-3">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1">Anterior</a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">Siguiente</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-
-                <!-- Usuarios Section -->
-                <div id="usuarios" class="content-section">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2>Gestión de Usuarios</h2>
-                        <button class="btn btn-admin" onclick="adminApp.showAddModal()">
-                            <i class="fas fa-user-plus me-2"></i>Nuevo Usuario
-                        </button>
-                    </div>
-                    
-                    <!-- Filtros y búsqueda -->
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="searchUsers" placeholder="Buscar usuarios...">
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="filterRole">
-                                <option value="">Todos los roles</option>
-                                <option value="admin">Administrador</option>
-                                <option value="editor">Editor</option>
-                                <option value="socio">Socio</option>
-                                <option value="invitado">Invitado</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="filterStatus">
-                                <option value="">Todos los estados</option>
-                                <option value="activo">Activo</option>
-                                <option value="inactivo">Inactivo</option>
-                                <option value="pendiente">Pendiente</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-outline-secondary w-100" onclick="clearUserFilters()">
-                                <i class="fas fa-times"></i> Limpiar
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Estadísticas de usuarios -->
-                    <div class="row mb-4">
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-primary me-3">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0">156</h3>
-                                        <p class="text-muted mb-0">Total Usuarios</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-success me-3">
-                                        <i class="fas fa-user-check"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0">142</h3>
-                                        <p class="text-muted mb-0">Activos</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-warning me-3">
-                                        <i class="fas fa-user-clock"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0">8</h3>
-                                        <p class="text-muted mb-0">Pendientes</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-info me-3">
-                                        <i class="fas fa-user-shield"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0">3</h3>
-                                        <p class="text-muted mb-0">Administradores</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Tabla de usuarios -->
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="table-dark">
-                                        <tr id="table-head">
-                                            <!-- Se carga dinámicamente -->
-                                        </tr>
-                                    </thead>
-                                    <tbody id="table-body">
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar me-3">
-                                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=40&q=80" 
-                                                     class="rounded-circle" width="40" height="40" alt="Admin">
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-0">Administrador</h6>
-                                                <small class="text-muted">admin@mariscales.com</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>admin@mariscales.com</td>
-                                    <td><span class="badge bg-danger">Administrador</span></td>
-                                    <td><span class="badge bg-success">Activo</span></td>
-                                    <td>Hace 2 horas</td>
-                                    <td>15/01/2024</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editUser(1)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewUser(1)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-warning me-1" onclick="resetPassword(1)">
-                                            <i class="fas fa-key"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(1)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar me-3">
-                                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=40&q=80" 
-                                                     class="rounded-circle" width="40" height="40" alt="Editor">
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-0">Juan Pérez</h6>
-                                                <small class="text-muted">juan.perez@email.com</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>juan.perez@email.com</td>
-                                    <td><span class="badge bg-warning">Editor</span></td>
-                                    <td><span class="badge bg-success">Activo</span></td>
-                                    <td>Hace 1 día</td>
-                                    <td>20/01/2024</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editUser(2)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewUser(2)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-warning me-1" onclick="resetPassword(2)">
-                                            <i class="fas fa-key"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(2)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar me-3">
-                                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=40&q=80" 
-                                                     class="rounded-circle" width="40" height="40" alt="Socio">
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-0">María García</h6>
-                                                <small class="text-muted">maria.garcia@email.com</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>maria.garcia@email.com</td>
-                                    <td><span class="badge bg-info">Socio</span></td>
-                                    <td><span class="badge bg-warning">Pendiente</span></td>
-                                    <td>Nunca</td>
-                                    <td>25/01/2024</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editUser(3)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewUser(3)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-success me-1" onclick="activateUser(3)">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(3)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar me-3">
-                                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=40&q=80" 
-                                                     class="rounded-circle" width="40" height="40" alt="Socio">
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-0">Carlos López</h6>
-                                                <small class="text-muted">carlos.lopez@email.com</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>carlos.lopez@email.com</td>
-                                    <td><span class="badge bg-info">Socio</span></td>
-                                    <td><span class="badge bg-success">Activo</span></td>
-                                    <td>Hace 3 horas</td>
-                                    <td>18/01/2024</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editUser(4)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewUser(4)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-warning me-1" onclick="resetPassword(4)">
-                                            <i class="fas fa-key"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(4)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Paginación -->
-                    <nav aria-label="Paginación de usuarios" class="mt-3">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1">Anterior</a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">Siguiente</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-
-                <!-- Socios Section -->
-                <div id="socios" class="content-section">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2>Gestión de Socios</h2>
-                        <button class="btn btn-admin" onclick="adminApp.showAddModal()">
-                            <i class="fas fa-user-plus me-2"></i>Nuevo Socio
-                        </button>
-                    </div>
-                    
-                    <!-- Filtros y búsqueda -->
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="searchSocios" placeholder="Buscar socios...">
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="filterStatusSocios">
-                                <option value="">Todos los estados</option>
-                                <option value="activo">Activo</option>
-                                <option value="inactivo">Inactivo</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="filterYearSocios">
-                                <option value="">Todos los años</option>
-                                <option value="2024">2024</option>
-                                <option value="2023">2023</option>
-                                <option value="2022">2022</option>
-                                <option value="2021">2021</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-outline-secondary w-100" onclick="clearSociosFilters()">
-                                <i class="fas fa-times"></i> Limpiar
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Estadísticas de socios -->
-                    <div class="row mb-4">
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-success me-3">
-                                        <i class="fas fa-user-friends"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0" id="total-socios">0</h3>
-                                        <p class="text-muted mb-0">Total Socios</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-primary me-3">
-                                        <i class="fas fa-user-check"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0" id="socios-activos">0</h3>
-                                        <p class="text-muted mb-0">Socios Activos</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-warning me-3">
-                                        <i class="fas fa-user-times"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0" id="socios-inactivos">0</h3>
-                                        <p class="text-muted mb-0">Socios Inactivos</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-info me-3">
-                                        <i class="fas fa-calendar-plus"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0" id="nuevos-socios">0</h3>
-                                        <p class="text-muted mb-0">Nuevos este año</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Tabla de socios -->
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Nombre</th>
-                                            <th>Email</th>
-                                            <th>Teléfono</th>
-                                            <th>Número Socio</th>
-                                            <th>Fecha Ingreso</th>
-                                            <th>Estado</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="socios-table-body">
-                                        <!-- Los datos se cargarán dinámicamente -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Textos Section -->
-                <div id="textos" class="content-section">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2>Gestión de Textos</h2>
-                        <button class="btn btn-admin" onclick="adminApp.showAddModal()">
-                            <i class="fas fa-plus me-2"></i>Nuevo Texto
-                        </button>
-                    </div>
-                    
-                    <!-- Navegación por secciones -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-outline-primary active" onclick="adminApp.showTextSection('home')">
-                                    <i class="fas fa-home me-1"></i>Inicio
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('historia')">
-                                    <i class="fas fa-history me-1"></i>Historia
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('directiva')">
-                                    <i class="fas fa-users me-1"></i>Directiva
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('socios')">
-                                    <i class="fas fa-user-friends me-1"></i>Socios
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('eventos')">
-                                    <i class="fas fa-calendar me-1"></i>Eventos
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('galeria')">
-                                    <i class="fas fa-images me-1"></i>Galería
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('noticias')">
-                                    <i class="fas fa-newspaper me-1"></i>Noticias
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('contacto')">
-                                    <i class="fas fa-envelope me-1"></i>Contacto
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Contenido de textos -->
-                    <div class="card">
-                        <div class="card-body">
-                            <div id="textos-content">
-                                <!-- Los textos se cargarán dinámicamente -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Libros Section -->
-                <div id="libros" class="content-section">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2>Gestión de Libros</h2>
-                        <button class="btn btn-admin" onclick="showBookModal()">
-                            <i class="fas fa-plus me-2"></i>Nuevo Libro
-                        </button>
-                    </div>
-                    
-                    <!-- Estadísticas de libros -->
-                    <div class="row mb-4">
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-primary me-3">
-                                        <i class="fas fa-book"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0">3</h3>
-                                        <p class="text-muted mb-0">Libros Activos</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-success me-3">
-                                        <i class="fas fa-eye"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0">1,245</h3>
-                                        <p class="text-muted mb-0">Visualizaciones</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-warning me-3">
-                                        <i class="fas fa-download"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0">89</h3>
-                                        <p class="text-muted mb-0">Descargas</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="stats-icon bg-info me-3">
-                                        <i class="fas fa-share"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="mb-0">156</h3>
-                                        <p class="text-muted mb-0">Compartidos</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Lista de libros -->
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Libro</th>
-                                    <th>Tipo</th>
-                                    <th>Páginas</th>
-                                    <th>Visualizaciones</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&q=80" 
-                                                 class="rounded me-3" width="40" height="40" alt="Libro">
-                                            <div>
-                                                <h6 class="mb-0">Historia de la Filá Mariscales</h6>
-                                                <small class="text-muted">Libro principal</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-primary">Interactivo</span></td>
-                                    <td>156</td>
-                                    <td>1,245</td>
-                                    <td><span class="badge bg-success">Activo</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editBook(1)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewBook(1)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-warning me-1" onclick="downloadBook(1)">
-                                            <i class="fas fa-download"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteBook(1)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&q=80" 
-                                                 class="rounded me-3" width="40" height="40" alt="Libro">
-                                            <div>
-                                                <h6 class="mb-0">Directiva 2024</h6>
-                                                <small class="text-muted">Libro de directiva</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-info">PDF</span></td>
-                                    <td>45</td>
-                                    <td>567</td>
-                                    <td><span class="badge bg-success">Activo</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editBook(2)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewBook(2)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-warning me-1" onclick="downloadBook(2)">
-                                            <i class="fas fa-download"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteBook(2)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&q=80" 
-                                                 class="rounded me-3" width="40" height="40" alt="Libro">
-                                            <div>
-                                                <h6 class="mb-0">Memorias 2023</h6>
-                                                <small class="text-muted">Libro de memorias</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-primary">Interactivo</span></td>
-                                    <td>78</td>
-                                    <td>423</td>
-                                    <td><span class="badge bg-warning">Borrador</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editBook(3)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewBook(3)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-warning me-1" onclick="downloadBook(3)">
-                                            <i class="fas fa-download"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteBook(3)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                <tbody id="table-body">
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Configuración Section -->
-                <div id="configuracion" class="content-section">
-                    <h2 class="mb-4">Configuración del Sistema</h2>
-                    
+                    <!-- Textos Content -->
+                    <div id="textos-content" style="display: none;">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="stats-card">
-                                <h5 class="mb-3">Información del Sitio</h5>
-                                <form>
-                                    <div class="mb-3">
-                                        <label class="form-label">Nombre del Sitio</label>
-                                        <input type="text" class="form-control" value="Filá Mariscales">
+                            <div class="col-md-3">
+                                <div class="btn-group-vertical w-100" role="group">
+                                    <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('home')">Inicio</button>
+                                    <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('historia')">Historia</button>
+                                    <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('directiva')">Directiva</button>
+                                    <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('socios')">Socios</button>
+                                    <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('eventos')">Eventos</button>
+                                    <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('galeria')">Galería</button>
+                                    <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('noticias')">Noticias</button>
+                                    <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('contacto')">Contacto</button>
+                                    <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('footer')">Footer</button>
+                                    <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('meta')">SEO</button>
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Email de Contacto</label>
-                                        <input type="email" class="form-control" value="info@filamariscales.com">
                                     </div>
-                                    <button type="submit" class="btn btn-admin">
-                                        <i class="fas fa-save me-2"></i>Guardar Cambios
-                                    </button>
-                                </form>
+                            <div class="col-md-9">
+                                <div id="textos-form-container">
+                                    <p class="text-muted">Selecciona una sección para editar los textos.</p>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="stats-card">
-                                <h5 class="mb-3">Credenciales de Administrador</h5>
-                                <p><strong>Email:</strong> admin@mariscales.com</p>
-                                <p><strong>Contraseña:</strong> admin123</p>
-                                <button class="btn btn-outline-warning">
-                                    <i class="fas fa-key me-2"></i>Cambiar Contraseña
-                                </button>
                             </div>
                         </div>
-                    </div>
-                </div>
+                </main>
             </div>
         </div>
     </div>
 
-    <!-- Modales -->
-    <!-- Modal para Nueva Noticia -->
-    <div class="modal fade" id="newsModal" tabindex="-1">
+    <!-- Modal para añadir/editar -->
+    <div class="modal fade" id="itemModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Nueva Noticia</h5>
+                    <h5 class="modal-title" id="modal-title">Añadir Elemento</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="newsForm">
-                        <div class="mb-3">
-                            <label class="form-label">Título</label>
-                            <input type="text" class="form-control" id="newsTitle" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Contenido</label>
-                            <textarea class="form-control" id="newsContent" rows="8" required></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Categoría</label>
-                                    <select class="form-select" id="newsCategory">
-                                        <option value="general">General</option>
-                                        <option value="eventos">Eventos</option>
-                                        <option value="directiva">Directiva</option>
-                                        <option value="socios">Socios</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Estado</label>
-                                    <select class="form-select" id="newsStatus">
-                                        <option value="borrador">Borrador</option>
-                                        <option value="publicado">Publicado</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Imagen destacada</label>
-                            <input type="file" class="form-control" id="newsImage" accept="image/*">
+                    <form id="item-form">
+                        <div id="form-fields">
+                            <!-- Los campos se generarán dinámicamente -->
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-admin" onclick="saveNews()">Guardar Noticia</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para Nuevo Evento -->
-    <div class="modal fade" id="eventModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Nuevo Evento</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="eventForm">
-                        <div class="mb-3">
-                            <label class="form-label">Título del Evento</label>
-                            <input type="text" class="form-control" id="eventTitle" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Descripción</label>
-                            <textarea class="form-control" id="eventDescription" rows="4" required></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Fecha</label>
-                                    <input type="date" class="form-control" id="eventDate" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Hora</label>
-                                    <input type="time" class="form-control" id="eventTime" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Lugar</label>
-                                    <input type="text" class="form-control" id="eventLocation" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Aforo máximo</label>
-                                    <input type="number" class="form-control" id="eventCapacity">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Imagen del evento</label>
-                            <input type="file" class="form-control" id="eventImage" accept="image/*">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-admin" onclick="saveEvent()">Guardar Evento</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para Usuario -->
-    <div class="modal fade" id="userModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="userModalTitle">Nuevo Usuario</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="userForm">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" id="userName" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Apellidos</label>
-                                    <input type="text" class="form-control" id="userLastName" required>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="userEmail" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Teléfono</label>
-                                    <input type="tel" class="form-control" id="userPhone">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Rol</label>
-                                    <select class="form-select" id="userRole" required>
-                                        <option value="">Seleccionar rol</option>
-                                        <option value="admin">Administrador</option>
-                                        <option value="editor">Editor</option>
-                                        <option value="socio">Socio</option>
-                                        <option value="invitado">Invitado</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Estado</label>
-                                    <select class="form-select" id="userStatus" required>
-                                        <option value="activo">Activo</option>
-                                        <option value="inactivo">Inactivo</option>
-                                        <option value="pendiente">Pendiente</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Dirección</label>
-                            <textarea class="form-control" id="userAddress" rows="2"></textarea>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Contraseña</label>
-                                    <input type="password" class="form-control" id="userPassword" required>
-                                    <div class="form-text">Mínimo 8 caracteres</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Confirmar Contraseña</label>
-                                    <input type="password" class="form-control" id="userPasswordConfirm" required>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Foto de Perfil</label>
-                            <input type="file" class="form-control" id="userAvatar" accept="image/*">
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Notas</label>
-                            <textarea class="form-control" id="userNotes" rows="3" placeholder="Información adicional sobre el usuario..."></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-admin" onclick="saveUser()">Guardar Usuario</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para Ver Usuario -->
-    <div class="modal fade" id="viewUserModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Detalles del Usuario</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-4 text-center">
-                            <img id="viewUserAvatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" 
-                                 class="rounded-circle mb-3" width="120" height="120" alt="Avatar">
-                            <h5 id="viewUserName">Nombre del Usuario</h5>
-                            <span id="viewUserRole" class="badge bg-primary">Rol</span>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="row">
-                                <div class="col-6">
-                                    <strong>Email:</strong>
-                                    <p id="viewUserEmail">email@ejemplo.com</p>
-                                </div>
-                                <div class="col-6">
-                                    <strong>Teléfono:</strong>
-                                    <p id="viewUserPhone">+34 123 456 789</p>
-                                </div>
-                                <div class="col-6">
-                                    <strong>Estado:</strong>
-                                    <p id="viewUserStatus">Activo</p>
-                                </div>
-                                <div class="col-6">
-                                    <strong>Último Acceso:</strong>
-                                    <p id="viewUserLastAccess">Hace 2 horas</p>
-                                </div>
-                                <div class="col-12">
-                                    <strong>Dirección:</strong>
-                                    <p id="viewUserAddress">Dirección del usuario</p>
-                                </div>
-                                <div class="col-12">
-                                    <strong>Notas:</strong>
-                                    <p id="viewUserNotes">Notas sobre el usuario</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-admin" onclick="editUserFromView()">Editar Usuario</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para Nuevo Libro -->
-    <div class="modal fade" id="bookModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Nuevo Libro</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="bookForm">
-                        <div class="mb-3">
-                            <label class="form-label">Título del Libro</label>
-                            <input type="text" class="form-control" id="bookTitle" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Descripción</label>
-                            <textarea class="form-control" id="bookDescription" rows="3" required></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Tipo de Libro</label>
-                                    <select class="form-select" id="bookType">
-                                        <option value="interactivo">Interactivo (Flipbook)</option>
-                                        <option value="pdf">PDF Estático</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Categoría</label>
-                                    <select class="form-select" id="bookCategory">
-                                        <option value="historia">Historia</option>
-                                        <option value="directiva">Directiva</option>
-                                        <option value="memorias">Memorias</option>
-                                        <option value="eventos">Eventos</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Archivo del Libro</label>
-                            <input type="file" class="form-control" id="bookFile" accept=".pdf,.jpg,.jpeg,.png" required>
-                            <div class="form-text">Formatos soportados: PDF, JPG, PNG</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Imagen de Portada</label>
-                            <input type="file" class="form-control" id="bookCover" accept="image/*">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-admin" onclick="saveBook()">Guardar Libro</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para Subir Fotos -->
-    <div class="modal fade" id="uploadModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Subir Fotos</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="uploadForm">
-                        <div class="mb-3">
-                            <label class="form-label">Seleccionar archivos</label>
-                            <input type="file" class="form-control" id="photoFiles" multiple accept="image/*" required>
-                            <div class="form-text">Puedes seleccionar múltiples archivos (JPG, PNG, GIF)</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Categoría</label>
-                            <select class="form-select" id="photoCategory">
-                                <option value="eventos">Eventos</option>
-                                <option value="directiva">Directiva</option>
-                                <option value="socios">Socios</option>
-                                <option value="historia">Historia</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Descripción (opcional)</label>
-                            <textarea class="form-control" id="photoDescription" rows="3"></textarea>
-                        </div>
-                        <div id="uploadProgress" style="display: none;">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-                            </div>
-                            <small class="text-muted">Subiendo archivos...</small>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-admin" onclick="uploadPhotos()">Subir Fotos</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de gestión de carrusel -->
-    <div class="modal fade" id="carouselModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Gestionar Carrusel Principal</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h6>Fotos del Carrusel</h6>
-                            <div class="row" id="carouselManagement">
-                                <!-- Las fotos del carrusel se cargarán aquí dinámicamente -->
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <h6>Configuración del Carrusel</h6>
-                            <form id="carouselConfigForm">
-                                <div class="mb-3">
-                                    <label class="form-label">Velocidad de transición (ms)</label>
-                                    <input type="number" class="form-control" id="carouselSpeed" value="5000" min="1000" max="10000">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="carouselAutoplay" checked>
-                                        <label class="form-check-label" for="carouselAutoplay">
-                                            Reproducción automática
-                                        </label>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="carouselIndicators" checked>
-                                        <label class="form-check-label" for="carouselIndicators">
-                                            Mostrar indicadores
-                                        </label>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="carouselControls" checked>
-                                        <label class="form-check-label" for="carouselControls">
-                                            Mostrar controles
-                                        </label>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">Efecto de transición</label>
-                                    <select class="form-select" id="carouselEffect">
-                                        <option value="slide">Deslizar</option>
-                                        <option value="fade">Desvanecer</option>
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-admin" onclick="saveCarouselConfig()">Guardar Configuración</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de edición de foto del carrusel -->
-    <div class="modal fade" id="editCarouselModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar Foto del Carrusel</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editCarouselForm">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Vista previa</label>
-                                    <div class="carousel-preview">
-                                        <img id="carouselPreviewImg" src="" alt="Preview" class="img-fluid rounded">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Título del slide</label>
-                                    <input type="text" class="form-control" id="carouselTitle" placeholder="Título del slide">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">Subtítulo</label>
-                                    <input type="text" class="form-control" id="carouselSubtitle" placeholder="Subtítulo del slide">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">Texto del botón</label>
-                                    <input type="text" class="form-control" id="carouselButtonText" placeholder="Texto del botón">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">Enlace del botón</label>
-                                    <input type="url" class="form-control" id="carouselButtonLink" placeholder="https://...">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="carouselActive">
-                                        <label class="form-check-label" for="carouselActive">
-                                            Slide activo
-                                        </label>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">Cambiar imagen</label>
-                                    <input type="file" class="form-control" id="carouselNewImage" accept="image/*" onchange="previewNewImage(this)">
-                                    <div class="form-text">Selecciona una nueva imagen para el carrusel</div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-admin" onclick="saveCarouselPhoto()">Guardar Cambios</button>
+                    <button type="button" class="btn btn-primary" onclick="adminApp.saveItem()">Guardar</button>
                 </div>
             </div>
         </div>
@@ -1888,945 +305,10 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Verificar autenticación
-            if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
-                window.location.href = 'login.html';
-                return;
-            }
-            
-            // Mostrar email del admin
-            const adminEmail = sessionStorage.getItem('adminEmail') || 'admin@mariscales.com';
-            document.getElementById('adminEmail').textContent = adminEmail;
-            
-            // Cargar fotos del carrusel
-            loadCarouselPhotosMain();
-            
-            // Render inicial de noticias
-            renderNewsTable();
-
-            // Navegación del sidebar
-            const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
-            const contentSections = document.querySelectorAll('.content-section');
-            
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Remover clase active de todos los enlaces
-                    sidebarLinks.forEach(l => l.classList.remove('active'));
-                    
-                    // Añadir clase active al enlace clickeado
-                    this.classList.add('active');
-                    
-                    // Ocultar todas las secciones
-                    contentSections.forEach(section => section.classList.remove('active'));
-                    
-                    // Mostrar la sección correspondiente
-                    const targetSection = this.getAttribute('data-section');
-                    const section = document.getElementById(targetSection);
-                    if (section) {
-                        section.classList.add('active');
-                    }
-                });
-            });
-            
-            // Inicializar funcionalidades
-            initializeEventViews();
-            initializeGalleryViews();
-            initializeSearch();
-            initializeUserSearch();
-        });
-        
-        // Función de logout
-        function logout() {
-            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-                sessionStorage.removeItem('adminLoggedIn');
-                sessionStorage.removeItem('adminEmail');
-                window.location.href = 'login.html';
-            }
-        }
-        
-        // Funcionalidades de Noticias
-        let newsData = [
-            { id: 1, title: 'Preparativos para las Fiestas de Moros y Cristianos', author: 'Admin', date: '2024-01-15', views: 245, status: 'publicado', category: 'eventos', content: 'Contenido de la noticia 1', image: '' },
-            { id: 2, title: 'Nueva directiva elegida para 2024', author: 'Admin', date: '2024-01-10', views: 189, status: 'borrador', category: 'directiva', content: 'Contenido de la noticia 2', image: '' },
-            { id: 3, title: 'Reunión mensual de socios', author: 'Admin', date: '2024-01-08', views: 156, status: 'publicado', category: 'socios', content: 'Contenido de la noticia 3', image: '' }
-        ];
-        let editingNewsId = null;
-
-        function renderNewsTable() {
-            const tbody = document.getElementById('newsTableBody');
-            tbody.innerHTML = '';
-            const search = (document.getElementById('searchNews').value || '').toLowerCase();
-            const statusFilter = document.getElementById('filterStatus').value;
-            const dateFilter = document.getElementById('filterDate').value;
-
-            const filtered = newsData.filter(n => {
-                const matchesSearch = !search || n.title.toLowerCase().includes(search) || n.author.toLowerCase().includes(search) || n.category.toLowerCase().includes(search);
-                const matchesStatus = !statusFilter || n.status === statusFilter;
-                const matchesDate = !dateFilter || n.date === dateFilter;
-                return matchesSearch && matchesStatus && matchesDate;
-            });
-
-            filtered.forEach(n => {
-                const tr = document.createElement('tr');
-                const statusBadge = n.status === 'publicado' ? 'bg-success' : (n.status === 'borrador' ? 'bg-warning' : 'bg-secondary');
-                tr.innerHTML = `
-                    <td>${n.title}</td>
-                    <td>${n.author}</td>
-                    <td>${n.date}</td>
-                    <td>${n.views}</td>
-                    <td><span class="badge ${statusBadge}">${capitalize(n.status)}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editNews(${n.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewNews(${n.id})"><i class="fas fa-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteNews(${n.id})"><i class="fas fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-        function showNewsModal() {
-            editingNewsId = null;
-            document.getElementById('newsForm').reset();
-            document.querySelector('#newsModal .modal-title').textContent = 'Nueva Noticia';
-            const modal = new bootstrap.Modal(document.getElementById('newsModal'));
-            modal.show();
-        }
-        
-        function saveNews() {
-            const title = document.getElementById('newsTitle').value.trim();
-            const content = document.getElementById('newsContent').value.trim();
-            const category = document.getElementById('newsCategory').value;
-            const status = document.getElementById('newsStatus').value;
-            const imageFile = document.getElementById('newsImage').files[0];
-
-            if (!title || !content) {
-                alert('Por favor, completa título y contenido.');
-                return;
-            }
-
-            let image = '';
-            if (imageFile) {
-                image = URL.createObjectURL(imageFile);
-            }
-
-            if (editingNewsId) {
-                const idx = newsData.findIndex(n => n.id === editingNewsId);
-                if (idx !== -1) {
-                    newsData[idx] = { ...newsData[idx], title, content, category, status, image: image || newsData[idx].image };
-                }
-            } else {
-                const newId = Math.max(0, ...newsData.map(n => n.id)) + 1;
-                const today = new Date().toISOString().slice(0,10);
-                newsData.unshift({ id: newId, title, author: 'Admin', date: today, views: 0, status, category, content, image });
-            }
-
-            renderNewsTable();
-            bootstrap.Modal.getInstance(document.getElementById('newsModal')).hide();
-            document.getElementById('newsForm').reset();
-        }
-        
-        function editNews(id) {
-            const n = newsData.find(x => x.id === id);
-            if (!n) return;
-            editingNewsId = id;
-            document.querySelector('#newsModal .modal-title').textContent = 'Editar Noticia';
-            document.getElementById('newsTitle').value = n.title;
-            document.getElementById('newsContent').value = n.content;
-            document.getElementById('newsCategory').value = n.category;
-            document.getElementById('newsStatus').value = n.status;
-            document.getElementById('newsImage').value = '';
-            const modal = new bootstrap.Modal(document.getElementById('newsModal'));
-            modal.show();
-        }
-        
-        function viewNews(id) {
-            const n = newsData.find(x => x.id === id);
-            if (!n) return;
-            alert(`${n.title}\n\n${n.content.substring(0, 300)}...`);
-        }
-        
-        function deleteNews(id) {
-            if (!confirm('¿Eliminar esta noticia?')) return;
-            newsData = newsData.filter(n => n.id !== id);
-            renderNewsTable();
-        }
-        
-        // Funcionalidades de Eventos
-        function showEventModal() {
-            const modal = new bootstrap.Modal(document.getElementById('eventModal'));
-            modal.show();
-        }
-        
-        function saveEvent() {
-            const title = document.getElementById('eventTitle').value;
-            const description = document.getElementById('eventDescription').value;
-            const date = document.getElementById('eventDate').value;
-            const time = document.getElementById('eventTime').value;
-            const location = document.getElementById('eventLocation').value;
-            
-            if (!title || !description || !date || !time || !location) {
-                alert('Por favor, completa todos los campos obligatorios.');
-                return;
-            }
-            
-            alert('Evento guardado correctamente!');
-            bootstrap.Modal.getInstance(document.getElementById('eventModal')).hide();
-            document.getElementById('eventForm').reset();
-        }
-        
-        function editEvent(id) {
-            alert('Editando evento ID: ' + id);
-        }
-        
-        function viewEvent(id) {
-            alert('Viendo evento ID: ' + id);
-        }
-        
-        function manageAttendees(id) {
-            alert('Gestionando asistentes del evento ID: ' + id);
-        }
-        
-        function deleteEvent(id) {
-            if (confirm('¿Estás seguro de que quieres eliminar este evento?')) {
-                alert('Evento eliminado correctamente!');
-            }
-        }
-        
-        // Funcionalidades de Galería
-        function showUploadModal() {
-            const modal = new bootstrap.Modal(document.getElementById('uploadModal'));
-            modal.show();
-        }
-        
-        function uploadPhotos() {
-            const files = document.getElementById('photoFiles').files;
-            const category = document.getElementById('photoCategory').value;
-            const description = document.getElementById('photoDescription').value;
-            
-            if (files.length === 0) {
-                alert('Por favor, selecciona al menos una foto.');
-                return;
-            }
-            
-            // Simular subida
-            const progressBar = document.querySelector('#uploadProgress .progress-bar');
-            const progressDiv = document.getElementById('uploadProgress');
-            
-            progressDiv.style.display = 'block';
-            
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 10;
-                progressBar.style.width = progress + '%';
-                
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        alert('Fotos subidas correctamente!');
-                        bootstrap.Modal.getInstance(document.getElementById('uploadModal')).hide();
-                        document.getElementById('uploadForm').reset();
-                        progressDiv.style.display = 'none';
-                        progressBar.style.width = '0%';
-                    }, 500);
-                }
-            }, 200);
-        }
-        
-        function editPhoto(id) {
-            alert('Editando foto ID: ' + id);
-        }
-        
-        function viewPhoto(id) {
-            alert('Viendo foto ID: ' + id);
-        }
-        
-        function deletePhoto(id) {
-            if (confirm('¿Estás seguro de que quieres eliminar esta foto?')) {
-                alert('Foto eliminada correctamente!');
-            }
-        }
-        
-        // Funcionalidades de vistas
-        function initializeEventViews() {
-            document.getElementById('listView').addEventListener('click', function() {
-                document.getElementById('eventsListView').style.display = 'block';
-                document.getElementById('eventsCalendarView').style.display = 'none';
-                this.classList.add('active');
-                document.getElementById('calendarView').classList.remove('active');
-            });
-            
-            document.getElementById('calendarView').addEventListener('click', function() {
-                document.getElementById('eventsListView').style.display = 'none';
-                document.getElementById('eventsCalendarView').style.display = 'block';
-                this.classList.add('active');
-                document.getElementById('listView').classList.remove('active');
-            });
-        }
-        
-        function initializeGalleryViews() {
-            document.getElementById('gridView').addEventListener('click', function() {
-                document.getElementById('galleryGridView').style.display = 'block';
-                document.getElementById('galleryListView').style.display = 'none';
-                this.classList.add('active');
-                document.getElementById('listViewGallery').classList.remove('active');
-            });
-            
-            document.getElementById('listViewGallery').addEventListener('click', function() {
-                document.getElementById('galleryGridView').style.display = 'none';
-                document.getElementById('galleryListView').style.display = 'block';
-                this.classList.add('active');
-                document.getElementById('gridView').classList.remove('active');
-            });
-        }
-        
-        function initializeSearch() {
-            // Búsqueda y filtros en noticias (render dinámico)
-            const searchNewsEl = document.getElementById('searchNews');
-            if (searchNewsEl) searchNewsEl.addEventListener('input', renderNewsTable);
-            const filterStatusEl = document.getElementById('filterStatus');
-            if (filterStatusEl) filterStatusEl.addEventListener('change', renderNewsTable);
-            const filterDateEl = document.getElementById('filterDate');
-            if (filterDateEl) filterDateEl.addEventListener('change', renderNewsTable);
-
-            // Búsqueda en eventos
-            document.getElementById('searchEvents').addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#eventsTableBody tr');
-                
-                rows.forEach(row => {
-                    const title = row.cells[0].textContent.toLowerCase();
-                    if (title.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-        }
-        
-        function clearFilters() {
-            document.getElementById('searchNews').value = '';
-            document.getElementById('filterStatus').value = '';
-            document.getElementById('filterDate').value = '';
-            renderNewsTable();
-        }
-        
-        function clearGalleryFilters() {
-            document.getElementById('searchGallery').value = '';
-            document.getElementById('filterCategory').value = '';
-            document.getElementById('filterDateGallery').value = '';
-        }
-
-        // Funcionalidades del Carrusel
-        let currentCarouselPhotoId = null;
-        
-        function showCarouselModal() {
-            const modal = new bootstrap.Modal(document.getElementById('carouselModal'));
-            loadCarouselPhotos();
-            modal.show();
-        }
-        
-        function loadCarouselPhotos() {
-            const carouselManagement = document.getElementById('carouselManagement');
-            
-            carouselManagement.innerHTML = '';
-            
-            // Usar los datos actualizados del carrusel
-            Object.keys(carouselData).forEach(id => {
-                const photo = carouselData[id];
-                const photoCard = document.createElement('div');
-                photoCard.className = 'col-md-6 mb-3';
-                photoCard.innerHTML = `
-                    <div class="card carousel-photo-card">
-                        <img src="${photo.image}" class="card-img-top" alt="${photo.title}" style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <h6 class="card-title">${photo.title}</h6>
-                            <p class="card-text text-muted">${photo.subtitle}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge ${photo.active ? 'bg-success' : 'bg-secondary'}">
-                                    ${photo.active ? 'Activo' : 'Inactivo'}
-                                </span>
-                                <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-outline-primary" onclick="editCarouselPhoto(${id})">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn ${photo.active ? 'btn-outline-warning' : 'btn-outline-success'}" 
-                                            onclick="toggleCarouselPhoto(${id})">
-                                        <i class="fas fa-${photo.active ? 'eye-slash' : 'eye'}"></i>
-                                    </button>
-                                    <button class="btn btn-outline-danger" onclick="deleteCarouselPhoto(${id})">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                carouselManagement.appendChild(photoCard);
-            });
-        }
-        
-        function editCarouselPhoto(id) {
-            currentCarouselPhotoId = id;
-            
-            // Usar los datos actualizados del carrusel
-            const photo = carouselData[id];
-            if (photo) {
-                document.getElementById('carouselPreviewImg').src = photo.image;
-                document.getElementById('carouselTitle').value = photo.title;
-                document.getElementById('carouselSubtitle').value = photo.subtitle;
-                document.getElementById('carouselButtonText').value = photo.buttonText;
-                document.getElementById('carouselButtonLink').value = photo.buttonLink;
-                document.getElementById('carouselActive').checked = photo.active;
-                
-                // Limpiar el input de nueva imagen
-                document.getElementById('carouselNewImage').value = '';
-            }
-            
-            const modal = new bootstrap.Modal(document.getElementById('editCarouselModal'));
-            modal.show();
-        }
-        
-        function previewNewImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('carouselPreviewImg').src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function saveCarouselPhoto() {
-            const title = document.getElementById('carouselTitle').value;
-            const subtitle = document.getElementById('carouselSubtitle').value;
-            const buttonText = document.getElementById('carouselButtonText').value;
-            const buttonLink = document.getElementById('carouselButtonLink').value;
-            const active = document.getElementById('carouselActive').checked;
-            const newImage = document.getElementById('carouselNewImage').files[0];
-            
-            if (!title || !subtitle || !buttonText || !buttonLink) {
-                alert('Por favor, completa todos los campos obligatorios.');
-                return;
-            }
-            
-            // Si hay una nueva imagen, actualizar la URL
-            let newImageUrl = null;
-            if (newImage) {
-                // En un sistema real, aquí subirías la imagen al servidor
-                // Por ahora, creamos una URL temporal
-                newImageUrl = URL.createObjectURL(newImage);
-            }
-            
-            // Actualizar los datos del carrusel
-            updateCarouselPhotoData(currentCarouselPhotoId, {
-                title: title,
-                subtitle: subtitle,
-                buttonText: buttonText,
-                buttonLink: buttonLink,
-                active: active,
-                image: newImageUrl || document.getElementById('carouselPreviewImg').src
-            });
-            
-            // Simular guardado
-            alert(`Foto del carrusel ${currentCarouselPhotoId} actualizada correctamente!`);
-            
-            // Cerrar modal y recargar
-            bootstrap.Modal.getInstance(document.getElementById('editCarouselModal')).hide();
-            loadCarouselPhotos();
-            loadCarouselPhotosMain();
-            
-            // Limpiar formulario
-            document.getElementById('editCarouselForm').reset();
-        }
-
-        // Variable global para almacenar los datos del carrusel
-        let carouselData = {
-            1: {
-                title: "Slide 1",
-                subtitle: "Bienvenidos a la Filá Mariscales",
-                buttonText: "Conoce nuestra historia",
-                buttonLink: "#historia",
-                image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-                active: true
-            },
-            2: {
-                title: "Slide 2",
-                subtitle: "Tradición y Pasión",
-                buttonText: "Próximos eventos",
-                buttonLink: "#eventos",
-                image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-                active: true
-            },
-            3: {
-                title: "Slide 3",
-                subtitle: "38 Años de Historia",
-                buttonText: "Ver galería",
-                buttonLink: "#galeria",
-                image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-                active: true
-            },
-            4: {
-                title: "Slide 4",
-                subtitle: "Únete a nosotros",
-                buttonText: "Contactar",
-                buttonLink: "#contacto",
-                image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-                active: false
-            }
-        };
-
-        function updateCarouselPhotoData(id, newData) {
-            if (carouselData[id]) {
-                carouselData[id] = { ...carouselData[id], ...newData };
-            }
-        }
-
-        function loadCarouselPhotosMain() {
-            const carouselPhotosContainer = document.getElementById('carouselPhotos');
-            
-            carouselPhotosContainer.innerHTML = '';
-            
-            // Usar los datos actualizados del carrusel
-            Object.keys(carouselData).forEach(id => {
-                const photo = carouselData[id];
-                const photoCard = document.createElement('div');
-                photoCard.className = 'col-md-3 mb-3';
-                photoCard.innerHTML = `
-                    <div class="card carousel-photo-card">
-                        <img src="${photo.image}" class="card-img-top" alt="${photo.title}" style="height: 150px; object-fit: cover;">
-                        <div class="card-body p-2">
-                            <h6 class="card-title mb-1">${photo.title}</h6>
-                            <small class="text-muted">${photo.active ? 'Activo' : 'Inactivo'}</small>
-                            <div class="btn-group w-100 mt-2" role="group">
-                                <button class="btn btn-sm btn-outline-primary" onclick="editCarouselPhoto(${id})">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm ${photo.active ? 'btn-outline-warning' : 'btn-outline-success'}" onclick="toggleCarouselPhoto(${id})">
-                                    <i class="fas fa-${photo.active ? 'eye-slash' : 'eye'}"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteCarouselPhoto(${id})">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                carouselPhotosContainer.appendChild(photoCard);
-            });
-        }
-        
-        function toggleCarouselPhoto(id) {
-            if (confirm('¿Estás seguro de que quieres cambiar el estado de esta foto del carrusel?')) {
-                // Cambiar el estado en los datos
-                carouselData[id].active = !carouselData[id].active;
-                alert(`Estado de la foto ${id} cambiado correctamente!`);
-                loadCarouselPhotos();
-                loadCarouselPhotosMain();
-            }
-        }
-        
-        function deleteCarouselPhoto(id) {
-            if (confirm('¿Estás seguro de que quieres eliminar esta foto del carrusel? Esta acción no se puede deshacer.')) {
-                // Eliminar de los datos
-                delete carouselData[id];
-                alert(`Foto del carrusel ${id} eliminada correctamente!`);
-                loadCarouselPhotos();
-                loadCarouselPhotosMain();
-            }
-        }
-        
-        function saveCarouselConfig() {
-            const speed = document.getElementById('carouselSpeed').value;
-            const autoplay = document.getElementById('carouselAutoplay').checked;
-            const indicators = document.getElementById('carouselIndicators').checked;
-            const controls = document.getElementById('carouselControls').checked;
-            const effect = document.getElementById('carouselEffect').value;
-            
-            // Simular guardado de configuración
-            alert('Configuración del carrusel guardada correctamente!');
-            
-            // Cerrar modal
-            bootstrap.Modal.getInstance(document.getElementById('carouselModal')).hide();
-        }
-        
-        // Funcionalidades de Libros
-        function showBookModal() {
-            const modal = new bootstrap.Modal(document.getElementById('bookModal'));
-            modal.show();
-        }
-        
-        function saveBook() {
-            const title = document.getElementById('bookTitle').value;
-            const description = document.getElementById('bookDescription').value;
-            const type = document.getElementById('bookType').value;
-            const category = document.getElementById('bookCategory').value;
-            const file = document.getElementById('bookFile').files[0];
-            
-            if (!title || !description || !file) {
-                alert('Por favor, completa todos los campos obligatorios.');
-                return;
-            }
-            
-            // Simular guardado
-            alert('Libro guardado correctamente!');
-            bootstrap.Modal.getInstance(document.getElementById('bookModal')).hide();
-            document.getElementById('bookForm').reset();
-        }
-        
-        function editBook(id) {
-            alert('Editando libro ID: ' + id);
-        }
-        
-        function viewBook(id) {
-            // Abrir el libro en una nueva ventana
-            window.open('libro.html', '_blank');
-        }
-        
-        function downloadBook(id) {
-            alert('Descargando libro ID: ' + id);
-        }
-        
-        function deleteBook(id) {
-            if (confirm('¿Estás seguro de que quieres eliminar este libro?')) {
-                alert('Libro eliminado correctamente!');
-            }
-        }
-        
-        // Funcionalidades de Usuarios
-        let currentUserId = null;
-        let isEditingUser = false;
-        
-        function showUserModal(userId = null) {
-            const modal = new bootstrap.Modal(document.getElementById('userModal'));
-            const modalTitle = document.getElementById('userModalTitle');
-            
-            if (userId) {
-                // Modo edición
-                isEditingUser = true;
-                currentUserId = userId;
-                modalTitle.textContent = 'Editar Usuario';
-                loadUserData(userId);
-            } else {
-                // Modo creación
-                isEditingUser = false;
-                currentUserId = null;
-                modalTitle.textContent = 'Nuevo Usuario';
-                document.getElementById('userForm').reset();
-            }
-            
-            modal.show();
-        }
-        
-        function loadUserData(userId) {
-            // Simular carga de datos del usuario
-            const userData = {
-                1: {
-                    name: 'Administrador',
-                    lastName: 'Sistema',
-                    email: 'admin@mariscales.com',
-                    phone: '+34 123 456 789',
-                    role: 'admin',
-                    status: 'activo',
-                    address: 'Sede Social, Elche',
-                    notes: 'Administrador principal del sistema'
-                },
-                2: {
-                    name: 'Juan',
-                    lastName: 'Pérez',
-                    email: 'juan.perez@email.com',
-                    phone: '+34 987 654 321',
-                    role: 'editor',
-                    status: 'activo',
-                    address: 'Calle Mayor 123, Elche',
-                    notes: 'Editor de contenido'
-                },
-                3: {
-                    name: 'María',
-                    lastName: 'García',
-                    email: 'maria.garcia@email.com',
-                    phone: '+34 555 123 456',
-                    role: 'socio',
-                    status: 'pendiente',
-                    address: 'Avenida Libertad 45, Elche',
-                    notes: 'Nueva socia pendiente de activación'
-                },
-                4: {
-                    name: 'Carlos',
-                    lastName: 'López',
-                    email: 'carlos.lopez@email.com',
-                    phone: '+34 666 789 012',
-                    role: 'socio',
-                    status: 'activo',
-                    address: 'Plaza España 8, Elche',
-                    notes: 'Socio activo desde 2023'
-                }
-            };
-            
-            const user = userData[userId];
-            if (user) {
-                document.getElementById('userName').value = user.name;
-                document.getElementById('userLastName').value = user.lastName;
-                document.getElementById('userEmail').value = user.email;
-                document.getElementById('userPhone').value = user.phone;
-                document.getElementById('userRole').value = user.role;
-                document.getElementById('userStatus').value = user.status;
-                document.getElementById('userAddress').value = user.address;
-                document.getElementById('userNotes').value = user.notes;
-                
-                // Ocultar campos de contraseña en modo edición
-                document.getElementById('userPassword').required = false;
-                document.getElementById('userPasswordConfirm').required = false;
-                document.getElementById('userPassword').parentElement.style.display = 'none';
-                document.getElementById('userPasswordConfirm').parentElement.style.display = 'none';
-            }
-        }
-        
-        function saveUser() {
-            const name = document.getElementById('userName').value;
-            const lastName = document.getElementById('userLastName').value;
-            const email = document.getElementById('userEmail').value;
-            const phone = document.getElementById('userPhone').value;
-            const role = document.getElementById('userRole').value;
-            const status = document.getElementById('userStatus').value;
-            const address = document.getElementById('userAddress').value;
-            const notes = document.getElementById('userNotes').value;
-            const password = document.getElementById('userPassword').value;
-            const passwordConfirm = document.getElementById('userPasswordConfirm').value;
-            
-            if (!name || !lastName || !email || !role || !status) {
-                alert('Por favor, completa todos los campos obligatorios.');
-                return;
-            }
-            
-            if (!isEditingUser && (!password || !passwordConfirm)) {
-                alert('La contraseña es obligatoria para nuevos usuarios.');
-                return;
-            }
-            
-            if (password && password !== passwordConfirm) {
-                alert('Las contraseñas no coinciden.');
-                return;
-            }
-            
-            if (password && password.length < 8) {
-                alert('La contraseña debe tener al menos 8 caracteres.');
-                return;
-            }
-            
-            // Simular guardado
-            const action = isEditingUser ? 'actualizado' : 'creado';
-            alert(`Usuario ${action} correctamente!`);
-            bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
-            
-            // Limpiar formulario
-            document.getElementById('userForm').reset();
-            document.getElementById('userPassword').parentElement.style.display = 'block';
-            document.getElementById('userPasswordConfirm').parentElement.style.display = 'block';
-            document.getElementById('userPassword').required = true;
-            document.getElementById('userPasswordConfirm').required = true;
-        }
-        
-        function editUser(id) {
-            showUserModal(id);
-        }
-        
-        function viewUser(id) {
-            // Cargar datos del usuario para mostrar
-            const userData = {
-                1: {
-                    name: 'Administrador Sistema',
-                    email: 'admin@mariscales.com',
-                    phone: '+34 123 456 789',
-                    role: 'Administrador',
-                    status: 'Activo',
-                    lastAccess: 'Hace 2 horas',
-                    address: 'Sede Social, Elche',
-                    notes: 'Administrador principal del sistema',
-                    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80'
-                },
-                2: {
-                    name: 'Juan Pérez',
-                    email: 'juan.perez@email.com',
-                    phone: '+34 987 654 321',
-                    role: 'Editor',
-                    status: 'Activo',
-                    lastAccess: 'Hace 1 día',
-                    address: 'Calle Mayor 123, Elche',
-                    notes: 'Editor de contenido',
-                    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80'
-                },
-                3: {
-                    name: 'María García',
-                    email: 'maria.garcia@email.com',
-                    phone: '+34 555 123 456',
-                    role: 'Socio',
-                    status: 'Pendiente',
-                    lastAccess: 'Nunca',
-                    address: 'Avenida Libertad 45, Elche',
-                    notes: 'Nueva socia pendiente de activación',
-                    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80'
-                },
-                4: {
-                    name: 'Carlos López',
-                    email: 'carlos.lopez@email.com',
-                    phone: '+34 666 789 012',
-                    role: 'Socio',
-                    status: 'Activo',
-                    lastAccess: 'Hace 3 horas',
-                    address: 'Plaza España 8, Elche',
-                    notes: 'Socio activo desde 2023',
-                    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80'
-                }
-            };
-            
-            const user = userData[id];
-            if (user) {
-                document.getElementById('viewUserAvatar').src = user.avatar;
-                document.getElementById('viewUserName').textContent = user.name;
-                document.getElementById('viewUserRole').textContent = user.role;
-                document.getElementById('viewUserEmail').textContent = user.email;
-                document.getElementById('viewUserPhone').textContent = user.phone;
-                document.getElementById('viewUserStatus').textContent = user.status;
-                document.getElementById('viewUserLastAccess').textContent = user.lastAccess;
-                document.getElementById('viewUserAddress').textContent = user.address;
-                document.getElementById('viewUserNotes').textContent = user.notes;
-                
-                // Cambiar color del badge según el rol
-                const roleBadge = document.getElementById('viewUserRole');
-                roleBadge.className = 'badge';
-                switch(user.role) {
-                    case 'Administrador':
-                        roleBadge.classList.add('bg-danger');
-                        break;
-                    case 'Editor':
-                        roleBadge.classList.add('bg-warning');
-                        break;
-                    case 'Socio':
-                        roleBadge.classList.add('bg-info');
-                        break;
-                    default:
-                        roleBadge.classList.add('bg-secondary');
-                }
-                
-                currentUserId = id;
-                const modal = new bootstrap.Modal(document.getElementById('viewUserModal'));
-                modal.show();
-            }
-        }
-        
-        function editUserFromView() {
-            bootstrap.Modal.getInstance(document.getElementById('viewUserModal')).hide();
-            setTimeout(() => {
-                showUserModal(currentUserId);
-            }, 300);
-        }
-        
-        function resetPassword(id) {
-            if (confirm('¿Estás seguro de que quieres resetear la contraseña de este usuario?')) {
-                const newPassword = generateRandomPassword();
-                alert(`Contraseña reseteada. Nueva contraseña: ${newPassword}\n\nPor favor, compártela con el usuario de forma segura.`);
-            }
-        }
-        
-        function generateRandomPassword() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let password = '';
-            for (let i = 0; i < 8; i++) {
-                password += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return password;
-        }
-        
-        function activateUser(id) {
-            if (confirm('¿Estás seguro de que quieres activar este usuario?')) {
-                alert('Usuario activado correctamente!');
-                // Aquí se actualizaría la tabla
-            }
-        }
-        
-        function deleteUser(id) {
-            if (confirm('¿Estás seguro de que quieres eliminar este usuario?\n\nEsta acción no se puede deshacer.')) {
-                alert('Usuario eliminado correctamente!');
-                // Aquí se eliminaría el usuario de la tabla
-            }
-        }
-        
-        function clearUserFilters() {
-            document.getElementById('searchUsers').value = '';
-            document.getElementById('filterRole').value = '';
-            document.getElementById('filterStatus').value = '';
-            
-            // Mostrar todas las filas
-            const rows = document.querySelectorAll('#usersTableBody tr');
-            rows.forEach(row => row.style.display = '');
-        }
-        
-        // Búsqueda de usuarios
-        function initializeUserSearch() {
-            document.getElementById('searchUsers').addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#usersTableBody tr');
-                
-                rows.forEach(row => {
-                    const name = row.cells[0].textContent.toLowerCase();
-                    const email = row.cells[1].textContent.toLowerCase();
-                    if (name.includes(searchTerm) || email.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Filtro por rol
-            document.getElementById('filterRole').addEventListener('change', function() {
-                const selectedRole = this.value;
-                const rows = document.querySelectorAll('#usersTableBody tr');
-                
-                rows.forEach(row => {
-                    if (!selectedRole) {
-                        row.style.display = '';
-                    } else {
-                        const roleBadge = row.querySelector('.badge');
-                        const roleText = roleBadge ? roleBadge.textContent.toLowerCase() : '';
-                        if (roleText.includes(selectedRole)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    }
-                });
-            });
-            
-            // Filtro por estado
-            document.getElementById('filterStatus').addEventListener('change', function() {
-                const selectedStatus = this.value;
-                const rows = document.querySelectorAll('#usersTableBody tr');
-                
-                rows.forEach(row => {
-                    if (!selectedStatus) {
-                        row.style.display = '';
-                    } else {
-                        const statusBadges = row.querySelectorAll('.badge');
-                        let hasMatchingStatus = false;
-                        statusBadges.forEach(badge => {
-                            if (badge.textContent.toLowerCase().includes(selectedStatus)) {
-                                hasMatchingStatus = true;
-                            }
-                        });
-                        row.style.display = hasMatchingStatus ? '' : 'none';
-                    }
-                });
-            });
-        }
-    </script>
+    <!-- Utils JS -->
+    <script src="assets/js/utils.js"></script>
+    
+    <!-- Admin JS -->
+    <script src="assets/js/admin.js"></script>
 </body>
 </html>

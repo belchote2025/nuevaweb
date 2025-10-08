@@ -1,6 +1,6 @@
 // ===== CONFIGURACIÓN =====
 const ADMIN_CONFIG = {
-    API_BASE_URL: '../api/',
+    API_BASE_URL: 'api/',
     CURRENT_SECTION: 'dashboard',
     EDITING_ITEM: null
 };
@@ -150,11 +150,18 @@ class AdminApp {
         if (section === 'dashboard') {
             document.getElementById('dashboard-content').style.display = 'block';
             document.getElementById('section-content').style.display = 'none';
+            document.getElementById('textos-content').style.display = 'none';
             document.getElementById('add-item-btn').style.display = 'none';
             this.loadDashboardData();
+        } else if (section === 'textos') {
+            document.getElementById('dashboard-content').style.display = 'none';
+            document.getElementById('section-content').style.display = 'none';
+            document.getElementById('textos-content').style.display = 'block';
+            document.getElementById('add-item-btn').style.display = 'none';
         } else {
             document.getElementById('dashboard-content').style.display = 'none';
             document.getElementById('section-content').style.display = 'block';
+            document.getElementById('textos-content').style.display = 'none';
             document.getElementById('add-item-btn').style.display = 'block';
             this.loadSectionData(section);
         }
@@ -389,7 +396,12 @@ class AdminApp {
                     inputHtml = `<select class="form-control" id="${field.key}" ${field.required ? 'required' : ''}>${options}</select>`;
                     break;
                 case 'checkbox':
-                    inputHtml = `<input type="checkbox" class="form-check-input" id="${field.key}" ${value ? 'checked' : ''}>`;
+                    inputHtml = `<div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="${field.key}" ${value ? 'checked' : ''}>
+                        <label class="form-check-label" for="${field.key}">
+                            ${field.label}
+                        </label>
+                    </div>`;
                     break;
             }
             
@@ -409,9 +421,12 @@ class AdminApp {
                 `;
             }
             
+            // Para checkboxes, no mostrar el label principal ya que está incluido en el input
+            const showLabel = field.type !== 'checkbox';
+            
             return `
                 <div class="mb-3">
-                    <label for="${field.key}" class="form-label">${field.label} ${field.required ? '<span class="text-danger">*</span>' : ''}</label>
+                    ${showLabel ? `<label for="${field.key}" class="form-label">${field.label} ${field.required ? '<span class="text-danger">*</span>' : ''}</label>` : ''}
                     ${inputHtml}
                     ${uploadButton}
                 </div>
@@ -422,13 +437,23 @@ class AdminApp {
         modal.show();
     }
 
+    // Obtener opciones de roles para el formulario de usuarios
+    getRoleOptions() {
+        return [
+            { value: 'admin', label: 'Administrador' },
+            { value: 'editor', label: 'Editor' },
+            { value: 'socio', label: 'Socio' }
+        ];
+    }
+
     getFormFields(section) {
         const fields = {
             'users': [
                 { key: 'name', label: 'Nombre', type: 'text', required: true },
                 { key: 'email', label: 'Email', type: 'email', required: true },
                 { key: 'role', label: 'Rol', type: 'select', options: this.getRoleOptions(), required: true },
-                { key: 'password', label: 'Contraseña (dejar en blanco para mantener)', type: 'text' },
+                { key: 'password', label: 'Contraseña' + (ADMIN_CONFIG.EDITING_ITEM ? ' (dejar en blanco para no cambiar)' : ''), 
+                  type: 'password', required: !ADMIN_CONFIG.EDITING_ITEM },
                 { key: 'active', label: 'Activo', type: 'checkbox' }
             ],
             'carousel': [
@@ -506,53 +531,97 @@ class AdminApp {
             const formData = this.getFormData();
             const section = ADMIN_CONFIG.CURRENT_SECTION;
             
-            const payload = {
+            // Validación de campos requeridos
+            const requiredFields = this.getFormFields(section).filter(f => f.required);
+            for (const field of requiredFields) {
+                if (field.key !== 'password' && (!formData[field.key] && formData[field.key] !== false)) {
+                    this.showNotification(`El campo ${field.label} es requerido`, 'error');
+                    return;
+                }
+            }
+            
+            // Validación de email para usuarios
+            if (section === 'users' && formData.email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(formData.email)) {
+                    this.showNotification('El formato del email no es válido', 'error');
+                    return;
+                }
+            }
+            
+            // Preparar los datos para el envío
+            let payload = {
                 type: section,
                 data: formData
             };
             
+            // Si es una edición, asegurarse de incluir el ID
             if (ADMIN_CONFIG.EDITING_ITEM) {
                 payload.edit_id = ADMIN_CONFIG.EDITING_ITEM.id;
             }
             
+            // Determinar el endpoint correcto
             const endpoint = section === 'users' ? 'users.php' : 'admin.php';
-            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload)
-            });
             
-            const result = await response.json();
+            // Mostrar indicador de carga
+            const saveButton = document.querySelector('#itemModal .btn-primary');
+            const originalButtonText = saveButton.innerHTML;
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
             
-            if (result.success) {
-                this.showNotification('Elemento guardado correctamente', 'success');
-                bootstrap.Modal.getInstance(document.getElementById('itemModal')).hide();
-                this.loadSectionData(section);
-            } else {
-                this.showNotification(result.message, 'error');
+            try {
+                const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    this.showNotification('Elemento guardado correctamente', 'success');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('itemModal'));
+                    if (modal) modal.hide();
+                    this.loadSectionData(section);
+                } else {
+                    this.showNotification(result.message || 'Error al guardar el elemento', 'error');
+                }
+            } finally {
+                // Restaurar el botón
+                saveButton.disabled = false;
+                saveButton.innerHTML = originalButtonText;
             }
         } catch (error) {
             console.error('Error guardando elemento:', error);
-            this.showNotification('Error guardando elemento', 'error');
+            this.showNotification('Error al procesar la solicitud', 'error');
         }
     }
 
     getFormData() {
         const formData = {};
         const fields = this.getFormFields(ADMIN_CONFIG.CURRENT_SECTION);
+        const isEditing = !!ADMIN_CONFIG.EDITING_ITEM;
         
         fields.forEach(field => {
             const element = document.getElementById(field.key);
             if (element) {
                 if (field.type === 'checkbox') {
                     formData[field.key] = element.checked;
+                } else if (field.key === 'password' && isEditing && !element.value) {
+                    // No incluir la contraseña si estamos editando y el campo está vacío
+                    return;
                 } else {
                     formData[field.key] = element.value;
                 }
             }
         });
+        
+        // Añadir el ID si estamos editando
+        if (isEditing) {
+            formData.id = ADMIN_CONFIG.EDITING_ITEM.id;
+        }
         
         return formData;
     }
@@ -761,10 +830,14 @@ class AdminApp {
     // ===== GESTIÓN DE TEXTOS =====
     async showTextSection(section) {
         // Actualizar botones activos
-        document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        document.querySelectorAll('.btn-group-vertical .btn').forEach(btn => {
             btn.classList.remove('active');
         });
-        event.target.classList.add('active');
+        // Marcar como activo el botón que llama a esta función
+        const activeButton = document.querySelector(`[onclick*="adminApp.showTextSection('${section}')"]`);
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
 
         try {
             const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php?type=textos`);
@@ -782,7 +855,7 @@ class AdminApp {
     }
 
     renderTextSection(section, textos) {
-        const container = document.getElementById('textos-content');
+        const container = document.getElementById('textos-form-container');
         
         if (!textos[section]) {
             container.innerHTML = '<p class="text-muted">No hay textos configurados para esta sección.</p>';
@@ -845,7 +918,7 @@ class AdminApp {
     async saveTextSection(section) {
         try {
             const sectionData = {};
-            const inputs = document.querySelectorAll(`#textos-content input, #textos-content textarea`);
+            const inputs = document.querySelectorAll(`#textos-form-container input, #textos-form-container textarea`);
             
             inputs.forEach(input => {
                 const key = input.id.replace(`${section}_`, '');
@@ -889,7 +962,7 @@ class AdminApp {
         const previewWindow = window.open('', '_blank', 'width=800,height=600');
         const sectionData = {};
         
-        const inputs = document.querySelectorAll(`#textos-content input, #textos-content textarea`);
+        const inputs = document.querySelectorAll(`#textos-form-container input, #textos-form-container textarea`);
         inputs.forEach(input => {
             const key = input.id.replace(`${section}_`, '');
             const value = input.value;
@@ -943,30 +1016,7 @@ class AdminApp {
 
     // ===== NOTIFICACIONES =====
     showNotification(message, type) {
-        const alertClass = {
-            'success': 'alert-success',
-            'error': 'alert-danger',
-            'info': 'alert-info',
-            'warning': 'alert-warning'
-        }[type] || 'alert-info';
-        
-        const alertHtml = `
-            <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
-                 style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-        
-        document.body.insertAdjacentHTML('beforeend', alertHtml);
-        
-        // Auto-remove after 5 seconds
-        setTimeout(() => {
-            const alert = document.querySelector('.alert');
-            if (alert) {
-                alert.remove();
-            }
-        }, 5000);
+        Utils.showNotification(message, type);
     }
 }
 
