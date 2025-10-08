@@ -80,7 +80,7 @@ try {
 
 function sendContactEmail($contacto) {
     // Configuración del email (CAMBIAR POR TU EMAIL)
-    $to = 'contacto@filamariscales.com'; // Email de contacto de la Filá
+    $to = 'edu300572@gmail.com'; // Email de contacto de la Filá
     $from_email = 'noreply@filamariscales.com';
     $from_name = 'Filá Mariscales Web';
     
