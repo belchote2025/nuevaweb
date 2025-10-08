@@ -320,59 +320,19 @@ class FilaMariscalesApp {
 
     // ===== CARGA DE CALENDARIO =====
     async loadCalendario() {
-        const container = document.getElementById('calendar-container');
-        if (!container) return;
-
         try {
             const response = await fetch(`${CONFIG.DATA_BASE_URL}eventos.json`);
             const eventos = await response.json();
-            this.renderCalendario(eventos, container);
+            this.events = eventos;
+            this.currentDate = new Date();
+            this.renderCalendar();
         } catch (error) {
             console.error('Error cargando calendario:', error);
-            this.renderCalendarioDefault(container);
+            this.renderCalendarDefault();
         }
     }
 
-    renderCalendario(eventos, container) {
-        const eventosPorMes = this.groupEventsByMonth(eventos);
-        
-        container.innerHTML = `
-            <div class="calendar-wrapper">
-                ${Object.entries(eventosPorMes).map(([mes, eventosMes]) => `
-                    <div class="month-section mb-4">
-                        <h4 class="month-title">${mes}</h4>
-                        <div class="row">
-                            ${eventosMes.map(evento => `
-                                <div class="col-md-6 mb-3">
-                                    <div class="event-card p-3 border rounded">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <div>
-                                                <h6 class="mb-1">${evento.titulo}</h6>
-                                                <p class="mb-1 text-muted small">${evento.descripcion}</p>
-                                                <small class="text-muted">
-                                                    <i class="fas fa-clock me-1"></i>${evento.hora}
-                                                    <i class="fas fa-map-marker-alt ms-2 me-1"></i>${evento.lugar}
-                                                </small>
-                                            </div>
-                                            <span class="badge bg-primary">${this.formatDate(evento.fecha)}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    }
 
-    renderCalendarioDefault(container) {
-        container.innerHTML = `
-            <div class="text-center">
-                <p class="text-muted">No hay eventos programados en este momento.</p>
-            </div>
-        `;
-    }
 
     // ===== CARGA DE GALERÍA =====
     async loadGaleria() {
@@ -1197,6 +1157,366 @@ class FilaMariscalesApp {
             if (icon) icon.className = 'fas fa-moon me-1';
             if (text) text.textContent = 'Modo Oscuro';
         }
+    }
+
+    // ===== CALENDAR FUNCTIONS =====
+    renderCalendar() {
+        this.updateCalendarTitle();
+        this.renderCalendarGrid();
+        this.renderEventsList();
+    }
+
+    updateCalendarTitle() {
+        const title = document.getElementById('calendar-title');
+        if (title) {
+            const monthNames = [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            ];
+            title.textContent = `${monthNames[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
+        }
+    }
+
+    renderCalendarGrid() {
+        const grid = document.getElementById('calendar-grid');
+        if (!grid) return;
+
+        const year = this.currentDate.getFullYear();
+        const month = this.currentDate.getMonth();
+        
+        // Primer día del mes y último día del mes anterior
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startDate = new Date(firstDay);
+        startDate.setDate(startDate.getDate() - firstDay.getDay());
+        
+        // Generar días del calendario
+        const days = [];
+        const dayHeaders = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        
+        // Headers de días
+        days.push(dayHeaders.map(day => `<div class="calendar-day-header">${day}</div>`).join(''));
+        
+        // Días del calendario
+        const currentDate = new Date(startDate);
+        for (let week = 0; week < 6; week++) {
+            for (let day = 0; day < 7; day++) {
+                const isCurrentMonth = currentDate.getMonth() === month;
+                const isToday = this.isToday(currentDate);
+                const hasEvents = this.hasEventsOnDate(currentDate);
+                
+                let dayClass = 'calendar-day';
+                if (!isCurrentMonth) dayClass += ' other-month';
+                if (isToday) dayClass += ' today';
+                if (hasEvents) dayClass += ' has-events';
+                
+                days.push(`
+                    <div class="${dayClass}" onclick="app.selectDate('${currentDate.toISOString().split('T')[0]}')">
+                        ${currentDate.getDate()}
+                        ${hasEvents ? '<div class="calendar-event-dot"></div>' : ''}
+                    </div>
+                `);
+                
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+        }
+        
+        grid.innerHTML = days.join('');
+    }
+
+    renderEventsList() {
+        const eventsList = document.getElementById('events-list');
+        if (!eventsList) return;
+
+        const monthEvents = this.getEventsForMonth();
+        
+        if (monthEvents.length === 0) {
+            eventsList.innerHTML = '<p class="text-muted text-center">No hay eventos programados para este mes.</p>';
+            return;
+        }
+
+        eventsList.innerHTML = monthEvents.map(event => `
+            <div class="event-item">
+                <div class="event-date">
+                    <i class="fas fa-calendar me-2"></i>
+                    ${this.formatEventDate(event.fecha)} - ${event.hora}
+                </div>
+                <div class="event-title">${event.titulo}</div>
+                <div class="event-description">${event.descripcion}</div>
+                <div class="event-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    ${event.lugar}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    prevMonth() {
+        this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+        this.renderCalendar();
+    }
+
+    nextMonth() {
+        this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+        this.renderCalendar();
+    }
+
+    selectDate(dateString) {
+        const selectedDate = new Date(dateString);
+        const dayEvents = this.getEventsForDate(selectedDate);
+        
+        if (dayEvents.length > 0) {
+            // Mostrar eventos del día seleccionado
+            this.showDayEvents(selectedDate, dayEvents);
+        }
+    }
+
+    showDayEvents(date, events) {
+        const eventsList = document.getElementById('events-list');
+        if (!eventsList) return;
+
+        const dateStr = date.toLocaleDateString('es-ES', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+
+        eventsList.innerHTML = `
+            <h5 class="mb-3">Eventos del ${dateStr}</h5>
+            ${events.map(event => `
+                <div class="event-item">
+                    <div class="event-date">
+                        <i class="fas fa-clock me-2"></i>
+                        ${event.hora}
+                    </div>
+                    <div class="event-title">${event.titulo}</div>
+                    <div class="event-description">${event.descripcion}</div>
+                    <div class="event-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        ${event.lugar}
+                    </div>
+                </div>
+            `).join('')}
+            <button class="btn btn-outline-primary btn-sm mt-3" onclick="app.renderEventsList()">
+                <i class="fas fa-arrow-left me-2"></i>Ver todos los eventos del mes
+            </button>
+        `;
+    }
+
+    isToday(date) {
+        const today = new Date();
+        return date.toDateString() === today.toDateString();
+    }
+
+    hasEventsOnDate(date) {
+        if (!this.events) return false;
+        const dateStr = date.toISOString().split('T')[0];
+        return this.events.some(event => event.fecha === dateStr);
+    }
+
+    getEventsForMonth() {
+        if (!this.events) return [];
+        const year = this.currentDate.getFullYear();
+        const month = this.currentDate.getMonth() + 1;
+        
+        return this.events.filter(event => {
+            const eventDate = new Date(event.fecha);
+            return eventDate.getFullYear() === year && eventDate.getMonth() + 1 === month;
+        }).sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    }
+
+    getEventsForDate(date) {
+        if (!this.events) return [];
+        const dateStr = date.toISOString().split('T')[0];
+        return this.events.filter(event => event.fecha === dateStr);
+    }
+
+    formatEventDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-ES', { 
+            day: 'numeric', 
+            month: 'long' 
+        });
+    }
+
+    renderCalendarDefault() {
+        const grid = document.getElementById('calendar-grid');
+        const eventsList = document.getElementById('events-list');
+        
+        if (grid) {
+            grid.innerHTML = '<div class="col-12 text-center"><p class="text-muted">Error al cargar el calendario.</p></div>';
+        }
+        
+        if (eventsList) {
+            eventsList.innerHTML = '<p class="text-muted text-center">No se pudieron cargar los eventos.</p>';
+        }
+    }
+
+    // ===== ANIMACIONES AVANZADAS =====
+    setupAnimations() {
+        this.setupScrollAnimations();
+        this.setupHoverAnimations();
+        this.setupLoadingAnimations();
+    }
+
+    setupScrollAnimations() {
+        // Crear observer para animaciones de scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                    
+                    // Añadir delay escalonado para elementos múltiples
+                    const siblings = entry.target.parentElement.children;
+                    Array.from(siblings).forEach((sibling, index) => {
+                        if (sibling.classList.contains('animate-on-scroll')) {
+                            setTimeout(() => {
+                                sibling.classList.add('animated');
+                            }, index * 100);
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        // Observar elementos con animación de scroll
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Añadir clases de animación a elementos específicos
+        this.addAnimationClasses();
+    }
+
+    addAnimationClasses() {
+        // Añadir animaciones a las secciones
+        const sections = document.querySelectorAll('section');
+        sections.forEach((section, index) => {
+            if (index > 0) { // Saltar la primera sección (hero)
+                section.classList.add('animate-on-scroll');
+            }
+        });
+
+        // Añadir animaciones a las cards
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.classList.add('animate-on-scroll');
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Añadir animaciones a los elementos de la galería
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        galleryItems.forEach((item, index) => {
+            item.classList.add('animate-on-scroll');
+            item.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Añadir animaciones a los elementos del calendario
+        const calendarDays = document.querySelectorAll('.calendar-day');
+        calendarDays.forEach((day, index) => {
+            day.classList.add('animate-fade-in-scale');
+            day.style.animationDelay = `${index * 0.02}s`;
+        });
+    }
+
+    setupHoverAnimations() {
+        // Animaciones especiales para botones
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.classList.add('animate-pulse');
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                btn.classList.remove('animate-pulse');
+            });
+        });
+
+        // Animaciones para cards
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('templar-glow');
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('templar-glow');
+            });
+        });
+    }
+
+    setupLoadingAnimations() {
+        // Animación de carga para elementos dinámicos
+        this.showLoadingAnimation = (element) => {
+            if (element) {
+                element.innerHTML = `
+                    <div class="text-center">
+                        <div class="loading-spinner spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                `;
+            }
+        };
+
+        // Animación de entrada para notificaciones
+        this.showNotification = (message, type = 'info') => {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show notification-enter`;
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            // Añadir al contenedor de notificaciones
+            let container = document.getElementById('notifications-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'notifications-container';
+                container.style.position = 'fixed';
+                container.style.top = '20px';
+                container.style.right = '20px';
+                container.style.zIndex = '9999';
+                document.body.appendChild(container);
+            }
+            
+            container.appendChild(notification);
+            
+            // Auto-remover después de 5 segundos
+            setTimeout(() => {
+                notification.classList.add('notification-exit');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+        };
+    }
+
+    // Animaciones especiales para eventos
+    animateElement(element, animationClass, delay = 0) {
+        setTimeout(() => {
+            element.classList.add(animationClass);
+        }, delay);
+    }
+
+    // Animación de entrada para el carrusel
+    animateCarouselSlide(slide) {
+        slide.classList.add('animate-fade-in-scale');
+        setTimeout(() => {
+            slide.classList.remove('animate-fade-in-scale');
+        }, 600);
+    }
+
+    // Animación de entrada para elementos de la galería
+    animateGalleryItem(item, index) {
+        item.classList.add('animate-fade-in-up');
+        item.style.animationDelay = `${index * 0.1}s`;
     }
 }
 

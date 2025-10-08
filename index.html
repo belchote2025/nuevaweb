@@ -266,11 +266,25 @@
             </div>
             <div class="row">
                 <div class="col-lg-8 mx-auto">
-                    <div id="calendar-container">
-                        <!-- El calendario se cargará dinámicamente -->
-                        <div class="text-center">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Cargando calendario...</span>
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <h3 class="calendar-title" id="calendar-title">Enero 2025</h3>
+                            <div class="calendar-nav">
+                                <button class="calendar-nav-btn" onclick="app.prevMonth()">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button class="calendar-nav-btn" onclick="app.nextMonth()">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="calendar-grid" id="calendar-grid">
+                            <!-- El calendario se generará dinámicamente -->
+                        </div>
+                        <div class="calendar-events" id="calendar-events">
+                            <h4 class="calendar-events-title">Eventos del mes</h4>
+                            <div id="events-list">
+                                <!-- Los eventos se cargarán dinámicamente -->
                             </div>
                         </div>
                     </div>
