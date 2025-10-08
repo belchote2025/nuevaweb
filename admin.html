@@ -736,7 +736,7 @@
                 <div id="usuarios" class="content-section">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2>Gestión de Usuarios</h2>
-                        <button class="btn btn-admin" onclick="showUserModal()">
+                        <button class="btn btn-admin" onclick="adminApp.showAddModal()">
                             <i class="fas fa-user-plus me-2"></i>Nuevo Usuario
                         </button>
                     </div>
@@ -826,21 +826,17 @@
                         </div>
                     </div>
                     
-                    <!-- Lista de usuarios -->
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0" id="usersTable">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Usuario</th>
-                                    <th>Email</th>
-                                    <th>Rol</th>
-                                    <th>Estado</th>
-                                    <th>Último Acceso</th>
-                                    <th>Registro</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="usersTableBody">
+                    <!-- Tabla de usuarios -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
+                                        <tr id="table-head">
+                                            <!-- Se carga dinámicamente -->
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-body">
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">

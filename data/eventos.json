@@ -1,43 +1,62 @@
 [
     {
         "id": 1,
-        "titulo": "Presentación de la Filá",
-        "descripcion": "Presentación oficial de la Filá Mariscales para las fiestas 2024",
-        "fecha": "2024-10-15",
+        "titulo": "Presentación de la Filá 2025",
+        "descripcion": "Presentación oficial de la Filá Mariscales de Caballeros Templarios para la temporada 2025",
+        "fecha": "2025-02-15",
         "hora": "20:00",
-        "lugar": "Sede Social",
+        "lugar": "Sede Social - Calle Templarios, 15",
         "tipo": "presentacion",
         "imagen_url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     },
     {
         "id": 2,
-        "titulo": "Cena de Hermandad",
-        "descripcion": "Cena de hermandad para todos los miembros de la filá",
-        "fecha": "2024-10-20",
+        "titulo": "Cena de Hermandad Templaria",
+        "descripcion": "Cena de hermandad para todos los miembros de la filá. Evento de convivencia y fortalecimiento de lazos templarios.",
+        "fecha": "2025-02-22",
         "hora": "21:00",
-        "lugar": "Restaurante El Rincón",
+        "lugar": "Restaurante El Castillo Templario",
         "tipo": "cena",
         "imagen_url": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     },
     {
         "id": 3,
-        "titulo": "Ensayo General",
-        "descripcion": "Ensayo general del desfile de Moros y Cristianos",
-        "fecha": "2024-10-25",
+        "titulo": "Ensayo General de Desfile",
+        "descripcion": "Ensayo general del desfile de Moros y Cristianos. Preparación final para la participación en las fiestas.",
+        "fecha": "2025-03-01",
         "hora": "18:00",
-        "lugar": "Punto de encuentro: Ayuntamiento",
+        "lugar": "Punto de encuentro: Plaza del Ayuntamiento",
         "tipo": "ensayo",
         "imagen_url": "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     },
     {
         "id": 4,
-        "titulo": "Desfile de Moros y Cristianos",
-        "descripcion": "Participación en el desfile principal de las fiestas",
-        "fecha": "2024-10-28",
+        "titulo": "Desfile de Moros y Cristianos 2025",
+        "descripcion": "Participación oficial en el desfile principal de las fiestas de Moros y Cristianos de Elche",
+        "fecha": "2025-03-08",
         "hora": "19:00",
-        "lugar": "Recorrido oficial",
+        "lugar": "Recorrido oficial - Centro histórico de Elche",
         "tipo": "desfile",
         "imagen_url": "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "id": 5,
+        "titulo": "Acto de Investidura Templaria",
+        "descripcion": "Ceremonia de investidura para nuevos miembros de la Filá Mariscales",
+        "fecha": "2025-03-15",
+        "hora": "19:30",
+        "lugar": "Sede Social - Salón de Actos",
+        "tipo": "ceremonia",
+        "imagen_url": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "id": 6,
+        "titulo": "Jornada Cultural Templaria",
+        "descripcion": "Jornada dedicada a la historia y tradiciones de los Caballeros Templarios",
+        "fecha": "2025-03-22",
+        "hora": "10:00",
+        "lugar": "Centro Cultural de Elche",
+        "tipo": "cultural",
+        "imagen_url": "https://images.unsplash.com/photo-1481277542470-605612bd2d61?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     }
 ]
-
