@@ -124,7 +124,7 @@ class AdminApp {
         ADMIN_CONFIG.CURRENT_SECTION = section;
         
         // Update navigation
-        document.querySelectorAll('.nav-link').forEach(link => {
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
             link.classList.remove('active');
         });
         document.querySelector(`[data-section="${section}"]`).classList.add('active');
@@ -325,7 +325,15 @@ class AdminApp {
             
             // Secciones normales
             const data = await this.fetchData(section);
-            this.renderTable(section, data);
+            
+            // Renderizar según el tipo de sección
+            if (section === 'socios') {
+                this.renderSociosTable(data);
+            } else if (section === 'textos') {
+                this.renderTextosContent(data);
+            } else {
+                this.renderTable(section, data);
+            }
         } catch (error) {
             console.error(`Error cargando datos de ${section}:`, error);
             this.showNotification('Error cargando datos', 'error');
@@ -729,6 +737,131 @@ class AdminApp {
             console.error('Error eliminando elemento:', error);
             this.showNotification('Error eliminando elemento', 'error');
         }
+    }
+
+    // ===== RENDERIZADO ESPECÍFICO =====
+    renderSociosTable(data) {
+        const container = document.getElementById('socios-table-container');
+        if (!container) return;
+
+        if (data.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-user-friends fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No hay socios registrados</h5>
+                    <p class="text-muted">Los socios aparecerán aquí cuando se registren</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5>Lista de Socios (${data.length})</h5>
+                <button class="btn btn-primary" onclick="adminApp.showAddModal()">
+                    <i class="fas fa-user-plus me-2"></i>Nuevo Socio
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Número Socio</th>
+                            <th>Fecha Ingreso</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(socio => `
+                            <tr>
+                                <td>${socio.id}</td>
+                                <td>${socio.nombre} ${socio.apellidos}</td>
+                                <td>${socio.email}</td>
+                                <td>${socio.telefono || '-'}</td>
+                                <td>${socio.numero_socio || '-'}</td>
+                                <td>${new Date(socio.fecha_registro).toLocaleDateString('es-ES')}</td>
+                                <td>
+                                    <span class="badge ${socio.activo ? 'bg-success' : 'bg-secondary'}">
+                                        ${socio.activo ? 'Activo' : 'Inactivo'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="adminApp.editItem('${socio.id}')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="adminApp.deleteItem('${socio.id}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    renderTextosContent(data) {
+        const container = document.getElementById('textos-content-container');
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Gestión de Textos del Sitio</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="btn-group mb-4" role="group">
+                                <button type="button" class="btn btn-outline-primary active" onclick="adminApp.showTextSection('home')">
+                                    <i class="fas fa-home me-2"></i>Inicio
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('historia')">
+                                    <i class="fas fa-history me-2"></i>Historia
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('directiva')">
+                                    <i class="fas fa-users me-2"></i>Directiva
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('socios')">
+                                    <i class="fas fa-user-friends me-2"></i>Socios
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('eventos')">
+                                    <i class="fas fa-calendar me-2"></i>Eventos
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('galeria')">
+                                    <i class="fas fa-images me-2"></i>Galería
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('noticias')">
+                                    <i class="fas fa-newspaper me-2"></i>Noticias
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('contacto')">
+                                    <i class="fas fa-envelope me-2"></i>Contacto
+                                </button>
+                            </div>
+                            <div id="textos-form-container">
+                                <div class="text-center py-4">
+                                    <i class="fas fa-spinner fa-spin fa-2x text-muted mb-3"></i>
+                                    <p class="text-muted">Cargando textos...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Cargar automáticamente la sección "home"
+        setTimeout(() => {
+            this.showTextSection('home');
+        }, 100);
     }
 
     // ===== ACTIVIDAD RECIENTE =====
