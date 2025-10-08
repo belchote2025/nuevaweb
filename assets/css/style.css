@@ -55,7 +55,7 @@ body::after {
 
 /* Header y Navegación */
 .navbar {
-    background: rgba(15, 15, 20, 0.95) !important; /* más opaco para evitar artefactos visuales */
+    background: rgba(15, 15, 20, 1) !important; /* completamente opaco */
     backdrop-filter: saturate(140%) blur(8px);
     -webkit-backdrop-filter: saturate(140%) blur(8px);
     padding: 1rem 0;
@@ -65,6 +65,18 @@ body::after {
     width: 100%;
     top: 0;
     z-index: 1000;
+}
+
+/* Asegurar que no haya elementos detrás del navbar */
+.navbar::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 15, 20, 1);
+    z-index: -1;
 }
 
 .nav-container {
