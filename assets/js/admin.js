@@ -640,6 +640,13 @@ class AdminApp {
                 { key: 'password', label: 'Contraseña (dejar en blanco para mantener)', type: 'text' },
                 { key: 'active', label: 'Activo', type: 'checkbox' }
             ],
+            'usuarios': [
+                { key: 'name', label: 'Nombre', type: 'text', required: true },
+                { key: 'email', label: 'Email', type: 'email', required: true },
+                { key: 'role', label: 'Rol', type: 'select', options: this.getRoleOptions(), required: true },
+                { key: 'password', label: 'Contraseña (dejar en blanco para mantener)', type: 'text' },
+                { key: 'active', label: 'Activo', type: 'checkbox' }
+            ],
             'carousel': [
                 { key: 'titulo', label: 'Título', type: 'text', required: true },
                 { key: 'subtitulo', label: 'Subtítulo', type: 'text' },
