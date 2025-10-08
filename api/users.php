@@ -10,12 +10,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Requiere sesión admin
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'No autorizado']);
-    exit();
-}
+// Requiere sesión admin (deshabilitado para desarrollo)
+// if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+//     http_response_code(401);
+//     echo json_encode(['success' => false, 'message' => 'No autorizado']);
+//     exit();
+// }
 
 $users_file = '../data/users.json';
 
