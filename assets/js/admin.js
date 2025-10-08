@@ -157,6 +157,13 @@ class AdminApp {
             document.getElementById('section-content').style.display = 'block';
             document.getElementById('add-item-btn').style.display = 'block';
             this.loadSectionData(section);
+            
+            // Si es la sección de textos, cargar automáticamente la sección "home"
+            if (section === 'textos') {
+                setTimeout(() => {
+                    this.showTextSection('home');
+                }, 100);
+            }
         }
     }
 
@@ -881,7 +888,12 @@ class AdminApp {
         document.querySelectorAll('.btn-group .btn').forEach(btn => {
             btn.classList.remove('active');
         });
-        event.target.classList.add('active');
+        
+        // Activar el botón correspondiente
+        const activeButton = document.querySelector(`[onclick="adminApp.showTextSection('${section}')"]`);
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
 
         try {
             const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php?type=textos`);
