@@ -1,6 +1,6 @@
 // ===== CONFIGURACIÓN =====
 const ADMIN_CONFIG = {
-    API_BASE_URL: '../api/',
+    API_BASE_URL: 'api/',
     CURRENT_SECTION: 'dashboard',
     EDITING_ITEM: null
 };
