@@ -115,6 +115,8 @@ class AdminApp {
 
     // ===== NAVEGACIÓN =====
     showSection(section) {
+        console.log('showSection called with:', section);
+        
         // Verificar acceso a secciones restringidas
         if (section === 'socios' && !this.canAccessSocios()) {
             this.showNotification('No tienes permisos para acceder a esta sección', 'error');
@@ -127,15 +129,22 @@ class AdminApp {
         document.querySelectorAll('.sidebar-menu a').forEach(link => {
             link.classList.remove('active');
         });
-        document.querySelector(`[data-section="${section}"]`).classList.add('active');
+        const activeLink = document.querySelector(`[data-section="${section}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
         
         // Show/hide content sections
-        document.querySelectorAll('.content-section').forEach(section => {
-            section.classList.remove('active');
+        document.querySelectorAll('.content-section').forEach(contentSection => {
+            contentSection.classList.remove('active');
         });
-        document.getElementById(section).classList.add('active');
+        const targetSection = document.getElementById(section);
+        if (targetSection) {
+            targetSection.classList.add('active');
+        }
         
         // Load data for the section
+        console.log('Loading data for section:', section);
         this.loadSectionData(section);
         
         // Si es la sección de textos, cargar automáticamente la sección "home"
@@ -285,32 +294,41 @@ class AdminApp {
     }
 
     async loadSectionData(section) {
+        console.log('loadSectionData called with:', section);
         try {
             // Manejar secciones especiales
             if (section === 'libros') {
+                console.log('Loading libros data');
                 this.loadLibrosData();
                 return;
             }
             
             if (section === 'configuracion') {
+                console.log('Loading configuracion data');
                 this.loadConfiguracionData();
                 return;
             }
             
             if (section === 'redes-sociales') {
+                console.log('Loading social data');
                 this.loadSocialData();
                 return;
             }
             
             // Secciones normales
+            console.log('Fetching data for section:', section);
             const data = await this.fetchData(section);
+            console.log('Data received:', data);
             
             // Renderizar según el tipo de sección
             if (section === 'socios') {
+                console.log('Rendering socios table');
                 this.renderSociosTable(data);
             } else if (section === 'textos') {
+                console.log('Rendering textos content');
                 this.renderTextosContent(data);
             } else {
+                console.log('Rendering table for section:', section);
                 this.renderTable(section, data);
             }
         } catch (error) {
@@ -320,9 +338,16 @@ class AdminApp {
     }
 
     async fetchData(type) {
+        console.log('fetchData called with type:', type);
         const endpoint = type === 'users' ? 'users.php' : 'admin.php';
-        const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}?type=${type}`);
+        const url = `${ADMIN_CONFIG.API_BASE_URL}${endpoint}?type=${type}`;
+        console.log('Fetching from URL:', url);
+        
+        const response = await fetch(url);
+        console.log('Response status:', response.status);
+        
         const result = await response.json();
+        console.log('Response result:', result);
         
         if (result.success) {
             return result.data;
@@ -333,7 +358,9 @@ class AdminApp {
 
     // ===== RENDERIZADO DE TABLAS =====
     renderTable(section, data) {
+        console.log('renderTable called with section:', section, 'data:', data);
         const container = document.getElementById(`${section}-table-container`);
+        console.log('Container found:', container);
         if (!container) {
             console.error(`Container not found: ${section}-table-container`);
             return;
@@ -2439,8 +2466,7 @@ let adminApp;
 
 document.addEventListener('DOMContentLoaded', function() {
     adminApp = new AdminApp();
+    window.adminApp = adminApp;
+    console.log('AdminApp initialized:', adminApp);
 });
-
-// ===== FUNCIONES GLOBALES =====
-window.adminApp = adminApp;
 
