@@ -8,5 +8,25 @@
     "created_at": "2025-01-01 00:00:00",
     "updated_at": "2025-01-01 00:00:00",
     "active": true
+  },
+  {
+    "id": "socio-2",
+    "name": "María García",
+    "email": "maria.garcia@filamariscales.com",
+    "role": "socio",
+    "password_hash": "$2y$10$N8dQyXhG0Qxgk3GfJmQnN.6Jkq7r5c8n2sB8l0iP4V2Wl8s48Zr1K",
+    "created_at": "2025-01-15 10:30:00",
+    "updated_at": "2025-01-15 10:30:00",
+    "active": true
+  },
+  {
+    "id": "socio-3",
+    "name": "Carlos López",
+    "email": "carlos.lopez@filamariscales.com",
+    "role": "socio",
+    "password_hash": "$2y$10$N8dQyXhG0Qxgk3GfJmQnN.6Jkq7r5c8n2sB8l0iP4V2Wl8s48Zr1K",
+    "created_at": "2025-01-20 14:45:00",
+    "updated_at": "2025-01-20 14:45:00",
+    "active": true
   }
 ]

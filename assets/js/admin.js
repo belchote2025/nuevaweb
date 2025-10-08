@@ -1115,7 +1115,7 @@ class AdminApp {
     }
 
     renderTextSection(section, textos) {
-        const container = document.getElementById('textos-content');
+        const container = document.getElementById('textos-content-container');
         
         if (!textos[section]) {
             container.innerHTML = '<p class="text-muted">No hay textos configurados para esta sección.</p>';
