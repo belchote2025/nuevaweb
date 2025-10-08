@@ -44,7 +44,7 @@ body::after {
     right: 0;
     bottom: 0;
     background: linear-gradient(0deg, var(--site-bg-darken), var(--site-bg-darken));
-    z-index: -1;
+    z-index: -2;
 }
 
 .container {
@@ -55,7 +55,7 @@ body::after {
 
 /* Header y Navegación */
 .navbar {
-    background: rgba(15, 15, 20, 0.55) !important; /* translúcido */
+    background: rgba(15, 15, 20, 0.95) !important; /* más opaco para evitar artefactos visuales */
     backdrop-filter: saturate(140%) blur(8px);
     -webkit-backdrop-filter: saturate(140%) blur(8px);
     padding: 1rem 0;
