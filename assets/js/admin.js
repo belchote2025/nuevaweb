@@ -140,7 +140,8 @@ class AdminApp {
             'contactos': 'Contactos',
             'users': 'Usuarios',
             'carousel': 'Carrusel',
-            'socios': 'Socios'
+            'socios': 'Socios',
+            'textos': 'Textos'
         };
         
         document.getElementById('section-title').textContent = titles[section] || 'Dashboard';
@@ -316,6 +317,12 @@ class AdminApp {
                 { key: 'telefono', title: 'Teléfono', type: 'text' },
                 { key: 'fecha_ingreso', title: 'Fecha de Ingreso', type: 'date' },
                 { key: 'activo', title: 'Activo', type: 'boolean' }
+            ],
+            'textos': [
+                { key: 'seccion', title: 'Sección', type: 'text' },
+                { key: 'campo', title: 'Campo', type: 'text' },
+                { key: 'valor', title: 'Valor', type: 'text' },
+                { key: 'descripcion', title: 'Descripción', type: 'text' }
             ]
         };
         
@@ -749,6 +756,189 @@ class AdminApp {
     canAccessSocios() {
         const currentRole = this.getCurrentUserRole();
         return currentRole === 'admin' || currentRole === 'socio';
+    }
+
+    // ===== GESTIÓN DE TEXTOS =====
+    async showTextSection(section) {
+        // Actualizar botones activos
+        document.querySelectorAll('.btn-group .btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php?type=textos`);
+            const result = await response.json();
+            
+            if (result.success) {
+                this.renderTextSection(section, result.data);
+            } else {
+                this.showNotification('Error cargando textos', 'error');
+            }
+        } catch (error) {
+            console.error('Error cargando textos:', error);
+            this.showNotification('Error cargando textos', 'error');
+        }
+    }
+
+    renderTextSection(section, textos) {
+        const container = document.getElementById('textos-content');
+        
+        if (!textos[section]) {
+            container.innerHTML = '<p class="text-muted">No hay textos configurados para esta sección.</p>';
+            return;
+        }
+
+        const sectionData = textos[section];
+        let html = `<h4>Textos de la sección: ${section}</h4><hr>`;
+
+        Object.entries(sectionData).forEach(([key, value]) => {
+            const fieldId = `${section}_${key}`;
+            const label = this.getFieldLabel(key);
+            
+            html += `
+                <div class="mb-3">
+                    <label for="${fieldId}" class="form-label fw-bold">${label}</label>
+                    ${Array.isArray(value) ? 
+                        `<textarea class="form-control" id="${fieldId}" rows="3">${value.join('\n')}</textarea>` :
+                        `<input type="text" class="form-control" id="${fieldId}" value="${value}">`
+                    }
+                    <small class="text-muted">Campo: ${key}</small>
+                </div>
+            `;
+        });
+
+        html += `
+            <div class="mt-4">
+                <button class="btn btn-primary" onclick="adminApp.saveTextSection('${section}')">
+                    <i class="fas fa-save me-2"></i>Guardar Cambios
+                </button>
+                <button class="btn btn-secondary ms-2" onclick="adminApp.previewTextSection('${section}')">
+                    <i class="fas fa-eye me-2"></i>Vista Previa
+                </button>
+            </div>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    getFieldLabel(key) {
+        const labels = {
+            'titulo': 'Título',
+            'subtitulo': 'Subtítulo',
+            'descripcion': 'Descripción',
+            'texto_bienvenida': 'Texto de Bienvenida',
+            'fecha_fundacion': 'Fecha de Fundación',
+            'fundadores': 'Fundadores',
+            'beneficios': 'Beneficios (uno por línea)',
+            'direccion': 'Dirección',
+            'email': 'Email',
+            'telefono': 'Teléfono',
+            'horario_atencion': 'Horario de Atención',
+            'texto_copyright': 'Texto de Copyright',
+            'keywords': 'Palabras Clave SEO',
+            'descripcion_seo': 'Descripción SEO'
+        };
+        return labels[key] || key.charAt(0).toUpperCase() + key.slice(1);
+    }
+
+    async saveTextSection(section) {
+        try {
+            const sectionData = {};
+            const inputs = document.querySelectorAll(`#textos-content input, #textos-content textarea`);
+            
+            inputs.forEach(input => {
+                const key = input.id.replace(`${section}_`, '');
+                const value = input.value;
+                
+                // Si el campo original era un array, convertir de vuelta
+                if (input.tagName === 'TEXTAREA' && key === 'beneficios') {
+                    sectionData[key] = value.split('\n').filter(line => line.trim());
+                } else {
+                    sectionData[key] = value;
+                }
+            });
+
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    type: 'textos',
+                    section: section,
+                    data: sectionData
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Textos guardados correctamente', 'success');
+            } else {
+                this.showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error guardando textos:', error);
+            this.showNotification('Error guardando textos', 'error');
+        }
+    }
+
+    previewTextSection(section) {
+        // Crear una ventana de vista previa
+        const previewWindow = window.open('', '_blank', 'width=800,height=600');
+        const sectionData = {};
+        
+        const inputs = document.querySelectorAll(`#textos-content input, #textos-content textarea`);
+        inputs.forEach(input => {
+            const key = input.id.replace(`${section}_`, '');
+            const value = input.value;
+            
+            if (input.tagName === 'TEXTAREA' && key === 'beneficios') {
+                sectionData[key] = value.split('\n').filter(line => line.trim());
+            } else {
+                sectionData[key] = value;
+            }
+        });
+
+        previewWindow.document.write(`
+            <html>
+            <head>
+                <title>Vista Previa - ${section}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; }
+                    .preview-section { border: 1px solid #ddd; padding: 20px; margin: 20px 0; }
+                    h1 { color: #DC143C; }
+                    h2 { color: #333; }
+                </style>
+            </head>
+            <body>
+                <h1>Vista Previa - Sección ${section}</h1>
+                <div class="preview-section">
+                    ${this.generatePreviewHTML(section, sectionData)}
+                </div>
+            </body>
+            </html>
+        `);
+    }
+
+    generatePreviewHTML(section, data) {
+        let html = '';
+        
+        if (data.titulo) html += `<h1>${data.titulo}</h1>`;
+        if (data.subtitulo) html += `<h2>${data.subtitulo}</h2>`;
+        if (data.descripcion) html += `<p>${data.descripcion}</p>`;
+        if (data.texto_bienvenida) html += `<p><em>${data.texto_bienvenida}</em></p>`;
+        
+        if (data.beneficios && Array.isArray(data.beneficios)) {
+            html += '<ul>';
+            data.beneficios.forEach(beneficio => {
+                html += `<li>${beneficio}</li>`;
+            });
+            html += '</ul>';
+        }
+        
+        return html;
     }
 
     // ===== NOTIFICACIONES =====

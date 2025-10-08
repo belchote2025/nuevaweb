@@ -36,7 +36,8 @@ function getDataFile($type) {
         'directiva' => '../data/directiva.json',
         'contactos' => '../data/contactos.json',
         'carousel' => '../data/carousel.json',
-        'socios' => '../data/socios.json'
+        'socios' => '../data/socios.json',
+        'textos' => '../data/textos.json'
     ];
     
     return $files[$type] ?? null;
@@ -84,6 +85,21 @@ function saveData($type, $data) {
         ];
         
         return file_put_contents($file, json_encode($carouselData, JSON_PRETTY_PRINT)) !== false;
+    }
+    
+    // Para textos, manejar actualización por sección
+    if ($type === 'textos') {
+        $originalContent = file_get_contents($file);
+        $originalData = json_decode($originalContent, true) ?: [];
+        
+        // Si se especifica una sección, actualizar solo esa sección
+        if (isset($input['section']) && isset($input['data'])) {
+            $originalData[$input['section']] = $input['data'];
+            return file_put_contents($file, json_encode($originalData, JSON_PRETTY_PRINT)) !== false;
+        }
+        
+        // Si no, actualizar todo el archivo
+        return file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT)) !== false;
     }
     
     return file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT)) !== false;

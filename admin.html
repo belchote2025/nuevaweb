@@ -205,6 +205,11 @@
                         </a>
                     </li>
                     <li>
+                        <a href="#" data-section="textos">
+                            <i class="fas fa-edit"></i>Textos
+                        </a>
+                    </li>
+                    <li>
                         <a href="#" data-section="libros">
                             <i class="fas fa-book"></i>Libros
                         </a>
@@ -1102,6 +1107,57 @@
                                         <!-- Los datos se cargarán dinámicamente -->
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Textos Section -->
+                <div id="textos" class="content-section">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Gestión de Textos</h2>
+                        <button class="btn btn-admin" onclick="adminApp.showAddModal()">
+                            <i class="fas fa-plus me-2"></i>Nuevo Texto
+                        </button>
+                    </div>
+                    
+                    <!-- Navegación por secciones -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-primary active" onclick="adminApp.showTextSection('home')">
+                                    <i class="fas fa-home me-1"></i>Inicio
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('historia')">
+                                    <i class="fas fa-history me-1"></i>Historia
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('directiva')">
+                                    <i class="fas fa-users me-1"></i>Directiva
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('socios')">
+                                    <i class="fas fa-user-friends me-1"></i>Socios
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('eventos')">
+                                    <i class="fas fa-calendar me-1"></i>Eventos
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('galeria')">
+                                    <i class="fas fa-images me-1"></i>Galería
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('noticias')">
+                                    <i class="fas fa-newspaper me-1"></i>Noticias
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="adminApp.showTextSection('contacto')">
+                                    <i class="fas fa-envelope me-1"></i>Contacto
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contenido de textos -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="textos-content">
+                                <!-- Los textos se cargarán dinámicamente -->
                             </div>
                         </div>
                     </div>
