@@ -23,11 +23,6 @@ class FilaMariscalesApp {
 
     // ===== CONFIGURACIÓN DE EVENTOS =====
     setupEventListeners() {
-        // Navegación suave
-        document.querySelectorAll('a[href^="#"]').forEach(link => {
-            link.addEventListener('click', this.handleSmoothScroll.bind(this));
-        });
-
         // Formulario de contacto
         const contactoForm = document.getElementById('contacto-form');
         if (contactoForm) {
@@ -105,7 +100,7 @@ class FilaMariscalesApp {
                     <div class="carousel-content">
                         <h2 class="display-4 fw-bold mb-3 carousel-title">${s.titulo}</h2>
                         <p class="lead mb-4 carousel-subtitle">${s.subtitulo || ''}</p>
-                        ${s.enlace ? `<a href="${s.enlace}" class="btn btn-primary btn-lg carousel-btn" onclick="app.handleCarouselClick('${s.enlace}')">
+                        ${s.enlace ? `<a href="${s.enlace}" class="btn btn-primary btn-lg carousel-btn">
                             <i class="fas fa-arrow-right me-2"></i>${s.texto_boton || 'Ver más'}
                         </a>` : ''}
                     </div>
@@ -658,38 +653,128 @@ class FilaMariscalesApp {
             <div class="col-12">
                 <div class="row">
                     <div class="col-lg-4 mb-4">
-                        <div class="card text-center">
-                            <div class="card-body">
+                        <div class="card text-center h-100">
+                            <div class="card-body d-flex flex-column">
                                 <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
                                 <h5 class="card-title">Hazte Socio</h5>
-                                <p class="card-text">Únete a nuestra familia templaria y forma parte de la tradición.</p>
-                                <button class="btn btn-primary">Más información</button>
+                                <p class="card-text flex-grow-1">Únete a nuestra familia templaria y forma parte de la tradición.</p>
+                                <a href="#contacto" class="btn btn-primary mt-auto">
+                                    <i class="fas fa-envelope me-2"></i>Más información
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4 mb-4">
-                        <div class="card text-center">
-                            <div class="card-body">
+                        <div class="card text-center h-100">
+                            <div class="card-body d-flex flex-column">
                                 <i class="fas fa-percent fa-3x text-success mb-3"></i>
                                 <h5 class="card-title">Ventajas</h5>
-                                <p class="card-text">Disfruta de descuentos y ventajas exclusivas para socios.</p>
-                                <button class="btn btn-success">Ver ventajas</button>
+                                <p class="card-text flex-grow-1">Disfruta de descuentos y ventajas exclusivas para socios.</p>
+                                <button class="btn btn-success mt-auto btn-ver-ventajas">
+                                    <i class="fas fa-gift me-2"></i>Ver ventajas
+                                </button>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4 mb-4">
-                        <div class="card text-center">
-                            <div class="card-body">
+                        <div class="card text-center h-100">
+                            <div class="card-body d-flex flex-column">
                                 <i class="fas fa-calendar-check fa-3x text-warning mb-3"></i>
                                 <h5 class="card-title">Actividades</h5>
-                                <p class="card-text">Participa en actividades exclusivas para socios.</p>
-                                <button class="btn btn-warning">Ver actividades</button>
+                                <p class="card-text flex-grow-1">Participa en actividades exclusivas para socios.</p>
+                                <a href="#eventos" class="btn btn-warning mt-auto">
+                                    <i class="fas fa-calendar-alt me-2"></i>Ver actividades
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         `;
+        
+        // Añadir funcionalidad al botón "Ver ventajas"
+        setTimeout(() => {
+            const btnVentajas = container.querySelector('.btn-ver-ventajas');
+            if (btnVentajas) {
+                btnVentajas.addEventListener('click', () => {
+                    this.mostrarVentajasSocios();
+                });
+            }
+        }, 100);
+    }
+    
+    mostrarVentajasSocios() {
+        const ventajas = [
+            { icono: 'fa-tags', titulo: 'Descuentos Exclusivos', descripcion: 'Descuentos en productos oficiales de la filá' },
+            { icono: 'fa-ticket-alt', titulo: 'Entradas Prioritarias', descripcion: 'Acceso prioritario a eventos y actividades' },
+            { icono: 'fa-users', titulo: 'Eventos Exclusivos', descripcion: 'Invitaciones a eventos solo para socios' },
+            { icono: 'fa-newspaper', titulo: 'Boletín Informativo', descripcion: 'Recibe noticias y novedades antes que nadie' },
+            { icono: 'fa-handshake', titulo: 'Red de Contactos', descripcion: 'Conecta con otros socios y hermandades' },
+            { icono: 'fa-trophy', titulo: 'Reconocimientos', descripcion: 'Participación en premios y reconocimientos anuales' }
+        ];
+        
+        const ventajasHTML = ventajas.map(v => `
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="d-flex align-items-start">
+                    <i class="fas ${v.icono} fa-2x text-success me-3"></i>
+                    <div>
+                        <h6 class="mb-1">${v.titulo}</h6>
+                        <p class="text-muted small mb-0">${v.descripcion}</p>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+        const modalHTML = `
+            <div class="modal fade" id="ventajasModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">
+                                <i class="fas fa-star me-2"></i>Ventajas de ser Socio
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                ${ventajasHTML}
+                            </div>
+                            <hr>
+                            <div class="text-center">
+                                <p class="mb-3">¿Quieres formar parte de nuestra hermandad?</p>
+                                <a href="#contacto" class="btn btn-success" data-bs-dismiss="modal">
+                                    <i class="fas fa-envelope me-2"></i>Contacta con nosotros
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Eliminar modal anterior si existe
+        const oldModal = document.getElementById('ventajasModal');
+        if (oldModal) oldModal.remove();
+        
+        // Añadir nuevo modal
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Obtener elemento del modal
+        const modalElement = document.getElementById('ventajasModal');
+        const modal = new bootstrap.Modal(modalElement);
+        
+        // Manejar eventos del modal para accesibilidad
+        modalElement.addEventListener('shown.bs.modal', () => {
+            modalElement.removeAttribute('aria-hidden');
+        });
+        
+        modalElement.addEventListener('hidden.bs.modal', () => {
+            // Eliminar el modal del DOM cuando se cierra
+            modalElement.remove();
+        });
+        
+        // Mostrar modal
+        modal.show();
     }
 
     // ===== CARGA DE EVENTOS =====
@@ -813,19 +898,6 @@ class FilaMariscalesApp {
     }
 
     // ===== MANEJO DE EVENTOS =====
-    handleSmoothScroll(event) {
-        event.preventDefault();
-        const targetId = event.target.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
-        
-        if (targetElement) {
-            targetElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    }
-
     handleNavClick(event) {
         // Cerrar menú móvil si está abierto
         const navbarCollapse = document.querySelector('.navbar-collapse');
@@ -1061,6 +1133,9 @@ let app;
 document.addEventListener('DOMContentLoaded', function() {
     app = new FilaMariscalesApp();
     
+    // Hacer app accesible globalmente después de la inicialización
+    window.app = app;
+    
     // Actualizar badge del carrito al cargar
     app.updateCartBadge();
     
@@ -1070,6 +1145,3 @@ document.addEventListener('DOMContentLoaded', function() {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 });
-
-// ===== FUNCIONES GLOBALES =====
-window.app = app;

@@ -1,53 +1,53 @@
 [
     {
         "id": 1,
-        "titulo": "Presentación de la Filá 2025",
-        "descripcion": "Presentación oficial de la Filá Mariscales de Caballeros Templarios para la temporada 2025",
+        "titulo": "Presentaci\u00f3n de la Fil\u00e1 2025",
+        "descripcion": "Presentaci\u00f3n oficial de la Fil\u00e1 Mariscales de Caballeros Templarios para la temporada 2025",
         "fecha": "2025-02-15",
         "hora": "20:00",
         "lugar": "Sede Social - Calle Templarios, 15",
         "tipo": "presentacion",
-        "imagen_url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     },
     {
         "id": 2,
         "titulo": "Cena de Hermandad Templaria",
-        "descripcion": "Cena de hermandad para todos los miembros de la filá. Evento de convivencia y fortalecimiento de lazos templarios.",
+        "descripcion": "Cena de hermandad para todos los miembros de la fil\u00e1. Evento de convivencia y fortalecimiento de lazos templarios.",
         "fecha": "2025-02-22",
         "hora": "21:00",
         "lugar": "Restaurante El Castillo Templario",
         "tipo": "cena",
-        "imagen_url": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     },
     {
         "id": 3,
         "titulo": "Ensayo General de Desfile",
-        "descripcion": "Ensayo general del desfile de Moros y Cristianos. Preparación final para la participación en las fiestas.",
+        "descripcion": "Ensayo general del desfile de Moros y Cristianos. Preparaci\u00f3n final para la participaci\u00f3n en las fiestas.",
         "fecha": "2025-03-01",
         "hora": "18:00",
         "lugar": "Punto de encuentro: Plaza del Ayuntamiento",
         "tipo": "ensayo",
-        "imagen_url": "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     },
     {
         "id": 4,
         "titulo": "Desfile de Moros y Cristianos 2025",
-        "descripcion": "Participación oficial en el desfile principal de las fiestas de Moros y Cristianos de Elche",
+        "descripcion": "Participaci\u00f3n oficial en el desfile principal de las fiestas de Moros y Cristianos de Elche",
         "fecha": "2025-03-08",
         "hora": "19:00",
-        "lugar": "Recorrido oficial - Centro histórico de Elche",
+        "lugar": "Recorrido oficial - Centro hist\u00f3rico de Elche",
         "tipo": "desfile",
-        "imagen_url": "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     },
     {
         "id": 5,
         "titulo": "Acto de Investidura Templaria",
-        "descripcion": "Ceremonia de investidura para nuevos miembros de la Filá Mariscales",
+        "descripcion": "Ceremonia de investidura para nuevos miembros de la Fil\u00e1 Mariscales",
         "fecha": "2025-03-15",
         "hora": "19:30",
-        "lugar": "Sede Social - Salón de Actos",
+        "lugar": "Sede Social - Sal\u00f3n de Actos",
         "tipo": "ceremonia",
-        "imagen_url": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     },
     {
         "id": 6,
@@ -57,6 +57,17 @@
         "hora": "10:00",
         "lugar": "Centro Cultural de Elche",
         "tipo": "cultural",
-        "imagen_url": "https://images.unsplash.com/photo-1481277542470-605612bd2d61?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1481277542470-605612bd2d61?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "titulo": "prueba",
+        "descripcion": "prueba",
+        "fecha": "2025-10-10",
+        "hora": "11:55",
+        "lugar": "elche",
+        "tipo": "cena",
+        "imagen_url": "",
+        "id": "68e8d811b4e92",
+        "updated_at": "2025-10-10 11:55:29"
     }
 ]

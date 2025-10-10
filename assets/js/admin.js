@@ -2,62 +2,132 @@
 const ADMIN_CONFIG = {
     API_BASE_URL: 'api/',
     CURRENT_SECTION: 'dashboard',
-    EDITING_ITEM: null
+    EDITING_ITEM: null,
+    CURRENT_DATA: [],
+    FILTERED_DATA: [],
+    CURRENT_PAGE: 1,
+    ITEMS_PER_PAGE: 25,
+    SORT_COLUMN: null,
+    SORT_DIRECTION: 'asc'
 };
 
 // ===== CLASE PRINCIPAL DEL ADMIN =====
 class AdminApp {
     constructor() {
+        // Initialize properties
+        this.initialized = false;
+        this.isAuthenticated = false;
+        this.authCheckPromise = null;
+        this.loginInProgress = false;
+        
+        // Initialize the app
         this.init();
     }
-
+    
     init() {
-        this.checkAuth();
+        if (this.initialized) return;
+        this.initialized = true;
+        
+        // Setup event listeners
         this.setupEventListeners();
+        
+        // Check authentication status
+        this.checkAuth();
     }
 
     // ===== AUTENTICACIÓN =====
     async checkAuth() {
-        try {
-            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}auth.php?action=check`);
-            const result = await response.json();
-            
-            if (result.success) {
-                // Almacenar información del usuario
-                window.currentUserRole = result.data.role;
-                this.showDashboard(result.data.email);
-            } else {
-                this.showLogin();
-            }
-        } catch (error) {
-            console.error('Error verificando autenticación:', error);
-            this.showLogin();
+        // If we already have an auth check in progress, return that promise
+        if (this.authCheckPromise) {
+            return this.authCheckPromise;
         }
+        
+        this.authCheckPromise = (async () => {
+            try {
+                const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}auth.php?action=check`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    this.isAuthenticated = true;
+                    window.currentUserRole = result.data.role;
+                    this.showDashboard(result.data.email);
+                } else {
+                    this.isAuthenticated = false;
+                    this.showLogin();
+                }
+                
+                return result.success;
+            } catch (error) {
+                console.error('Error verificando autenticación:', error);
+                this.isAuthenticated = false;
+                this.showLogin();
+                return false;
+            } finally {
+                this.authCheckPromise = null;
+            }
+        })();
+        
+        return this.authCheckPromise;
     }
 
     async login(email, password) {
+        // Prevent multiple login attempts
+        const loginBtn = document.querySelector('#login-form button[type="submit"]');
+        const originalBtnText = loginBtn.innerHTML;
+        
         try {
+            // Disable the login button to prevent multiple submissions
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Iniciando sesión...';
+            
             const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}auth.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password })
+                credentials: 'include',
+                body: JSON.stringify({ 
+                    email: email.trim(),
+                    password: password
+                })
             });
 
             const result = await response.json();
             
             if (result.success) {
-                // Almacenar información del usuario
+                // Update authentication state
+                this.isAuthenticated = true;
                 window.currentUserRole = result.data.role;
+                
+                // Show dashboard and notification
                 this.showDashboard(result.data.email);
-                this.showNotification('Login exitoso', 'success');
+                this.showNotification('Inicio de sesión exitoso', 'success');
+                
+                // Clear the form
+                document.getElementById('login-form').reset();
             } else {
-                this.showNotification(result.message, 'error');
+                this.showNotification(result.message || 'Credenciales incorrectas', 'error');
+                document.getElementById('password').focus();
             }
         } catch (error) {
             console.error('Error en login:', error);
-            this.showNotification('Error de conexión', 'error');
+            this.showNotification('Error de conexión. Intente nuevamente.', 'error');
+        } finally {
+            // Re-enable the login button
+            if (loginBtn) {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = originalBtnText;
+            }
         }
     }
 
@@ -90,13 +160,33 @@ class AdminApp {
 
     // ===== CONFIGURACIÓN DE EVENTOS =====
     setupEventListeners() {
-        // Login form
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            this.login(email, password);
+        // Login form - use event delegation to handle dynamic elements
+        document.addEventListener('submit', (e) => {
+            if (e.target && e.target.matches('#login-form')) {
+                e.preventDefault();
+                
+                // Prevent multiple submissions
+                if (this.loginInProgress) return;
+                
+                const email = document.getElementById('email')?.value;
+                const password = document.getElementById('password')?.value;
+                
+                if (!email || !password) {
+                    this.showNotification('Por favor complete todos los campos', 'error');
+                    return;
+                }
+                
+                this.login(email, password);
+            }
         });
+
+        // Logout button
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                this.logout();
+            });
+        }
 
         // Navigation
         document.querySelectorAll('[data-section]').forEach(link => {
@@ -111,6 +201,94 @@ class AdminApp {
         document.getElementById('add-item-btn').addEventListener('click', () => {
             this.showAddModal();
         });
+
+        // Save item button (modal)
+        const saveItemBtn = document.getElementById('save-item-btn');
+        if (saveItemBtn) {
+            saveItemBtn.addEventListener('click', () => {
+                this.saveItem();
+            });
+        }
+
+        // Delegación de eventos para botones de editar/eliminar en tablas
+        const tableBody = document.getElementById('table-body');
+        if (tableBody) {
+            tableBody.addEventListener('click', (e) => {
+                const editBtn = e.target.closest('.btn-edit');
+                const deleteBtn = e.target.closest('.btn-delete');
+                
+                if (editBtn) {
+                    e.preventDefault();
+                    const id = editBtn.dataset.id;
+                    this.editItem(id);
+                } else if (deleteBtn) {
+                    e.preventDefault();
+                    const id = deleteBtn.dataset.id;
+                    this.deleteItem(id);
+                }
+            });
+        }
+
+        // Botones de sección de textos
+        document.querySelectorAll('.btn-text-section').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = btn.dataset.textSection;
+                this.showTextSection(section);
+            });
+        });
+
+        // Búsqueda en tiempo real
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', Utils.debounce(() => {
+                this.filterAndRenderTable();
+            }, 300));
+        }
+
+        // Limpiar búsqueda
+        const clearSearchBtn = document.getElementById('clear-search-btn');
+        if (clearSearchBtn) {
+            clearSearchBtn.addEventListener('click', () => {
+                document.getElementById('search-input').value = '';
+                this.filterAndRenderTable();
+            });
+        }
+
+        // Filtro por categoría/estado
+        const filterSelect = document.getElementById('filter-select');
+        if (filterSelect) {
+            filterSelect.addEventListener('change', () => {
+                this.filterAndRenderTable();
+            });
+        }
+
+        // Items por página
+        const itemsPerPage = document.getElementById('items-per-page');
+        if (itemsPerPage) {
+            itemsPerPage.addEventListener('change', (e) => {
+                ADMIN_CONFIG.ITEMS_PER_PAGE = parseInt(e.target.value);
+                ADMIN_CONFIG.CURRENT_PAGE = 1;
+                this.filterAndRenderTable();
+            });
+        }
+
+        // Exportar CSV
+        const exportCsvBtn = document.getElementById('export-csv-btn');
+        if (exportCsvBtn) {
+            exportCsvBtn.addEventListener('click', () => {
+                this.exportToCSV();
+            });
+        }
+
+        // Refrescar
+        const refreshBtn = document.getElementById('refresh-btn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                this.loadSectionData(ADMIN_CONFIG.CURRENT_SECTION);
+                this.showNotification('Datos actualizados', 'success');
+            });
+        }
     }
 
     // ===== NAVEGACIÓN =====
@@ -152,17 +330,23 @@ class AdminApp {
             document.getElementById('section-content').style.display = 'none';
             document.getElementById('textos-content').style.display = 'none';
             document.getElementById('add-item-btn').style.display = 'none';
+            document.getElementById('search-filter-bar').style.display = 'none';
+            document.getElementById('table-actions').style.display = 'none';
             this.loadDashboardData();
         } else if (section === 'textos') {
             document.getElementById('dashboard-content').style.display = 'none';
             document.getElementById('section-content').style.display = 'none';
             document.getElementById('textos-content').style.display = 'block';
             document.getElementById('add-item-btn').style.display = 'none';
+            document.getElementById('search-filter-bar').style.display = 'none';
+            document.getElementById('table-actions').style.display = 'none';
         } else {
             document.getElementById('dashboard-content').style.display = 'none';
             document.getElementById('section-content').style.display = 'block';
             document.getElementById('textos-content').style.display = 'none';
             document.getElementById('add-item-btn').style.display = 'block';
+            document.getElementById('search-filter-bar').style.display = 'block';
+            document.getElementById('table-actions').style.display = 'inline-flex';
             this.loadSectionData(section);
         }
     }
@@ -191,7 +375,18 @@ class AdminApp {
     async loadSectionData(section) {
         try {
             const data = await this.fetchData(section);
-            this.renderTable(section, data);
+            ADMIN_CONFIG.CURRENT_DATA = data;
+            ADMIN_CONFIG.FILTERED_DATA = data;
+            ADMIN_CONFIG.CURRENT_PAGE = 1;
+            
+            // Configurar filtros según la sección
+            this.setupFilters(section);
+            
+            // Limpiar búsqueda
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) searchInput.value = '';
+            
+            this.filterAndRenderTable();
         } catch (error) {
             console.error(`Error cargando datos de ${section}:`, error);
             this.showNotification('Error cargando datos', 'error');
@@ -218,13 +413,26 @@ class AdminApp {
         // Configuración de columnas por sección
         const columns = this.getColumnsConfig(section);
         
-        // Header
+        // Header con ordenamiento
         tableHead.innerHTML = `
             <tr>
-                ${columns.map(col => `<th>${col.title}</th>`).join('')}
+                ${columns.map(col => {
+                    const sortIcon = ADMIN_CONFIG.SORT_COLUMN === col.key 
+                        ? (ADMIN_CONFIG.SORT_DIRECTION === 'asc' ? '<i class="fas fa-sort-up ms-1"></i>' : '<i class="fas fa-sort-down ms-1"></i>')
+                        : '<i class="fas fa-sort ms-1 text-muted"></i>';
+                    return `<th class="sortable" data-column="${col.key}" style="cursor: pointer;">${col.title} ${sortIcon}</th>`;
+                }).join('')}
                 <th>Acciones</th>
             </tr>
         `;
+        
+        // Event listeners para ordenamiento
+        tableHead.querySelectorAll('.sortable').forEach(th => {
+            th.addEventListener('click', () => {
+                const column = th.dataset.column;
+                this.sortTable(column);
+            });
+        });
         
         // Body
         if (data.length === 0) {
@@ -257,10 +465,10 @@ class AdminApp {
                     return `<td>${value}</td>`;
                 }).join('')}
                 <td>
-                    <button class="btn btn-sm btn-outline-primary me-1" onclick="adminApp.editItem('${item.id}')">
+                    <button class="btn btn-sm btn-outline-primary me-1 btn-edit" data-id="${item.id ?? item.imagen_id ?? item._id}">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="adminApp.deleteItem('${item.id}')">
+                    <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${item.id ?? item.imagen_id ?? item._id}">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -351,11 +559,15 @@ class AdminApp {
     async editItem(id) {
         try {
             const data = await this.fetchData(ADMIN_CONFIG.CURRENT_SECTION);
-            const item = data.find(i => i.id === id);
+            // Buscar por cualquier posible clave de ID y normalizar a string
+            const item = data.find(i => String(this.getItemId(i)) === String(id));
             
             if (item) {
                 ADMIN_CONFIG.EDITING_ITEM = item;
                 this.showItemModal('Editar', this.getFormFields(ADMIN_CONFIG.CURRENT_SECTION), item);
+            } else {
+                console.error('Item no encontrado con id:', id);
+                this.showNotification('No se encontró el elemento a editar', 'error');
             }
         } catch (error) {
             console.error('Error cargando item para editar:', error);
@@ -375,6 +587,7 @@ class AdminApp {
                 case 'text':
                 case 'email':
                 case 'url':
+                case 'password':
                     inputHtml = `<input type="${field.type}" class="form-control" id="${field.key}" value="${value}" ${field.required ? 'required' : ''}>`;
                     break;
                 case 'textarea':
@@ -407,11 +620,16 @@ class AdminApp {
             
             // Añadir botón de subir imagen para campos de imagen
             let uploadButton = '';
-            if (field.key === 'imagen_url' && (ADMIN_CONFIG.CURRENT_SECTION === 'carousel' || ADMIN_CONFIG.CURRENT_SECTION === 'galeria')) {
-                const uploadType = ADMIN_CONFIG.CURRENT_SECTION === 'carousel' ? 'carousel' : 'gallery';
+            const section = ADMIN_CONFIG.CURRENT_SECTION;
+            const isGallery = section === 'galeria';
+            const isCarousel = section === 'carousel';
+            const isProducts = section === 'productos';
+            const imageFields = ['imagen_url'].concat(isGallery ? ['thumb_url'] : []);
+            if (imageFields.includes(field.key) && (isGallery || isCarousel || isProducts)) {
+                const uploadType = isCarousel ? 'carousel' : (isProducts ? 'products' : 'gallery');
                 uploadButton = `
                     <div class="mt-2">
-                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="adminApp.uploadImage('${field.key}', '${uploadType}')">
+                        <button type="button" class="btn btn-outline-secondary btn-sm btn-upload-image" data-field="${field.key}" data-type="${uploadType}">
                             <i class="fas fa-upload me-1"></i>Subir Imagen
                         </button>
                         <div id="${field.key}-preview" class="mt-2" style="display: none;">
@@ -433,18 +651,48 @@ class AdminApp {
             `;
         }).join('');
         
-        const modal = new bootstrap.Modal(document.getElementById('itemModal'));
+        const modalElement = document.getElementById('itemModal');
+        const modal = new bootstrap.Modal(modalElement);
+        
+        // Manejar eventos del modal para accesibilidad
+        modalElement.addEventListener('shown.bs.modal', () => {
+            // Enfocar el primer campo del formulario una vez visible
+            setTimeout(() => {
+                const firstInput = modalElement.querySelector('input:not([type="checkbox"]), textarea, select');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+            }, 0);
+        });
+        
+        modalElement.addEventListener('hidden.bs.modal', () => {
+            // Limpiar el formulario cuando se cierra
+            document.getElementById('form-fields').innerHTML = '';
+        });
+        
         modal.show();
+        
+        // Event listener para botones de subir imagen y limpiar errores
+        setTimeout(() => {
+            // Botones de subir imagen
+            document.querySelectorAll('.btn-upload-image').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const fieldKey = btn.dataset.field;
+                    const uploadType = btn.dataset.type;
+                    this.uploadImage(fieldKey, uploadType);
+                });
+            });
+            
+            // Limpiar errores cuando el usuario empieza a escribir
+            document.querySelectorAll('#form-fields input, #form-fields textarea, #form-fields select').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    e.target.classList.remove('is-invalid');
+                });
+            });
+        }, 100);
     }
 
-    // Obtener opciones de roles para el formulario de usuarios
-    getRoleOptions() {
-        return [
-            { value: 'admin', label: 'Administrador' },
-            { value: 'editor', label: 'Editor' },
-            { value: 'socio', label: 'Socio' }
-        ];
-    }
 
     getFormFields(section) {
         const fields = {
@@ -531,11 +779,39 @@ class AdminApp {
             const formData = this.getFormData();
             const section = ADMIN_CONFIG.CURRENT_SECTION;
             
+            console.log('Guardando item en sección:', section);
+            console.log('Datos del formulario:', formData);
+            console.log('Modo edición:', !!ADMIN_CONFIG.EDITING_ITEM);
+            
             // Validación de campos requeridos
             const requiredFields = this.getFormFields(section).filter(f => f.required);
+            console.log('Campos requeridos:', requiredFields.map(f => f.key));
+            
             for (const field of requiredFields) {
-                if (field.key !== 'password' && (!formData[field.key] && formData[field.key] !== false)) {
+                // Excluir password en modo edición si está vacío
+                if (field.key === 'password' && ADMIN_CONFIG.EDITING_ITEM) {
+                    console.log('Saltando validación de password en modo edición');
+                    continue;
+                }
+                
+                const value = formData[field.key];
+                console.log(`Validando campo ${field.key}:`, value, typeof value);
+                
+                // Verificar si el valor está vacío (null, undefined, cadena vacía o solo espacios)
+                // Para checkboxes, false es un valor válido
+                if (field.type === 'checkbox') {
+                    continue; // Los checkboxes siempre tienen un valor (true/false)
+                }
+                
+                if (value === null || value === undefined || (typeof value === 'string' && value === '')) {
+                    console.error(`Campo ${field.key} está vacío`);
                     this.showNotification(`El campo ${field.label} es requerido`, 'error');
+                    // Resaltar el campo con error
+                    const element = document.getElementById(field.key);
+                    if (element) {
+                        element.classList.add('is-invalid');
+                        element.focus();
+                    }
                     return;
                 }
             }
@@ -557,11 +833,12 @@ class AdminApp {
             
             // Si es una edición, asegurarse de incluir el ID
             if (ADMIN_CONFIG.EDITING_ITEM) {
-                payload.edit_id = ADMIN_CONFIG.EDITING_ITEM.id;
+                payload.edit_id = this.getItemId(ADMIN_CONFIG.EDITING_ITEM);
             }
             
             // Determinar el endpoint correcto
-            const endpoint = section === 'users' ? 'users.php' : 'admin.php';
+            const isUsers = section === 'users';
+            const endpoint = isUsers ? 'users.php' : 'admin.php';
             
             // Mostrar indicador de carga
             const saveButton = document.querySelector('#itemModal .btn-primary');
@@ -570,12 +847,14 @@ class AdminApp {
             saveButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
             
             try {
+                // Construir body según endpoint
+                const body = isUsers ? JSON.stringify(formData) : JSON.stringify(payload);
                 const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(payload)
+                    body
                 });
                 
                 const result = await response.json();
@@ -604,25 +883,49 @@ class AdminApp {
         const fields = this.getFormFields(ADMIN_CONFIG.CURRENT_SECTION);
         const isEditing = !!ADMIN_CONFIG.EDITING_ITEM;
         
+        console.log('=== INICIO getFormData ===');
+        console.log('Sección:', ADMIN_CONFIG.CURRENT_SECTION);
+        console.log('Campos a procesar:', fields.map(f => f.key));
+        
         fields.forEach(field => {
             const element = document.getElementById(field.key);
-            if (element) {
-                if (field.type === 'checkbox') {
-                    formData[field.key] = element.checked;
-                } else if (field.key === 'password' && isEditing && !element.value) {
-                    // No incluir la contraseña si estamos editando y el campo está vacío
-                    return;
-                } else {
-                    formData[field.key] = element.value;
-                }
+            
+            console.log(`\nProcesando campo: ${field.key}`);
+            console.log('  - Tipo:', field.type);
+            console.log('  - Elemento encontrado:', !!element);
+            
+            if (!element) {
+                console.warn(`  ⚠️ Campo no encontrado en DOM: ${field.key}`);
+                return;
+            }
+            
+            console.log('  - Valor raw:', element.value);
+            console.log('  - Tipo de input:', element.type);
+            
+            // Limpiar clases de error
+            element.classList.remove('is-invalid');
+            
+            if (field.type === 'checkbox') {
+                formData[field.key] = element.checked;
+                console.log('  - Valor checkbox:', element.checked);
+            } else if (field.key === 'password' && isEditing && !element.value) {
+                // No incluir la contraseña si estamos editando y el campo está vacío
+                console.log('  - Password vacío en edición, no se incluye');
+                return;
+            } else {
+                const value = element.value.trim();
+                formData[field.key] = value;
+                console.log('  - Valor procesado:', value);
             }
         });
         
         // Añadir el ID si estamos editando
         if (isEditing) {
-            formData.id = ADMIN_CONFIG.EDITING_ITEM.id;
+            formData.id = this.getItemId(ADMIN_CONFIG.EDITING_ITEM);
         }
         
+        console.log('\n=== FIN getFormData ===');
+        console.log('FormData final:', formData);
         return formData;
     }
 
@@ -633,16 +936,18 @@ class AdminApp {
         }
         
         try {
-            const endpoint = ADMIN_CONFIG.CURRENT_SECTION === 'users' ? 'users.php' : 'admin.php';
+            const isUsers = ADMIN_CONFIG.CURRENT_SECTION === 'users';
+            const endpoint = isUsers ? 'users.php' : 'admin.php';
             const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    type: ADMIN_CONFIG.CURRENT_SECTION,
-                    id: id
-                })
+                body: JSON.stringify(
+                    isUsers
+                        ? { id }
+                        : { type: ADMIN_CONFIG.CURRENT_SECTION, id }
+                )
             });
             
             const result = await response.json();
@@ -718,6 +1023,12 @@ class AdminApp {
             'Elemento': 'file'
         };
         return icons[type] || 'file';
+    }
+
+    // ===== UTIL: Normalizar ID de item =====
+    getItemId(item) {
+        if (!item) return null;
+        return item.id ?? item.imagen_id ?? item._id ?? null;
     }
 
     // ===== SUBIDA DE IMÁGENES =====
@@ -830,11 +1141,11 @@ class AdminApp {
     // ===== GESTIÓN DE TEXTOS =====
     async showTextSection(section) {
         // Actualizar botones activos
-        document.querySelectorAll('.btn-group-vertical .btn').forEach(btn => {
+        document.querySelectorAll('.btn-text-section').forEach(btn => {
             btn.classList.remove('active');
         });
-        // Marcar como activo el botón que llama a esta función
-        const activeButton = document.querySelector(`[onclick*="adminApp.showTextSection('${section}')"]`);
+        // Marcar como activo el botón correspondiente
+        const activeButton = document.querySelector(`[data-text-section="${section}"]`);
         if (activeButton) {
             activeButton.classList.add('active');
         }
@@ -883,16 +1194,34 @@ class AdminApp {
 
         html += `
             <div class="mt-4">
-                <button class="btn btn-primary" onclick="adminApp.saveTextSection('${section}')">
+                <button class="btn btn-primary btn-save-text" data-section="${section}">
                     <i class="fas fa-save me-2"></i>Guardar Cambios
                 </button>
-                <button class="btn btn-secondary ms-2" onclick="adminApp.previewTextSection('${section}')">
+                <button class="btn btn-secondary ms-2 btn-preview-text" data-section="${section}">
                     <i class="fas fa-eye me-2"></i>Vista Previa
                 </button>
             </div>
         `;
 
         container.innerHTML = html;
+        
+        // Event listeners para botones de guardar y vista previa
+        setTimeout(() => {
+            const saveBtn = container.querySelector('.btn-save-text');
+            const previewBtn = container.querySelector('.btn-preview-text');
+            
+            if (saveBtn) {
+                saveBtn.addEventListener('click', () => {
+                    this.saveTextSection(section);
+                });
+            }
+            
+            if (previewBtn) {
+                previewBtn.addEventListener('click', () => {
+                    this.previewTextSection(section);
+                });
+            }
+        }, 100);
     }
 
     getFieldLabel(key) {
@@ -1014,6 +1343,263 @@ class AdminApp {
         return html;
     }
 
+    // ===== BÚSQUEDA Y FILTRADO =====
+    setupFilters(section) {
+        const filterSelect = document.getElementById('filter-select');
+        if (!filterSelect) return;
+        
+        // Configurar opciones de filtro según la sección
+        const filterOptions = {
+            'noticias': [
+                { value: '', label: 'Todos' },
+                { value: 'destacada:true', label: 'Destacadas' },
+                { value: 'destacada:false', label: 'No destacadas' }
+            ],
+            'eventos': [
+                { value: '', label: 'Todos' },
+                { value: 'tipo:presentacion', label: 'Presentaciones' },
+                { value: 'tipo:cena', label: 'Cenas' },
+                { value: 'tipo:ensayo', label: 'Ensayos' },
+                { value: 'tipo:desfile', label: 'Desfiles' }
+            ],
+            'productos': [
+                { value: '', label: 'Todos' },
+                { value: 'destacado:true', label: 'Destacados' },
+                { value: 'stock:>0', label: 'En stock' },
+                { value: 'stock:0', label: 'Sin stock' }
+            ],
+            'users': [
+                { value: '', label: 'Todos' },
+                { value: 'role:admin', label: 'Administradores' },
+                { value: 'role:editor', label: 'Editores' },
+                { value: 'role:socio', label: 'Socios' },
+                { value: 'active:true', label: 'Activos' },
+                { value: 'active:false', label: 'Inactivos' }
+            ],
+            'socios': [
+                { value: '', label: 'Todos' },
+                { value: 'activo:true', label: 'Activos' },
+                { value: 'activo:false', label: 'Inactivos' }
+            ]
+        };
+        
+        const options = filterOptions[section] || [{ value: '', label: 'Todos' }];
+        filterSelect.innerHTML = options.map(opt => 
+            `<option value="${opt.value}">${opt.label}</option>`
+        ).join('');
+    }
+
+    filterAndRenderTable() {
+        const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
+        const filterValue = document.getElementById('filter-select')?.value || '';
+        
+        // Filtrar datos
+        let filtered = ADMIN_CONFIG.CURRENT_DATA.filter(item => {
+            // Búsqueda por texto
+            if (searchTerm) {
+                const searchableText = Object.values(item).join(' ').toLowerCase();
+                if (!searchableText.includes(searchTerm)) {
+                    return false;
+                }
+            }
+            
+            // Filtro por categoría/estado
+            if (filterValue) {
+                const [key, value] = filterValue.split(':');
+                if (value === 'true' || value === 'false') {
+                    if (item[key] !== (value === 'true')) return false;
+                } else if (value.startsWith('>')) {
+                    if (!(item[key] > parseInt(value.substring(1)))) return false;
+                } else {
+                    if (item[key] !== value) return false;
+                }
+            }
+            
+            return true;
+        });
+        
+        ADMIN_CONFIG.FILTERED_DATA = filtered;
+        
+        // Renderizar con paginación
+        this.renderTableWithPagination();
+    }
+
+    renderTableWithPagination() {
+        const section = ADMIN_CONFIG.CURRENT_SECTION;
+        const data = ADMIN_CONFIG.FILTERED_DATA;
+        const page = ADMIN_CONFIG.CURRENT_PAGE;
+        const perPage = ADMIN_CONFIG.ITEMS_PER_PAGE;
+        
+        // Calcular paginación
+        const totalItems = data.length;
+        const totalPages = Math.ceil(totalItems / perPage);
+        const startIndex = (page - 1) * perPage;
+        const endIndex = Math.min(startIndex + perPage, totalItems);
+        const pageData = data.slice(startIndex, endIndex);
+        
+        // Renderizar tabla
+        this.renderTable(section, pageData);
+        
+        // Actualizar info
+        const tableInfo = document.getElementById('table-info');
+        if (tableInfo) {
+            tableInfo.textContent = `Mostrando ${startIndex + 1}-${endIndex} de ${totalItems} elementos`;
+        }
+        
+        // Renderizar paginación
+        this.renderPagination(totalPages);
+    }
+
+    renderPagination(totalPages) {
+        const pagination = document.getElementById('pagination');
+        if (!pagination) return;
+        
+        const currentPage = ADMIN_CONFIG.CURRENT_PAGE;
+        let html = '';
+        
+        // Botón anterior
+        html += `
+            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="${currentPage - 1}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+        `;
+        
+        // Páginas
+        const maxButtons = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+        let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+        
+        if (endPage - startPage < maxButtons - 1) {
+            startPage = Math.max(1, endPage - maxButtons + 1);
+        }
+        
+        if (startPage > 1) {
+            html += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
+            if (startPage > 2) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            html += `
+                <li class="page-item ${i === currentPage ? 'active' : ''}">
+                    <a class="page-link" href="#" data-page="${i}">${i}</a>
+                </li>
+            `;
+        }
+        
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+            html += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
+        }
+        
+        // Botón siguiente
+        html += `
+            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="${currentPage + 1}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        `;
+        
+        pagination.innerHTML = html;
+        
+        // Event listeners para paginación
+        pagination.querySelectorAll('a.page-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = parseInt(link.dataset.page);
+                if (page && page !== ADMIN_CONFIG.CURRENT_PAGE) {
+                    ADMIN_CONFIG.CURRENT_PAGE = page;
+                    this.renderTableWithPagination();
+                }
+            });
+        });
+    }
+
+    // ===== EXPORTACIÓN =====
+    exportToCSV() {
+        const section = ADMIN_CONFIG.CURRENT_SECTION;
+        const data = ADMIN_CONFIG.FILTERED_DATA;
+        const columns = this.getColumnsConfig(section);
+        
+        if (data.length === 0) {
+            this.showNotification('No hay datos para exportar', 'warning');
+            return;
+        }
+        
+        // Crear encabezados
+        const headers = columns.map(col => col.title).join(',');
+        
+        // Crear filas
+        const rows = data.map(item => {
+            return columns.map(col => {
+                let value = item[col.key] || '';
+                
+                // Limpiar valores para CSV
+                if (typeof value === 'string') {
+                    value = value.replace(/"/g, '""'); // Escapar comillas
+                    if (value.includes(',') || value.includes('\n')) {
+                        value = `"${value}"`;
+                    }
+                }
+                
+                return value;
+            }).join(',');
+        }).join('\n');
+        
+        // Combinar
+        const csv = headers + '\n' + rows;
+        
+        // Descargar
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${section}_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        this.showNotification('Datos exportados correctamente', 'success');
+    }
+
+    // ===== ORDENAMIENTO =====
+    sortTable(columnKey) {
+        if (ADMIN_CONFIG.SORT_COLUMN === columnKey) {
+            // Cambiar dirección
+            ADMIN_CONFIG.SORT_DIRECTION = ADMIN_CONFIG.SORT_DIRECTION === 'asc' ? 'desc' : 'asc';
+        } else {
+            ADMIN_CONFIG.SORT_COLUMN = columnKey;
+            ADMIN_CONFIG.SORT_DIRECTION = 'asc';
+        }
+        
+        // Ordenar datos
+        ADMIN_CONFIG.FILTERED_DATA.sort((a, b) => {
+            let aVal = a[columnKey] || '';
+            let bVal = b[columnKey] || '';
+            
+            // Convertir a números si es posible
+            if (!isNaN(aVal) && !isNaN(bVal)) {
+                aVal = parseFloat(aVal);
+                bVal = parseFloat(bVal);
+            }
+            
+            if (aVal < bVal) return ADMIN_CONFIG.SORT_DIRECTION === 'asc' ? -1 : 1;
+            if (aVal > bVal) return ADMIN_CONFIG.SORT_DIRECTION === 'asc' ? 1 : -1;
+            return 0;
+        });
+        
+        this.renderTableWithPagination();
+    }
+
     // ===== NOTIFICACIONES =====
     showNotification(message, type) {
         Utils.showNotification(message, type);
@@ -1023,10 +1609,15 @@ class AdminApp {
 // ===== INICIALIZACIÓN =====
 let adminApp;
 
-document.addEventListener('DOMContentLoaded', function() {
+// Initialize the app immediately if the DOM is already loaded
+if (document.readyState === 'loading') {
+    // If the DOM is still loading, wait for it
+    document.addEventListener('DOMContentLoaded', () => {
+        adminApp = new AdminApp();
+        window.adminApp = adminApp;
+    });
+} else {
+    // If the DOM is already loaded, initialize immediately
     adminApp = new AdminApp();
-});
-
-// ===== FUNCIONES GLOBALES =====
-window.adminApp = adminApp;
-
+    window.adminApp = adminApp;
+}

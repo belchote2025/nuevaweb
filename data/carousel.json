@@ -10,33 +10,42 @@
     "slides": [
         {
             "id": 1,
-            "titulo": "Filá Mariscales de Caballeros Templarios",
-            "subtitulo": "Tradición, Honor y Amistad desde 1985",
-            "imagen_url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1600&q=80",
+            "titulo": "Fil\u00e1 Mariscales de Caballeros Templarios",
+            "subtitulo": "Tradici\u00f3n, Honor y Amistad desde 1985",
+            "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1600&q=80",
             "texto_boton": "Conoce nuestra historia",
             "enlace": "#historia",
             "activo": true,
-            "overlay_opacity": 0.4
+            "overlay_opacity": 0.40000000000000002220446049250313080847263336181640625
         },
         {
             "id": 2,
             "titulo": "Desfile de Moros y Cristianos",
             "subtitulo": "Orgullo templario en las calles de Elche",
-            "imagen_url": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1600&q=80",
-            "texto_boton": "Ver galería",
+            "imagen_url": "https:\/\/images.unsplash.com\/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1600&q=80",
+            "texto_boton": "Ver galer\u00eda",
             "enlace": "#galeria",
             "activo": false,
-            "overlay_opacity": 0.3
+            "overlay_opacity": 0.299999999999999988897769753748434595763683319091796875
         },
         {
             "id": 3,
             "titulo": "Hermandad Templaria",
             "subtitulo": "Una familia unida por los valores templarios",
-            "imagen_url": "https://images.unsplash.com/photo-1520975922203-b5e2577e76b3?auto=format&fit=crop&w=1600&q=80",
-            "texto_boton": "Únete a nosotros",
+            "imagen_url": "https:\/\/images.unsplash.com\/photo-1520975922203-b5e2577e76b3?auto=format&fit=crop&w=1600&q=80",
+            "texto_boton": "\u00danete a nosotros",
             "enlace": "#socios",
             "activo": false,
             "overlay_opacity": 0.5
+        },
+        {
+            "titulo": "prueba",
+            "subtitulo": "prueba",
+            "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1600&q=80",
+            "enlace": "#historia",
+            "activo": false,
+            "id": "68e8d8ed6bebc",
+            "updated_at": "2025-10-10 11:59:09"
         }
     ]
 }
