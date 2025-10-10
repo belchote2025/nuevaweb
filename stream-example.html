@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo de Reproductor de Streaming</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Nuestros estilos personalizados -->
+    <link rel="stylesheet" href="assets/css/stream-player.css">
+    
+    <style>
+        body {
+            padding: 2rem 0;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+            padding: 0.6rem 1.25rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline-primary {
+            color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .section-title {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-bottom: 0.75rem;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+            border-radius: 2px;
+        }
+        
+        /* Estilos para el tema oscuro */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1d20;
+                color: #f8f9fa;
+            }
+            
+            .card {
+                background-color: #2c3034;
+                border-color: #373b3e;
+            }
+            
+            .card-title {
+                color: #f8f9fa;
+            }
+            
+            .text-muted {
+                color: #adb5bd !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Encabezado -->
+        <header class="header mb-5">
+            <div class="container">
+                <h1><i class="fas fa-film me-3"></i>Reproductor de Streaming</h1>
+                <p class="mb-0">Reproduce contenido desde múltiples fuentes como Google Drive, MEGA, Uptobox y más.</p>
+            </div>
+        </header>
+        
+        <!-- Contenido principal -->
+        <main>
+            <!-- Sección de reproductor -->
+            <section class="mb-5">
+                <h2 class="section-title">Película de Ejemplo</h2>
+                
+                <div class="row g-4">
+                    <!-- Portada de la película -->
+                    <div class="col-12 col-lg-4">
+                        <div class="card h-100">
+                            <img src="https://via.placeholder.com/800x1200/0d6efd/ffffff?text=Película+Ejemplo" 
+                                 class="card-img-top" 
+                                 alt="Portada de la película">
+                            <div class="card-body">
+                                <h3 class="h5 card-title">Película de Ejemplo</h3>
+                                <p class="card-text text-muted">
+                                    <i class="fas fa-star text-warning"></i> 4.5/5
+                                    <span class="mx-2">|</span>
+                                    <i class="far fa-clock"></i> 2h 15min
+                                </p>
+                                <p class="card-text">
+                                    Una increíble película de ejemplo que muestra cómo funciona el reproductor de streaming 
+                                    con múltiples fuentes y calidades.
+                                </p>
+                                <div class="d-flex gap-2 mb-3">
+                                    <span class="badge bg-primary">Acción</span>
+                                    <span class="badge bg-secondary">Aventura</span>
+                                    <span class="badge bg-info text-dark">Suspenso</span>
+                                </div>
+                                <button class="btn btn-primary w-100" id="show-player">
+                                    <i class="fas fa-play me-2"></i> Ver ahora
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reproductor de streaming -->
+                    <div class="col-12 col-lg-8">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="h5 card-title mb-4">Selecciona una opción de reproducción</h3>
+                                
+                                <!-- Aquí se cargará el reproductor -->
+                                <div id="stream-player" data-content-id="1"></div>
+                                
+                                <!-- Mensaje de ejemplo cuando no hay reproductor visible -->
+                                <div id="player-placeholder" class="text-center py-5">
+                                    <div class="mb-4">
+                                        <i class="fas fa-film fa-4x text-muted mb-3"></i>
+                                        <h4>Selecciona una opción de reproducción</h4>
+                                        <p class="text-muted">Haz clic en el botón "Ver ahora" para ver las opciones disponibles</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Instrucciones de uso -->
+            <section class="mt-5 pt-5 border-top">
+                <h2 class="section-title mb-4">¿Cómo funciona?</h2>
+                
+                <div class="row g-4">
+                    <div class="col-12 col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <div class="bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center rounded-circle mb-3" 
+                                     style="width: 60px; height: 60px;">
+                                    <i class="fas fa-search fa-lg"></i>
+                                </div>
+                                <h4 class="h5">1. Encuentra tu contenido</h4>
+                                <p class="text-muted mb-0">
+                                    Busca y selecciona la película o serie que deseas ver en nuestro catálogo.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <div class="bg-success bg-opacity-10 text-success d-inline-flex align-items-center justify-content-center rounded-circle mb-3" 
+                                     style="width: 60px; height: 60px;">
+                                    <i class="fas fa-play-circle fa-lg"></i>
+                                </div>
+                                <h4 class="h5">2. Elige la calidad</h4>
+                                <p class="text-muted mb-0">
+                                    Selecciona la calidad que prefieras (360p, 480p, 720p, 1080p o 4K) según tu conexión.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <div class="bg-warning bg-opacity-10 text-warning d-inline-flex align-items-center justify-content-center rounded-circle mb-3" 
+                                     style="width: 60px; height: 60px;">
+                                    <i class="fas fa-film fa-lg"></i>
+                                </div>
+                                <h4 class="h5">3. Disfruta</h4>
+                                <p class="text-muted mb-0">
+                                    Reproduce el contenido en tu navegador sin necesidad de descargas adicionales.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Pie de página -->
+        <footer class="mt-5 pt-4 pb-3 text-center text-muted border-top">
+            <p class="mb-1">© 2023 TuSitioWeb. Todos los derechos reservados.</p>
+            <p class="small mb-0">
+                <a href="#" class="text-decoration-none me-2">Términos de servicio</a>
+                <span class="text-muted">|</span>
+                <a href="#" class="text-decoration-none mx-2">Política de privacidad</a>
+                <span class="text-muted">|</span>
+                <a href="#" class="text-decoration-none ms-2">Contacto</a>
+            </p>
+        </footer>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Nuestro script del reproductor -->
+    <script src="assets/js/stream-player.js"></script>
+    
+    <script>
+        // Inicializar el reproductor
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar/ocultar el reproductor al hacer clic en el botón
+            const showPlayerBtn = document.getElementById('show-player');
+            const playerPlaceholder = document.getElementById('player-placeholder');
+            const streamPlayer = document.getElementById('stream-player');
+            
+            // Inicializar el reproductor pero mantenerlo oculto inicialmente
+            const player = new StreamPlayer('stream-player', { 
+                contentId: 1, // ID del contenido en la base de datos
+                autoLoad: false, // No cargar automáticamente
+                showFilters: true,
+                showReportButton: true
+            });
+            
+            // Mostrar el reproductor al hacer clic en el botón
+            if (showPlayerBtn) {
+                showPlayerBtn.addEventListener('click', function() {
+                    // Ocultar el placeholder
+                    if (playerPlaceholder) {
+                        playerPlaceholder.style.display = 'none';
+                    }
+                    
+                    // Mostrar el reproductor
+                    if (streamPlayer) {
+                        streamPlayer.style.display = 'block';
+                    }
+                    
+                    // Cargar los enlaces
+                    player.loadLinks(1);
+                    
+                    // Desplazarse al reproductor
+                    streamPlayer.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+            
+            // Simular datos de ejemplo para la demostración
+            // En un entorno real, estos datos vendrían de la API
+            window.mockData = {
+                links: [
+                    {
+                        id: 1,
+                        content_id: 1,
+                        provider: 'gdrive',
+                        url: 'https://drive.google.com/file/d/1snyxOoUqQCwKKHHyXrJTQYdz1PBYIACq/view',
+                        quality: '1080p',
+                        is_active: true,
+                        view_count: 1245,
+                        last_viewed: new Date(Date.now() - 3600000 * 2).toISOString()
+                    },
+                    {
+                        id: 2,
+                        content_id: 1,
+                        provider: 'mega',
+                        url: 'https://mega.nz/file/example',
+                        quality: '720p',
+                        is_active: true,
+                        view_count: 845,
+                        last_viewed: new Date(Date.now() - 3600000 * 5).toISOString()
+                    },
+                    {
+                        id: 3,
+                        content_id: 1,
+                        provider: 'uptobox',
+                        url: 'https://uptobox.com/example',
+                        quality: '480p',
+                        is_active: true,
+                        view_count: 320,
+                        last_viewed: new Date(Date.now() - 86400000).toISOString()
+                    },
+                    {
+                        id: 4,
+                        content_id: 1,
+                        provider: 'mediafire',
+                        url: 'https://www.mediafire.com/file/example',
+                        quality: '1080p',
+                        is_active: false,
+                        view_count: 0,
+                        last_viewed: null
+                    }
+                ]
+            };
+            
+            // Mock de la función fetch para la demostración
+            const originalFetch = window.fetch;
+            window.fetch = async function(url, options) {
+                // Simular retraso de red
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Mock para /api/stream/links
+                if (url.includes('/api/stream/links')) {
+                    return {
+                        ok: true,
+                        json: async () => ({
+                            success: true,
+                            data: window.mockData.links.filter(link => link.is_active)
+                        })
+                    };
+                }
+                
+                // Mock para /api/stream/stream
+                if (url.includes('/api/stream/stream')) {
+                    // Simular éxito en la reproducción
+                    return {
+                        ok: true,
+                        json: async () => ({
+                            success: true,
+                            url: 'https://example.com/stream/123',
+                            provider: 'gdrive',
+                            quality: '1080p'
+                        })
+                    };
+                }
+                
+                // Mock para /api/stream/report
+                if (url.includes('/api/stream/report')) {
+                    // Simular éxito en el reporte
+                    return {
+                        ok: true,
+                        json: async () => ({
+                            success: true,
+                            message: 'Reporte enviado correctamente'
+                        })
+                    };
+                }
+                
+                // Para otras peticiones, usar fetch normal
+                return originalFetch(url, options);
+            };
+        });
+    </script>
+</body>
+</html>
