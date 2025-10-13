@@ -1110,9 +1110,14 @@ class AdminApp {
     }
 
     getCurrentUserRole() {
-        // Obtener el rol del usuario desde la sesión
-        // Esto se puede mejorar almacenando la info en localStorage o sessionStorage
-        return window.currentUserRole || 'admin'; // Fallback a admin por compatibilidad
+        // Obtener el rol del usuario desde la sesión almacenada
+        if (window.currentUserRole) {
+            return window.currentUserRole;
+        }
+        
+        // Si no está disponible, intentar obtenerlo de la sesión
+        // Esto se ejecutará cuando se cargue la página
+        return 'admin'; // Fallback a admin por compatibilidad
     }
 
     getRoleOptions() {

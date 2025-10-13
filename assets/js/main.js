@@ -94,7 +94,7 @@ class FilaMariscalesApp {
 
         const items = slides.map((s, i) => `
             <div class="carousel-item ${s.activo || i === 0 ? 'active' : ''}">
-                <div class="carousel-image" style="background-image: url('${s.imagen_url}');"></div>
+                <img src="${s.imagen_url}" class="carousel-image" alt="${s.titulo}" onerror="this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'">
                 <div class="carousel-overlay" style="opacity: ${s.overlay_opacity || 0.4};"></div>
                 <div class="carousel-caption d-none d-md-block">
                     <div class="carousel-content">
@@ -241,7 +241,7 @@ class FilaMariscalesApp {
         container.innerHTML = noticias.map(noticia => `
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100">
-                    <img src="${noticia.imagen_url}" class="card-img-top" alt="${noticia.titulo}" style="height: 200px; object-fit: cover;">
+                    <img src="${noticia.imagen_url}" class="card-img-top" alt="${noticia.titulo}" style="height: 200px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">${noticia.titulo}</h5>
                         <p class="card-text flex-grow-1">${noticia.resumen}</p>
@@ -288,7 +288,7 @@ class FilaMariscalesApp {
         container.innerHTML = articulos.map(articulo => `
             <div class="col-lg-6 mb-4">
                 <div class="card h-100">
-                    <img src="${articulo.imagen_url}" class="card-img-top" alt="${articulo.titulo}" style="height: 200px; object-fit: cover;">
+                    <img src="${articulo.imagen_url}" class="card-img-top" alt="${articulo.titulo}" style="height: 200px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
                     <div class="card-body">
                         <h5 class="card-title">${articulo.titulo}</h5>
                         <p class="card-text">${articulo.resumen}</p>
@@ -387,7 +387,7 @@ class FilaMariscalesApp {
         container.innerHTML = imagenes.map(imagen => `
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="gallery-item" onclick="app.showImageModal('${imagen.imagen_url}', '${imagen.titulo}')">
-                    <img src="${imagen.thumb_url}" alt="${imagen.titulo}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+                    <img src="${imagen.thumb_url}" alt="${imagen.titulo}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;" onerror="this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'">
                     <div class="gallery-overlay">
                         <i class="fas fa-search-plus"></i>
                     </div>
@@ -534,7 +534,7 @@ class FilaMariscalesApp {
         container.innerHTML = productos.map(producto => `
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="card h-100">
-                    <img src="${producto.imagen_url}" class="card-img-top" alt="${producto.nombre}" style="height: 200px; object-fit: cover;">
+                    <img src="${producto.imagen_url}" class="card-img-top" alt="${producto.nombre}" style="height: 200px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">${producto.nombre}</h5>
                         <p class="card-text flex-grow-1">${producto.descripcion}</p>
@@ -796,7 +796,7 @@ class FilaMariscalesApp {
         container.innerHTML = eventos.map(evento => `
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100">
-                    <img src="${evento.imagen_url}" class="card-img-top" alt="${evento.titulo}" style="height: 200px; object-fit: cover;">
+                    <img src="${evento.imagen_url}" class="card-img-top" alt="${evento.titulo}" style="height: 200px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
                     <div class="card-body">
                         <h5 class="card-title">${evento.titulo}</h5>
                         <p class="card-text">${evento.descripcion}</p>
@@ -1115,15 +1115,19 @@ class FilaMariscalesApp {
 
     // ===== NOTIFICACIONES =====
     showSuccess(message) {
-        Utils.showNotification(message, 'success');
+        this.showNotification(message, 'success');
     }
 
     showError(message) {
-        Utils.showNotification(message, 'danger');
+        this.showNotification(message, 'danger');
     }
 
     showInfo(message) {
-        Utils.showNotification(message, 'info');
+        this.showNotification(message, 'info');
+    }
+
+    showNotification(message, type = 'info') {
+        return Utils.showNotification(message, type);
     }
 }
 
