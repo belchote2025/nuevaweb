@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursos - Filá Mariscales de Caballeros Templarios</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css?v=2.0" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="fas fa-shield-alt me-2"></i>
+                Filá Mariscales
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <!-- Inicio -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i>Inicio
+                        </a>
+                    </li>
+                    
+                    <!-- La Filá -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-shield-alt me-1"></i>La Filá
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="lafila.html#historia">
+                                <i class="fas fa-history me-2"></i>Historia
+                            </a></li>
+                            <li><a class="dropdown-item" href="lafila.html#directiva">
+                                <i class="fas fa-users me-2"></i>Directiva
+                            </a></li>
+                            <li><a class="dropdown-item" href="lafila.html#socios">
+                                <i class="fas fa-user-friends me-2"></i>Socios
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Actividades -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-calendar-alt me-1"></i>Actividades
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="actividades.html#calendario">
+                                <i class="fas fa-calendar me-2"></i>Calendario
+                            </a></li>
+                            <li><a class="dropdown-item" href="actividades.html#eventos">
+                                <i class="fas fa-calendar-check me-2"></i>Eventos
+                            </a></li>
+                            <li><a class="dropdown-item" href="actividades.html#galeria">
+                                <i class="fas fa-images me-2"></i>Galería
+                            </a></li>
+                            <li><a class="dropdown-item" href="actividades.html#musica">
+                                <i class="fas fa-music me-2"></i>Música
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Noticias -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper me-1"></i>Noticias
+                        </a>
+                    </li>
+                    
+                    <!-- Recursos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-toolbox me-1"></i>Recursos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="recursos.html#tienda">
+                                <i class="fas fa-store me-2"></i>Tienda
+                            </a></li>
+                            <li><a class="dropdown-item" href="libro.html">
+                                <i class="fas fa-book me-2"></i>Libro
+                            </a></li>
+                            <li><a class="dropdown-item" href="recursos.html#descargas">
+                                <i class="fas fa-download me-2"></i>Descargas
+                            </a></li>
+                            <li><a class="dropdown-item" href="recursos.html#blog">
+                                <i class="fas fa-blog me-2"></i>Blog
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="recursos.html#patrocinadores">
+                                <i class="fas fa-star me-2"></i>Patrocinadores
+                            </a></li>
+                            <li><a class="dropdown-item" href="recursos.html#hermanamientos">
+                                <i class="fas fa-heart me-2"></i>Hermanamientos
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Contacto -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="contacto.html">
+                            <i class="fas fa-envelope me-1"></i>Contacto
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Login -->
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">
+                            <i class="fas fa-user me-1"></i>Admin
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Tienda Section -->
+    <section id="tienda" class="py-5" style="margin-top: 80px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Tienda Online</h2>
+                    <p class="section-subtitle">Artículos oficiales de la Filá Mariscales</p>
+                </div>
+            </div>
+            <div class="row" id="productos-container">
+                <!-- Los productos se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando productos...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Libro Section -->
+    <section id="libro" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Libro de la Filá</h2>
+                    <p class="section-subtitle">Nuestro libro digital interactivo</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div id="libro-container">
+                        <!-- El libro se cargará dinámicamente -->
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando libro...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Descargas Section -->
+    <section id="descargas" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Descargas</h2>
+                    <p class="section-subtitle">Documentos y archivos de la Filá</p>
+                </div>
+            </div>
+            <div class="row" id="descargas-container">
+                <!-- Los documentos se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando descargas...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Blog</h2>
+                    <p class="section-subtitle">Artículos y publicaciones de la Filá Mariscales</p>
+                </div>
+            </div>
+            <div class="row" id="blog-container">
+                <!-- Los artículos del blog se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando blog...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Patrocinadores Section -->
+    <section id="patrocinadores" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Patrocinadores</h2>
+                    <p class="section-subtitle">Agradecemos el apoyo de nuestros patrocinadores</p>
+                </div>
+            </div>
+            <div class="row" id="patrocinadores-container">
+                <!-- Los patrocinadores se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando patrocinadores...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hermanamientos Section -->
+    <section id="hermanamientos" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="section-title">Hermanamientos</h2>
+                    <p class="section-subtitle">Nuestras filás hermanas</p>
+                </div>
+            </div>
+            <div class="row" id="hermanamientos-container">
+                <!-- Los hermanamientos se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando hermanamientos...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Filá Mariscales</h5>
+                    <p class="mb-0">Caballeros Templarios de Elche</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="social-links">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2024 Filá Mariscales. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/utils.js?v=2.0"></script>
+    <script src="assets/js/main.js?v=2.0"></script>
+    <script>
+        // Cargar datos específicos de esta página
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof app !== 'undefined') {
+                app.loadProductos();
+                app.loadLibro();
+                app.loadDescargas();
+                app.loadBlog();
+                app.loadPatrocinadores();
+                app.loadHermanamientos();
+            }
+        });
+    </script>
+</body>
+</html>
