@@ -1,0 +1,16 @@
+[
+    {
+        "id": "solicitud-68ee283e318cb",
+        "nombre": "Fran",
+        "email": "fran@fran.es",
+        "telefono": "",
+        "edad": 0,
+        "motivo": "fdsghjfgdshjfgsajhlfghdsjfgasjlk",
+        "experiencia": "fdsfsfsdfa",
+        "estado": "pendiente",
+        "fecha_solicitud": "2025-10-14 12:38:54",
+        "fecha_revision": null,
+        "revisado_por": null,
+        "observaciones": ""
+    }
+]

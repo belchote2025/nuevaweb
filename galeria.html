@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividades - Filá Mariscales de Caballeros Templarios</title>
+    <title>Galería - Filá Mariscales de Caballeros Templarios</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -130,32 +130,8 @@
         </div>
     </nav>
 
-    <!-- Calendario Section -->
-    <section id="calendario" class="py-5" style="margin-top: 80px;">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Calendario</h2>
-                    <p class="section-subtitle">Calendario de eventos de la Filá Mariscales</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-8 mx-auto">
-                    <div id="calendar-container">
-                        <!-- El calendario se cargará dinámicamente -->
-                        <div class="text-center">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Cargando calendario...</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Galería Section -->
-    <section id="galeria" class="py-5 bg-light">
+    <section id="galeria" class="py-5" style="margin-top: 80px;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
@@ -163,6 +139,27 @@
                     <p class="section-subtitle">Momentos especiales de nuestra hermandad</p>
                 </div>
             </div>
+            
+            <!-- Filtros de Galería -->
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <div class="btn-group" role="group" aria-label="Filtros de galería">
+                        <button type="button" class="btn btn-outline-primary active" data-filter="all">
+                            <i class="fas fa-th me-2"></i>Todas
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" data-filter="eventos">
+                            <i class="fas fa-calendar-check me-2"></i>Eventos
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" data-filter="musica">
+                            <i class="fas fa-music me-2"></i>Música
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" data-filter="tradicion">
+                            <i class="fas fa-shield-alt me-2"></i>Tradición
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
             <div class="row" id="galeria-container">
                 <!-- Las imágenes se cargarán dinámicamente -->
                 <div class="col-12 text-center">
@@ -174,40 +171,94 @@
         </div>
     </section>
 
-    <!-- Música Section -->
-    <section id="musica" class="py-5">
+    <!-- Galería Destacada -->
+    <section class="py-5 bg-light">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Música</h2>
-                    <p class="section-subtitle">Nuestra banda y repertorio musical</p>
+                    <h3 class="section-title">Momentos Destacados</h3>
+                    <p class="section-subtitle">Algunos de los momentos más especiales de nuestra filá</p>
                 </div>
             </div>
-            <div class="row" id="musica-container">
-                <!-- El contenido musical se cargará dinámicamente -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando música...</span>
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                             class="card-img-top" alt="Fiestas de Moros y Cristianos">
+                        <div class="card-body">
+                            <h5 class="card-title">Fiestas de Moros y Cristianos</h5>
+                            <p class="card-text">Participación en las fiestas más importantes de Elche con nuestros trajes tradicionales.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                             class="card-img-top" alt="Concierto de la Banda">
+                        <div class="card-body">
+                            <h5 class="card-title">Concierto de la Banda</h5>
+                            <p class="card-text">Nuestra banda musical en acción durante uno de sus conciertos especiales.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                             class="card-img-top" alt="Cena de Hermandad">
+                        <div class="card-body">
+                            <h5 class="card-title">Cena de Hermandad</h5>
+                            <p class="card-text">Momentos de hermandad durante nuestras celebraciones y encuentros sociales.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Eventos Section -->
-    <section id="eventos" class="py-5 bg-light">
+    <!-- Estadísticas de la Galería -->
+    <section class="py-5">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Próximos Eventos</h2>
-                    <p class="section-subtitle">No te pierdas nuestras actividades y celebraciones</p>
+                    <h3 class="section-title">Nuestra Galería en Números</h3>
+                    <p class="section-subtitle">Algunos datos sobre nuestra colección de imágenes</p>
                 </div>
             </div>
-            <div class="row" id="eventos-container">
-                <!-- Los eventos se cargarán dinámicamente -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando eventos...</span>
+            <div class="row text-center">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-images fa-3x text-primary mb-3"></i>
+                            <h4 class="text-primary">500+</h4>
+                            <p class="card-text">Fotografías en nuestra galería</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-calendar fa-3x text-primary mb-3"></i>
+                            <h4 class="text-primary">50+</h4>
+                            <p class="card-text">Eventos documentados</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                            <h4 class="text-primary">100+</h4>
+                            <p class="card-text">Socios fotografiados</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-clock fa-3x text-primary mb-3"></i>
+                            <h4 class="text-primary">5+</h4>
+                            <p class="card-text">Años de historia visual</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -243,14 +294,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/utils.js?v=2.0"></script>
     <script src="assets/js/main.js?v=2.0"></script>
+    <script src="assets/js/gallery.js?v=2.0"></script>
+    <script src="assets/js/animations.js?v=2.0"></script>
     <script>
         // Cargar datos específicos de esta página
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof app !== 'undefined') {
-                app.loadCalendario();
                 app.loadGaleria();
-                app.loadMusica();
-                app.loadEventos();
             }
         });
     </script>

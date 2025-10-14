@@ -172,32 +172,41 @@
             });
             
             // Login form submission
-            loginForm.addEventListener('submit', function(e) {
+            loginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
                 
-                // Credenciales de administrador
-                const adminEmail = 'admin@mariscales.com';
-                const adminPassword = 'admin123';
-                
-                if (email === adminEmail && password === adminPassword) {
-                    // Login exitoso
-                    showAlert('success', '¡Bienvenido, Administrador!');
+                try {
+                    const response = await fetch('api/auth.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        })
+                    });
                     
-                    // Guardar sesión
-                    sessionStorage.setItem('adminLoggedIn', 'true');
-                    sessionStorage.setItem('adminEmail', email);
+                    const result = await response.json();
                     
-                    // Redirigir al panel de administración después de 1.5 segundos
-                    setTimeout(() => {
-                        window.location.href = 'admin.html';
-                    }, 1500);
-                    
-                } else {
-                    // Login fallido
-                    showAlert('danger', 'Credenciales incorrectas. Verifica tu email y contraseña.');
+                    if (result.success) {
+                        // Login exitoso
+                        showAlert('success', '¡Bienvenido, Administrador!');
+                        
+                        // Redirigir al panel de administración después de 1.5 segundos
+                        setTimeout(() => {
+                            window.location.href = 'admin.html';
+                        }, 1500);
+                        
+                    } else {
+                        // Login fallido
+                        showAlert('danger', result.message || 'Credenciales incorrectas. Verifica tu email y contraseña.');
+                    }
+                } catch (error) {
+                    showAlert('danger', 'Error de conexión. Inténtalo de nuevo.');
                 }
             });
             
@@ -212,12 +221,27 @@
                 `;
             }
             
-            // Verificar si ya está logueado
-            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-                showAlert('info', 'Ya tienes una sesión activa. Redirigiendo...');
-                setTimeout(() => {
-                    window.location.href = 'admin.html';
-                }, 1000);
+            // Verificar si ya está logueado usando la API
+            checkExistingSession();
+            
+            async function checkExistingSession() {
+                try {
+                    const response = await fetch('api/auth.php?action=check', {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showAlert('info', 'Ya tienes una sesión activa. Redirigiendo...');
+                        setTimeout(() => {
+                            window.location.href = 'admin.html';
+                        }, 1000);
+                    }
+                } catch (error) {
+                    // No hay sesión activa, continuar normalmente
+                }
             }
         });
     </script>

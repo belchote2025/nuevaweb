@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividades - Filá Mariscales de Caballeros Templarios</title>
+    <title>Música - Filá Mariscales de Caballeros Templarios</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -130,52 +130,8 @@
         </div>
     </nav>
 
-    <!-- Calendario Section -->
-    <section id="calendario" class="py-5" style="margin-top: 80px;">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Calendario</h2>
-                    <p class="section-subtitle">Calendario de eventos de la Filá Mariscales</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-8 mx-auto">
-                    <div id="calendar-container">
-                        <!-- El calendario se cargará dinámicamente -->
-                        <div class="text-center">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Cargando calendario...</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Galería Section -->
-    <section id="galeria" class="py-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Galería</h2>
-                    <p class="section-subtitle">Momentos especiales de nuestra hermandad</p>
-                </div>
-            </div>
-            <div class="row" id="galeria-container">
-                <!-- Las imágenes se cargarán dinámicamente -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando galería...</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Música Section -->
-    <section id="musica" class="py-5">
+    <section id="musica" class="py-5" style="margin-top: 80px;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
@@ -194,20 +150,133 @@
         </div>
     </section>
 
-    <!-- Eventos Section -->
-    <section id="eventos" class="py-5 bg-light">
+    <!-- Nuestra Banda -->
+    <section class="py-5 bg-light">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Próximos Eventos</h2>
-                    <p class="section-subtitle">No te pierdas nuestras actividades y celebraciones</p>
+                    <h3 class="section-title">Nuestra Banda</h3>
+                    <p class="section-subtitle">Conoce a los músicos que dan vida a nuestras tradiciones</p>
                 </div>
             </div>
-            <div class="row" id="eventos-container">
-                <!-- Los eventos se cargarán dinámicamente -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando eventos...</span>
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                             class="card-img-top" alt="Banda de la Filá">
+                        <div class="card-body">
+                            <h5 class="card-title">Banda de la Filá Mariscales</h5>
+                            <p class="card-text">Nuestra banda musical está formada por músicos dedicados que mantienen viva la tradición musical de la filá.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                             class="card-img-top" alt="Instrumentos musicales">
+                        <div class="card-body">
+                            <h5 class="card-title">Instrumentos Tradicionales</h5>
+                            <p class="card-text">Utilizamos instrumentos tradicionales que han acompañado a las filás durante generaciones.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Repertorio Musical -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h3 class="section-title">Repertorio Musical</h3>
+                    <p class="section-subtitle">Las piezas musicales que interpretamos</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-music fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Marchas Tradicionales</h5>
+                            <p class="card-text">Marchas clásicas que han acompañado a las filás durante décadas.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-star fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Composiciones Propias</h5>
+                            <p class="card-text">Piezas musicales creadas específicamente para nuestra filá.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-heart fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Música de Hermandad</h5>
+                            <p class="card-text">Canciones que celebran la hermandad y los valores de nuestra filá.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Actuaciones -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h3 class="section-title">Nuestras Actuaciones</h3>
+                    <p class="section-subtitle">Dónde y cuándo puedes escucharnos</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-calendar-check text-primary fa-2x"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5>Fiestas de Moros y Cristianos</h5>
+                            <p>Participamos activamente en las fiestas más importantes de Elche con nuestro repertorio musical.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-users text-primary fa-2x"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5>Eventos de la Filá</h5>
+                            <p>Actuamos en todos los eventos oficiales y celebraciones de nuestra filá.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-microphone text-primary fa-2x"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5>Conciertos Especiales</h5>
+                            <p>Organizamos conciertos especiales para mostrar nuestro repertorio al público.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-handshake text-primary fa-2x"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5>Intercambios Musicales</h5>
+                            <p>Participamos en intercambios musicales con otras filás y bandas hermanas.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -247,10 +316,7 @@
         // Cargar datos específicos de esta página
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof app !== 'undefined') {
-                app.loadCalendario();
-                app.loadGaleria();
                 app.loadMusica();
-                app.loadEventos();
             }
         });
     </script>

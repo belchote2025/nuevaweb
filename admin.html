@@ -105,46 +105,6 @@
     </style>
 </head>
 <body>
-    <!-- Login Form (mostrado por defecto) -->
-    <div id="login-container" class="login-container">
-        <div class="container">
-            <div class="row justify-content-center align-items-center min-vh-100">
-                <div class="col-lg-4 col-md-6">
-                    <div class="card shadow">
-                        <div class="card-body p-5">
-                            <div class="text-center mb-4">
-                                <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
-                                <h3>Panel de Administración</h3>
-                                <p class="text-muted">Filá Mariscales</p>
-                            </div>
-                            
-                            <form id="login-form">
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" required>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Contraseña</label>
-                                    <input type="password" class="form-control" id="password" required>
-                                </div>
-                                
-                                <button type="submit" class="btn btn-primary w-100">
-                                    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
-                                </button>
-                            </form>
-                            
-                            <div class="text-center mt-3">
-                                <a href="index.html" class="text-decoration-none">
-                                    <i class="fas fa-arrow-left me-2"></i>Volver al sitio
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Admin Dashboard (oculto por defecto) -->
     <div id="admin-dashboard" class="admin-dashboard" style="display: none;">
@@ -215,6 +175,11 @@
                                     <i class="fas fa-images me-2"></i>Carrusel
                         </a>
                     </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="solicitudes">
+                                    <i class="fas fa-user-plus me-2"></i>Solicitudes
+                                </a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#" data-section="socios">
                                     <i class="fas fa-user-friends me-2"></i>Socios

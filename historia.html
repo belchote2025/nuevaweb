@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividades - Filá Mariscales de Caballeros Templarios</title>
+    <title>Historia - Filá Mariscales de Caballeros Templarios</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -38,7 +38,7 @@
                     
                     <!-- La Filá -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-shield-alt me-1"></i>La Filá
                         </a>
                         <ul class="dropdown-menu">
@@ -56,7 +56,7 @@
                     
                     <!-- Actividades -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-calendar-alt me-1"></i>Actividades
                         </a>
                         <ul class="dropdown-menu">
@@ -130,84 +130,72 @@
         </div>
     </nav>
 
-    <!-- Calendario Section -->
-    <section id="calendario" class="py-5" style="margin-top: 80px;">
+    <!-- Historia Section -->
+    <section id="historia" class="py-5" style="margin-top: 80px;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Calendario</h2>
-                    <p class="section-subtitle">Calendario de eventos de la Filá Mariscales</p>
+                    <h2 class="section-title">Nuestra Historia</h2>
+                    <p class="section-subtitle">Conoce los orígenes y tradición de la Filá Mariscales</p>
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-8 mx-auto">
-                    <div id="calendar-container">
-                        <!-- El calendario se cargará dinámicamente -->
-                        <div class="text-center">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Cargando calendario...</span>
+                <div class="col-lg-6">
+                    <div class="historia-content">
+                        <h3>Orígenes de la Filá</h3>
+                        <p>La Filá Mariscales de Caballeros Templarios de Elche tiene sus raíces en la rica tradición de las fiestas de Moros y Cristianos de nuestra ciudad. Fundada con el propósito de mantener viva la tradición templaria y fomentar la hermandad entre sus miembros.</p>
+                        <p>Desde nuestros inicios, hemos trabajado incansablemente para preservar las costumbres y valores que nos caracterizan como filá, siempre con el respeto y la dignidad que merece nuestra tradición.</p>
+                        
+                        <h4 class="mt-4">Nuestros Valores</h4>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-shield-alt text-primary me-2"></i>Honor y Lealtad</li>
+                            <li><i class="fas fa-handshake text-primary me-2"></i>Hermandad y Fraternidad</li>
+                            <li><i class="fas fa-book text-primary me-2"></i>Preservación de la Tradición</li>
+                            <li><i class="fas fa-heart text-primary me-2"></i>Respeto y Dignidad</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="historia-image">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             alt="Historia de la Filá" class="img-fluid rounded">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timeline -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h3 class="text-center mb-4">Cronología de la Filá</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h5>Fundación</h5>
+                                <p>La Filá Mariscales fue fundada con el objetivo de mantener viva la tradición templaria en Elche.</p>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Galería Section -->
-    <section id="galeria" class="py-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Galería</h2>
-                    <p class="section-subtitle">Momentos especiales de nuestra hermandad</p>
-                </div>
-            </div>
-            <div class="row" id="galeria-container">
-                <!-- Las imágenes se cargarán dinámicamente -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando galería...</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Música Section -->
-    <section id="musica" class="py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Música</h2>
-                    <p class="section-subtitle">Nuestra banda y repertorio musical</p>
-                </div>
-            </div>
-            <div class="row" id="musica-container">
-                <!-- El contenido musical se cargará dinámicamente -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando música...</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Eventos Section -->
-    <section id="eventos" class="py-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Próximos Eventos</h2>
-                    <p class="section-subtitle">No te pierdas nuestras actividades y celebraciones</p>
-                </div>
-            </div>
-            <div class="row" id="eventos-container">
-                <!-- Los eventos se cargarán dinámicamente -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando eventos...</span>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h5>Primeros Años</h5>
+                                <p>Consolidación de la hermandad y establecimiento de las primeras tradiciones.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h5>Expansión</h5>
+                                <p>Crecimiento de la filá y participación activa en las fiestas de Moros y Cristianos.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h5>Actualidad</h5>
+                                <p>Continuamos preservando nuestras tradiciones y valores en la actualidad.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -243,16 +231,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/utils.js?v=2.0"></script>
     <script src="assets/js/main.js?v=2.0"></script>
-    <script>
-        // Cargar datos específicos de esta página
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof app !== 'undefined') {
-                app.loadCalendario();
-                app.loadGaleria();
-                app.loadMusica();
-                app.loadEventos();
-            }
-        });
-    </script>
+    <script src="assets/js/animations.js?v=2.0"></script>
 </body>
 </html>

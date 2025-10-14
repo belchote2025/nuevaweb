@@ -60,17 +60,22 @@ class AdminApp {
                 if (result.success) {
                     this.isAuthenticated = true;
                     window.currentUserRole = result.data.role;
-                    this.showDashboard(result.data.email);
+                    // Mostrar dashboard directamente
+                    document.getElementById('admin-dashboard').style.display = 'block';
+                    document.getElementById('admin-email').textContent = result.data.email;
+                    this.loadDashboardData();
                 } else {
                     this.isAuthenticated = false;
-                    this.showLogin();
+                    // Redirigir a login.html si no hay sesión
+                    window.location.href = 'login.html';
                 }
                 
                 return result.success;
             } catch (error) {
                 console.error('Error verificando autenticación:', error);
                 this.isAuthenticated = false;
-                this.showLogin();
+                // Redirigir a login.html si hay error
+                window.location.href = 'login.html';
                 return false;
             } finally {
                 this.authCheckPromise = null;
@@ -80,56 +85,6 @@ class AdminApp {
         return this.authCheckPromise;
     }
 
-    async login(email, password) {
-        // Prevent multiple login attempts
-        const loginBtn = document.querySelector('#login-form button[type="submit"]');
-        const originalBtnText = loginBtn.innerHTML;
-        
-        try {
-            // Disable the login button to prevent multiple submissions
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Iniciando sesión...';
-            
-            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}auth.php`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({ 
-                    email: email.trim(),
-                    password: password
-                })
-            });
-
-            const result = await response.json();
-            
-            if (result.success) {
-                // Update authentication state
-                this.isAuthenticated = true;
-                window.currentUserRole = result.data.role;
-                
-                // Show dashboard and notification
-                this.showDashboard(result.data.email);
-                this.showNotification('Inicio de sesión exitoso', 'success');
-                
-                // Clear the form
-                document.getElementById('login-form').reset();
-            } else {
-                this.showNotification(result.message || 'Credenciales incorrectas', 'error');
-                document.getElementById('password').focus();
-            }
-        } catch (error) {
-            console.error('Error en login:', error);
-            this.showNotification('Error de conexión. Intente nuevamente.', 'error');
-        } finally {
-            // Re-enable the login button
-            if (loginBtn) {
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = originalBtnText;
-            }
-        }
-    }
 
     async logout() {
         try {
@@ -145,40 +100,9 @@ class AdminApp {
         }
     }
 
-    showLogin() {
-        document.getElementById('login-container').style.display = 'block';
-        document.getElementById('admin-dashboard').style.display = 'none';
-    }
-
-    showDashboard(email) {
-        document.getElementById('login-container').style.display = 'none';
-        document.getElementById('admin-dashboard').style.display = 'block';
-        document.getElementById('admin-email').textContent = email;
-        
-        this.loadDashboardData();
-    }
 
     // ===== CONFIGURACIÓN DE EVENTOS =====
     setupEventListeners() {
-        // Login form - use event delegation to handle dynamic elements
-        document.addEventListener('submit', (e) => {
-            if (e.target && e.target.matches('#login-form')) {
-                e.preventDefault();
-                
-                // Prevent multiple submissions
-                if (this.loginInProgress) return;
-                
-                const email = document.getElementById('email')?.value;
-                const password = document.getElementById('password')?.value;
-                
-                if (!email || !password) {
-                    this.showNotification('Por favor complete todos los campos', 'error');
-                    return;
-                }
-                
-                this.login(email, password);
-            }
-        });
 
         // Logout button
         const logoutBtn = document.getElementById('logout-btn');
@@ -374,19 +298,27 @@ class AdminApp {
 
     async loadSectionData(section) {
         try {
-            const data = await this.fetchData(section);
-            ADMIN_CONFIG.CURRENT_DATA = data;
-            ADMIN_CONFIG.FILTERED_DATA = data;
-            ADMIN_CONFIG.CURRENT_PAGE = 1;
+            let data;
             
-            // Configurar filtros según la sección
-            this.setupFilters(section);
-            
-            // Limpiar búsqueda
-            const searchInput = document.getElementById('search-input');
-            if (searchInput) searchInput.value = '';
-            
-            this.filterAndRenderTable();
+            if (section === 'solicitudes') {
+                // Cargar solicitudes usando el método específico
+                await this.loadSolicitudes();
+                return;
+            } else {
+                data = await this.fetchData(section);
+                ADMIN_CONFIG.CURRENT_DATA = data;
+                ADMIN_CONFIG.FILTERED_DATA = data;
+                ADMIN_CONFIG.CURRENT_PAGE = 1;
+                
+                // Configurar filtros según la sección
+                this.setupFilters(section);
+                
+                // Limpiar búsqueda
+                const searchInput = document.getElementById('search-input');
+                if (searchInput) searchInput.value = '';
+                
+                this.filterAndRenderTable();
+            }
         } catch (error) {
             console.error(`Error cargando datos de ${section}:`, error);
             this.showNotification('Error cargando datos', 'error');
@@ -1617,6 +1549,253 @@ let adminApp;
 // Initialize the app immediately if the DOM is already loaded
 if (document.readyState === 'loading') {
     // If the DOM is still loading, wait for it
+    // ===== SOLICITUDES =====
+    async loadSolicitudes() {
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}solicitudes.php`);
+            const result = await response.json();
+            
+            if (result.success) {
+                ADMIN_CONFIG.CURRENT_DATA = result.data;
+                ADMIN_CONFIG.FILTERED_DATA = [...result.data];
+                this.renderSolicitudesTable();
+            } else {
+                this.showNotification('Error cargando solicitudes: ' + result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error cargando solicitudes:', error);
+            this.showNotification('Error de conexión al cargar solicitudes', 'error');
+        }
+    }
+
+    renderSolicitudesTable() {
+        const container = document.getElementById('table-container');
+        if (!container) return;
+
+        const data = ADMIN_CONFIG.FILTERED_DATA;
+        
+        let html = `
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Edad</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        if (data.length === 0) {
+            html += `
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                        No hay solicitudes disponibles
+                    </td>
+                </tr>
+            `;
+        } else {
+            data.forEach(solicitud => {
+                const estadoBadge = this.getEstadoBadge(solicitud.estado);
+                const fecha = new Date(solicitud.fecha_solicitud).toLocaleDateString('es-ES');
+                
+                html += `
+                    <tr>
+                        <td>${solicitud.nombre}</td>
+                        <td>${solicitud.email}</td>
+                        <td>${solicitud.telefono || '-'}</td>
+                        <td>${solicitud.edad || '-'}</td>
+                        <td>${estadoBadge}</td>
+                        <td>${fecha}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary" onclick="adminApp.viewSolicitud('${solicitud.id}')" title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                ${solicitud.estado === 'pendiente' ? `
+                                    <button class="btn btn-outline-success" onclick="adminApp.aprobarSolicitud('${solicitud.id}')" title="Aprobar">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="adminApp.rechazarSolicitud('${solicitud.id}')" title="Rechazar">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    getEstadoBadge(estado) {
+        const badges = {
+            'pendiente': '<span class="badge bg-warning">Pendiente</span>',
+            'aprobada': '<span class="badge bg-success">Aprobada</span>',
+            'rechazada': '<span class="badge bg-danger">Rechazada</span>'
+        };
+        return badges[estado] || '<span class="badge bg-secondary">Desconocido</span>';
+    }
+
+    async viewSolicitud(solicitudId) {
+        const solicitud = ADMIN_CONFIG.CURRENT_DATA.find(s => s.id === solicitudId);
+        if (!solicitud) return;
+
+        const modalHtml = `
+            <div class="modal fade" id="solicitudModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Detalles de la Solicitud</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Información Personal</h6>
+                                    <p><strong>Nombre:</strong> ${solicitud.nombre}</p>
+                                    <p><strong>Email:</strong> ${solicitud.email}</p>
+                                    <p><strong>Teléfono:</strong> ${solicitud.telefono || 'No proporcionado'}</p>
+                                    <p><strong>Edad:</strong> ${solicitud.edad || 'No proporcionada'}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Estado</h6>
+                                    <p><strong>Estado:</strong> ${this.getEstadoBadge(solicitud.estado)}</p>
+                                    <p><strong>Fecha de solicitud:</strong> ${new Date(solicitud.fecha_solicitud).toLocaleString('es-ES')}</p>
+                                    ${solicitud.fecha_revision ? `<p><strong>Fecha de revisión:</strong> ${new Date(solicitud.fecha_revision).toLocaleString('es-ES')}</p>` : ''}
+                                    ${solicitud.revisado_por ? `<p><strong>Revisado por:</strong> ${solicitud.revisado_por}</p>` : ''}
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <h6>Motivo para unirse</h6>
+                                    <p class="border p-3 bg-light">${solicitud.motivo}</p>
+                                </div>
+                            </div>
+                            ${solicitud.experiencia ? `
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <h6>Experiencia previa</h6>
+                                        <p class="border p-3 bg-light">${solicitud.experiencia}</p>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            ${solicitud.observaciones ? `
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <h6>Observaciones</h6>
+                                        <p class="border p-3 bg-light">${solicitud.observaciones}</p>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            ${solicitud.estado === 'pendiente' ? `
+                                <button type="button" class="btn btn-success" onclick="adminApp.aprobarSolicitud('${solicitud.id}')">
+                                    <i class="fas fa-check me-1"></i>Aprobar
+                                </button>
+                                <button type="button" class="btn btn-danger" onclick="adminApp.rechazarSolicitud('${solicitud.id}')">
+                                    <i class="fas fa-times me-1"></i>Rechazar
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Remover modal anterior si existe
+        const existingModal = document.getElementById('solicitudModal');
+        if (existingModal) existingModal.remove();
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        const modal = new bootstrap.Modal(document.getElementById('solicitudModal'));
+        modal.show();
+    }
+
+    async aprobarSolicitud(solicitudId) {
+        if (!confirm('¿Estás seguro de que quieres aprobar esta solicitud? Se creará un usuario con contraseña temporal.')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}solicitudes.php?action=aprobar`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ solicitud_id: solicitudId })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                this.showNotification('Solicitud aprobada y usuario creado', 'success');
+                
+                // Mostrar credenciales del usuario
+                const credenciales = result.data.usuario;
+                alert(`Usuario creado exitosamente:\n\nEmail: ${credenciales.email}\nContraseña temporal: ${credenciales.password}\n\nComparte estas credenciales con el nuevo socio.`);
+                
+                // Recargar solicitudes
+                this.loadSolicitudes();
+                
+                // Cerrar modal si está abierto
+                const modal = bootstrap.Modal.getInstance(document.getElementById('solicitudModal'));
+                if (modal) modal.hide();
+            } else {
+                this.showNotification('Error aprobando solicitud: ' + result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error aprobando solicitud:', error);
+            this.showNotification('Error de conexión', 'error');
+        }
+    }
+
+    async rechazarSolicitud(solicitudId) {
+        const observaciones = prompt('Motivo del rechazo (opcional):');
+        
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}solicitudes.php`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    id: solicitudId, 
+                    estado: 'rechazada',
+                    observaciones: observaciones || 'Solicitud rechazada'
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                this.showNotification('Solicitud rechazada', 'success');
+                this.loadSolicitudes();
+                
+                // Cerrar modal si está abierto
+                const modal = bootstrap.Modal.getInstance(document.getElementById('solicitudModal'));
+                if (modal) modal.hide();
+            } else {
+                this.showNotification('Error rechazando solicitud: ' + result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error rechazando solicitud:', error);
+            this.showNotification('Error de conexión', 'error');
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         adminApp = new AdminApp();
         window.adminApp = adminApp;

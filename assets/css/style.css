@@ -5,22 +5,43 @@
     box-sizing: border-box;
 }
 
+/* ===== PALETA DE COLORES TEMPLARIOS ===== */
+:root {
+    /* Colores principales templarios */
+    --templar-red: #DC143C;        /* Rojo templario principal */
+    --templar-red-dark: #8B0000;    /* Rojo oscuro templario */
+    --templar-red-light: #FF6B6B;  /* Rojo claro templario */
+    --templar-white: #FFFFFF;      /* Blanco puro */
+    --templar-black: #000000;       /* Negro puro */
+    --templar-gray: #2C2C2C;        /* Gris oscuro */
+    --templar-gray-light: #4A4A4A;  /* Gris claro */
+    
+    /* Colores de fondo */
+    --site-bg-color: #0A0A0A;
+    --site-bg-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), 
+                     url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+    --site-bg-darken: rgba(0, 0, 0, 0.6);
+    
+    /* Colores de Bootstrap sobrescritos */
+    --bs-primary: var(--templar-red);
+    --bs-primary-rgb: 220, 20, 60;
+    --bs-secondary: var(--templar-gray);
+    --bs-secondary-rgb: 44, 44, 44;
+    --bs-danger: var(--templar-red-dark);
+    --bs-danger-rgb: 139, 0, 0;
+    --bs-dark: var(--templar-black);
+    --bs-dark-rgb: 0, 0, 0;
+    --bs-light: var(--templar-white);
+    --bs-light-rgb: 255, 255, 255;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: #333;
-    background-color: #0b0b0b; /* fallback */
+    color: var(--templar-white);
+    background-color: var(--site-bg-color);
     position: relative;
     min-height: 100vh;
-}
-
-/* Fondo global en TODAS las páginas */
-:root {
-    /* Ruta local de la imagen de fondo con fallback a color sólido */
-    --site-bg-color: #1a1a2e;
-    --site-bg-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
-                     url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
-    --site-bg-darken: rgba(0, 0, 0, 0.35);
 }
 
 /* Fallback en caso de que la imagen no se cargue */
@@ -63,12 +84,12 @@ body::after {
 
 /* Header y Navegación */
 .navbar {
-    background: rgba(15, 15, 20, 1) !important; /* completamente opaco */
+    background: var(--templar-black) !important;
     backdrop-filter: saturate(140%) blur(8px);
     -webkit-backdrop-filter: saturate(140%) blur(8px);
     padding: 1rem 0;
-    box-shadow: 0 2px 18px rgba(0,0,0,0.25);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 2px 18px rgba(220, 20, 60, 0.3);
+    border-bottom: 2px solid var(--templar-red);
     position: fixed;
     width: 100%;
     top: 0;
@@ -83,7 +104,7 @@ body::after {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(15, 15, 20, 1);
+    background: var(--templar-black);
     z-index: -1;
 }
 
@@ -97,7 +118,7 @@ body::after {
 }
 
 .nav-logo {
-    color: white;
+    color: var(--templar-white);
     font-size: 1.8rem;
     font-weight: bold;
 }
@@ -109,14 +130,14 @@ body::after {
 }
 
 .nav-link {
-    color: white;
+    color: var(--templar-white);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
 .nav-link:hover {
-    color: #ffd700;
+    color: var(--templar-red);
 }
 
 /* Hero Section + encabezado de home translúcido */
@@ -130,11 +151,12 @@ body::after {
 
 /* Secciones translúcidas para dejar ver el fondo */
 section {
-    background: rgba(255, 255, 255, 0.78);
+    background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(0,0,0,0.06);
+    border: 2px solid var(--templar-red);
     border-radius: 12px;
+    color: var(--templar-white);
 }
 
 /* Para secciones oscuras (como contacto) mantener contraste pero translúcidas */
@@ -697,29 +719,112 @@ section.bg-dark, .bg-dark.section, #contacto.bg-dark {
     opacity: 0.9;
 }
 
+/* ===== BOTONES TEMPLARIOS ===== */
 .cta-button {
-    background: #ffd700;
-    color: #333;
+    background: var(--templar-red);
+    color: var(--templar-white);
     padding: 15px 30px;
-    border: none;
+    border: 2px solid var(--templar-red);
     border-radius: 50px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
 }
 
 .cta-button:hover {
-    background: #ffed4e;
+    background: var(--templar-red-dark);
+    border-color: var(--templar-red-dark);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 6px 20px rgba(220, 20, 60, 0.4);
+    color: var(--templar-white);
 }
 
-/* Services Section */
+/* Botones primarios templarios */
+.btn-primary {
+    background-color: var(--templar-red) !important;
+    border-color: var(--templar-red) !important;
+    color: var(--templar-white) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--templar-red-dark) !important;
+    border-color: var(--templar-red-dark) !important;
+    color: var(--templar-white) !important;
+}
+
+/* Botones secundarios templarios */
+.btn-secondary {
+    background-color: var(--templar-gray) !important;
+    border-color: var(--templar-gray) !important;
+    color: var(--templar-white) !important;
+}
+
+.btn-secondary:hover {
+    background-color: var(--templar-gray-light) !important;
+    border-color: var(--templar-gray-light) !important;
+    color: var(--templar-white) !important;
+}
+
+/* Botones outline templarios */
+.btn-outline-primary {
+    color: var(--templar-red) !important;
+    border-color: var(--templar-red) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--templar-red) !important;
+    border-color: var(--templar-red) !important;
+    color: var(--templar-white) !important;
+}
+
+/* ===== TARJETAS Y FICHAS TEMPLARIAS ===== */
 .services {
     padding: 80px 0;
-    background: rgba(255,255,255,0.78);
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--templar-white);
+}
+
+/* Cards templarias */
+.card {
+    background: rgba(0, 0, 0, 0.9) !important;
+    border: 2px solid var(--templar-red) !important;
+    color: var(--templar-white) !important;
+    border-radius: 15px !important;
+}
+
+.card-header {
+    background: var(--templar-red) !important;
+    color: var(--templar-white) !important;
+    border-bottom: 2px solid var(--templar-red-dark) !important;
+}
+
+.card-body {
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: var(--templar-white) !important;
+}
+
+.card-title {
+    color: var(--templar-white) !important;
+}
+
+.card-text {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Badges templarios */
+.badge {
+    background-color: var(--templar-red) !important;
+    color: var(--templar-white) !important;
+}
+
+.badge.bg-primary {
+    background-color: var(--templar-red) !important;
+}
+
+.badge.bg-secondary {
+    background-color: var(--templar-gray) !important;
 }
 
 .services h2 {
@@ -793,11 +898,744 @@ section.bg-dark, .bg-dark.section, #contacto.bg-dark {
 }
 
 /* Footer */
+/* ===== FOOTER TEMPLARIO ===== */
 footer {
-    background: #333;
-    color: white;
+    background: var(--templar-black) !important;
+    color: var(--templar-white) !important;
     text-align: center;
     padding: 2rem 0;
+    border-top: 3px solid var(--templar-red);
+}
+
+footer a {
+    color: var(--templar-red) !important;
+}
+
+footer a:hover {
+    color: var(--templar-red-light) !important;
+}
+
+/* ===== FORMULARIOS TEMPLARIOS ===== */
+.form-control {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    border: 2px solid var(--templar-gray) !important;
+    color: var(--templar-white) !important;
+    border-radius: 8px !important;
+}
+
+.form-control:focus {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    border-color: var(--templar-red) !important;
+    color: var(--templar-white) !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25) !important;
+}
+
+.form-label {
+    color: var(--templar-white) !important;
+    font-weight: 600;
+}
+
+/* ===== TÍTULOS Y TEXTOS TEMPLARIOS ===== */
+.section-title {
+    color: var(--templar-white) !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.section-subtitle {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--templar-white) !important;
+}
+
+p {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* ===== NAVEGACIÓN DROPDOWN TEMPLARIA ===== */
+.dropdown-menu {
+    background: var(--templar-black) !important;
+    border: 2px solid var(--templar-red) !important;
+    border-radius: 8px !important;
+}
+
+.dropdown-item {
+    color: var(--templar-white) !important;
+}
+
+.dropdown-item:hover {
+    background-color: var(--templar-red) !important;
+    color: var(--templar-white) !important;
+}
+
+/* ===== ALERTAS TEMPLARIAS ===== */
+.alert-primary {
+    background-color: rgba(220, 20, 60, 0.2) !important;
+    border-color: var(--templar-red) !important;
+    color: var(--templar-white) !important;
+}
+
+.alert-success {
+    background-color: rgba(0, 128, 0, 0.2) !important;
+    border-color: #00ff00 !important;
+    color: var(--templar-white) !important;
+}
+
+.alert-danger {
+    background-color: rgba(220, 20, 60, 0.2) !important;
+    border-color: var(--templar-red) !important;
+    color: var(--templar-white) !important;
+}
+
+/* ===== ANIMACIONES ESPECTACULARES ===== */
+
+/* Animaciones de entrada espectaculares */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 5px var(--templar-red);
+    }
+    50% {
+        box-shadow: 0 0 20px var(--templar-red), 0 0 30px var(--templar-red);
+    }
+    100% {
+        box-shadow: 0 0 5px var(--templar-red);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* ===== ANIMACIONES DE ENTRADA ===== */
+.animate-fadeInUp {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-fadeInLeft {
+    animation: fadeInLeft 0.8s ease-out forwards;
+}
+
+.animate-fadeInRight {
+    animation: fadeInRight 0.8s ease-out forwards;
+}
+
+.animate-fadeInScale {
+    animation: fadeInScale 0.8s ease-out forwards;
+}
+
+.animate-slideInFromTop {
+    animation: slideInFromTop 0.8s ease-out forwards;
+}
+
+/* ===== ANIMACIONES DE HOVER ESPECTACULARES ===== */
+.hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(220, 20, 60, 0.3);
+}
+
+.hover-glow {
+    transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+    animation: glow 1.5s infinite;
+    transform: scale(1.05);
+}
+
+.hover-float:hover {
+    animation: float 2s ease-in-out infinite;
+}
+
+.hover-rotate:hover {
+    animation: rotate 0.5s ease-in-out;
+}
+
+/* ===== EFECTOS DE CARGA ESPECTACULARES ===== */
+.loading-shimmer {
+    background: linear-gradient(90deg, 
+        rgba(255,255,255,0.1) 0%, 
+        rgba(255,255,255,0.3) 50%, 
+        rgba(255,255,255,0.1) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+}
+
+.loading-pulse {
+    animation: pulse 2s infinite;
+}
+
+/* ===== ANIMACIONES DE SCROLL ===== */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.scroll-reveal-left {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-reveal-left.revealed {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.scroll-reveal-right {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-reveal-right.revealed {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.scroll-reveal-scale {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-reveal-scale.revealed {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ===== ANIMACIONES DE NAVEGACIÓN ===== */
+.navbar {
+    transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+    background: rgba(0, 0, 0, 0.95) !important;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 4px 30px rgba(220, 20, 60, 0.3);
+}
+
+.nav-link {
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.nav-link:hover::before {
+    left: 100%;
+}
+
+/* ===== ANIMACIONES DE BOTONES ESPECTACULARES ===== */
+.btn-animated {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.btn-animated::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-animated:hover::before {
+    left: 100%;
+}
+
+.btn-animated:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(220, 20, 60, 0.4);
+}
+
+/* ===== ANIMACIONES DE CARDS ESPECTACULARES ===== */
+.card-animated {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.card-animated::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(220, 20, 60, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+}
+
+.card-animated:hover::before {
+    transform: translateX(100%);
+}
+
+.card-animated:hover {
+    transform: translateY(-15px) rotateX(5deg);
+    box-shadow: 0 25px 50px rgba(220, 20, 60, 0.3);
+}
+
+/* ===== ANIMACIONES DE TEXTO ESPECTACULARES ===== */
+.text-reveal {
+    overflow: hidden;
+}
+
+.text-reveal span {
+    display: inline-block;
+    animation: slideInFromTop 0.8s ease-out forwards;
+    animation-delay: calc(var(--i) * 0.1s);
+    opacity: 0;
+    transform: translateY(100%);
+}
+
+/* ===== ANIMACIONES DE ICONOS ===== */
+.icon-spin {
+    animation: rotate 2s linear infinite;
+}
+
+.icon-bounce {
+    animation: float 2s ease-in-out infinite;
+}
+
+.icon-pulse {
+    animation: pulse 2s infinite;
+}
+
+/* ===== EFECTOS DE PARTÍCULAS ===== */
+.particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--templar-red);
+    border-radius: 50%;
+    animation: float 3s ease-in-out infinite;
+    opacity: 0.7;
+}
+
+/* ===== ANIMACIONES DE GALERÍA ===== */
+.gallery-item {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.gallery-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(220, 20, 60, 0.3), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+    z-index: 1;
+}
+
+.gallery-item:hover::before {
+    transform: translateX(100%);
+}
+
+.gallery-item:hover {
+    transform: scale(1.05) rotateY(5deg);
+    box-shadow: 0 20px 40px rgba(220, 20, 60, 0.4);
+}
+
+/* ===== ANIMACIONES DE FORMULARIOS ===== */
+.form-group {
+    position: relative;
+    overflow: hidden;
+}
+
+.form-control:focus {
+    animation: glow 0.5s ease-out;
+}
+
+.form-floating label {
+    transition: all 0.3s ease;
+}
+
+.form-floating .form-control:focus ~ label,
+.form-floating .form-control:not(:placeholder-shown) ~ label {
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    color: var(--templar-red);
+}
+
+/* ===== ANIMACIONES DE MODALES ===== */
+.modal {
+    animation: fadeInScale 0.3s ease-out;
+}
+
+.modal-backdrop {
+    animation: fadeInScale 0.3s ease-out;
+}
+
+/* ===== ANIMACIONES DE CAROUSEL ===== */
+.carousel-item {
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-item.active {
+    animation: fadeInScale 0.8s ease-out;
+}
+
+/* ===== ANIMACIONES DE FOOTER ===== */
+footer {
+    position: relative;
+    overflow: hidden;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--templar-red), transparent);
+    animation: shimmer 3s infinite;
+}
+
+/* ===== EFECTOS RIPPLE ===== */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* ===== PARTÍCULAS FLOTANTES ===== */
+.floating-particle {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    33% {
+        transform: translateY(-20px) rotate(120deg);
+    }
+    66% {
+        transform: translateY(-10px) rotate(240deg);
+    }
+}
+
+/* ===== ANIMACIONES DE ENTRADA ESCALONADA ===== */
+.stagger-animation .stagger-item {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stagger-animation .stagger-item.animate-fadeInUp {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== EFECTOS DE VALIDACIÓN ===== */
+.form-control.valid {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+    animation: glow 0.5s ease-out;
+}
+
+.form-control.invalid {
+    border-color: var(--templar-red) !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25) !important;
+    animation: pulse 0.5s ease-out;
+}
+
+/* ===== ANIMACIONES DE CAROUSEL MEJORADAS ===== */
+.carousel-item.animate-fadeOut {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+/* ===== EFECTOS DE CURSOR PERSONALIZADO ===== */
+.custom-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background: var(--templar-red);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: difference;
+}
+
+.custom-cursor.hover {
+    transform: scale(2);
+    background: var(--templar-white);
+}
+
+/* ===== ANIMACIONES DE LOADING ESPECTACULARES ===== */
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(220, 20, 60, 0.3);
+    border-top: 4px solid var(--templar-red);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-dots {
+    display: inline-block;
+}
+
+.loading-dots::after {
+    content: '';
+    animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
+}
+
+/* ===== EFECTOS DE GLASSMORPHISM ===== */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.glass-effect:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ===== ANIMACIONES DE TEXTO TIPOWRITER ===== */
+.typewriter {
+    overflow: hidden;
+    border-right: 2px solid var(--templar-red);
+    white-space: nowrap;
+    animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: var(--templar-red); }
+}
+
+/* ===== EFECTOS DE MORPHING ===== */
+.morphing-shape {
+    width: 100px;
+    height: 100px;
+    background: var(--templar-red);
+    border-radius: 50%;
+    animation: morph 4s ease-in-out infinite;
+}
+
+@keyframes morph {
+    0%, 100% {
+        border-radius: 50%;
+        transform: rotate(0deg);
+    }
+    25% {
+        border-radius: 20%;
+        transform: rotate(90deg);
+    }
+    50% {
+        border-radius: 50%;
+        transform: rotate(180deg);
+    }
+    75% {
+        border-radius: 20%;
+        transform: rotate(270deg);
+    }
+}
+
+/* ===== ANIMACIONES RESPONSIVAS ===== */
+@media (max-width: 768px) {
+    .hover-lift:hover {
+        transform: translateY(-5px) scale(1.01);
+    }
+    
+    .card-animated:hover {
+        transform: translateY(-8px);
+    }
+    
+    .gallery-item:hover {
+        transform: scale(1.02);
+    }
+    
+    .floating-particle {
+        display: none; /* Ocultar partículas en móvil para mejor rendimiento */
+    }
+    
+    .custom-cursor {
+        display: none; /* Ocultar cursor personalizado en móvil */
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
 /* Responsive Design */

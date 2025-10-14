@@ -658,9 +658,9 @@ class FilaMariscalesApp {
                                 <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
                                 <h5 class="card-title">Hazte Socio</h5>
                                 <p class="card-text flex-grow-1">Únete a nuestra familia templaria y forma parte de la tradición.</p>
-                                <a href="#contacto" class="btn btn-primary mt-auto">
+                                <button class="btn btn-primary mt-auto" data-bs-toggle="modal" data-bs-target="#solicitudSocioModal">
                                     <i class="fas fa-envelope me-2"></i>Más información
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>

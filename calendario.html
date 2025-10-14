@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividades - Filá Mariscales de Caballeros Templarios</title>
+    <title>Calendario - Filá Mariscales de Caballeros Templarios</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -154,60 +154,70 @@
         </div>
     </section>
 
-    <!-- Galería Section -->
-    <section id="galeria" class="py-5 bg-light">
+    <!-- Próximos Eventos -->
+    <section class="py-5 bg-light">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Galería</h2>
-                    <p class="section-subtitle">Momentos especiales de nuestra hermandad</p>
+                    <h3 class="section-title">Próximos Eventos</h3>
+                    <p class="section-subtitle">No te pierdas nuestras próximas actividades</p>
                 </div>
             </div>
-            <div class="row" id="galeria-container">
-                <!-- Las imágenes se cargarán dinámicamente -->
+            <div class="row" id="proximos-eventos">
+                <!-- Los próximos eventos se cargarán dinámicamente -->
                 <div class="col-12 text-center">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando galería...</span>
+                        <span class="visually-hidden">Cargando próximos eventos...</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Música Section -->
-    <section id="musica" class="py-5">
+    <!-- Tipos de Eventos -->
+    <section class="py-5">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Música</h2>
-                    <p class="section-subtitle">Nuestra banda y repertorio musical</p>
+                    <h3 class="section-title">Tipos de Eventos</h3>
+                    <p class="section-subtitle">Diferentes actividades que organizamos</p>
                 </div>
             </div>
-            <div class="row" id="musica-container">
-                <!-- El contenido musical se cargará dinámicamente -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando música...</span>
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-calendar-check fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Eventos Oficiales</h5>
+                            <p class="card-text">Celebraciones oficiales de la filá y fiestas de Moros y Cristianos.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Eventos Section -->
-    <section id="eventos" class="py-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Próximos Eventos</h2>
-                    <p class="section-subtitle">No te pierdas nuestras actividades y celebraciones</p>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Reuniones</h5>
+                            <p class="card-text">Asambleas y reuniones de socios para tratar temas importantes.</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="row" id="eventos-container">
-                <!-- Los eventos se cargarán dinámicamente -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando eventos...</span>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-music fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Actividades Musicales</h5>
+                            <p class="card-text">Ensayos, conciertos y actividades relacionadas con nuestra banda.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-heart fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Eventos Sociales</h5>
+                            <p class="card-text">Comidas, celebraciones y actividades de hermandad.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -248,9 +258,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof app !== 'undefined') {
                 app.loadCalendario();
-                app.loadGaleria();
-                app.loadMusica();
-                app.loadEventos();
             }
         });
     </script>
