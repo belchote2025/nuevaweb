@@ -131,19 +131,74 @@
     </nav>
 
     <!-- Directiva Section -->
-    <section id="directiva" class="py-5" style="margin-top: 80px;">
-        <div class="container">
+    <section id="directiva" class="py-5" style="margin-top: 80px; background: white; color: black;">
+        <div class="container" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Directiva</h2>
-                    <p class="section-subtitle">Conoce a los miembros de nuestra directiva</p>
+                    <h2 style="color: black; font-weight: bold;">Directiva</h2>
+                    <p style="color: black;">Conoce a los miembros de nuestra directiva</p>
                 </div>
             </div>
             <div class="row" id="directiva-container">
-                <!-- La directiva se cargará dinámicamente -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando directiva...</span>
+                <!-- Miembros de la directiva -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="card-img-top" alt="José Antonio Mariscal" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">José Antonio Mariscal</h5>
+                            <h6 class="card-subtitle mb-2" style="color: #DC143C; font-weight: bold;">Presidente</h6>
+                            <p class="card-text" style="color: black;">Presidente de la Filá Mariscales de Caballeros Templarios desde 2020. Líder comprometido con la tradición y valores templarios.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="card-img-top" alt="María del Carmen Templario" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">María del Carmen Templario</h5>
+                            <h6 class="card-subtitle mb-2" style="color: #DC143C; font-weight: bold;">Vicepresidenta</h6>
+                            <p class="card-text" style="color: black;">Vicepresidenta y responsable de organización de eventos y ceremonias templarias.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="card-img-top" alt="Francisco Javier Cruz" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Francisco Javier Cruz</h5>
+                            <h6 class="card-subtitle mb-2" style="color: #DC143C; font-weight: bold;">Secretario</h6>
+                            <p class="card-text" style="color: black;">Secretario general y coordinador de actividades culturales y sociales.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="card-img-top" alt="Isabel Templaria" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Isabel Templaria</h5>
+                            <h6 class="card-subtitle mb-2" style="color: #DC143C; font-weight: bold;">Tesorera</h6>
+                            <p class="card-text" style="color: black;">Tesorera y responsable de la gestión económica de la Filá.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="card-img-top" alt="Antonio Mariscal" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Antonio Mariscal</h5>
+                            <h6 class="card-subtitle mb-2" style="color: #DC143C; font-weight: bold;">Vocal de Actos</h6>
+                            <p class="card-text" style="color: black;">Vocal responsable de la organización de actos y ceremonias oficiales.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="card-img-top" alt="Carmen Templario" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Carmen Templario</h5>
+                            <h6 class="card-subtitle mb-2" style="color: #DC143C; font-weight: bold;">Vocal de Cultura</h6>
+                            <p class="card-text" style="color: black;">Vocal de cultura y tradiciones, encargada de preservar la historia templaria.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -151,39 +206,39 @@
     </section>
 
     <!-- Estructura Organizativa -->
-    <section class="py-5 bg-light">
-        <div class="container">
+    <section class="py-5" style="background: #f8f9fa; color: black;">
+        <div class="container" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h3 class="section-title">Estructura Organizativa</h3>
-                    <p class="section-subtitle">Cómo está organizada nuestra filá</p>
+                    <h3 style="color: black; font-weight: bold;">Estructura Organizativa</h3>
+                    <p style="color: black;">Cómo está organizada nuestra filá</p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-crown fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">Presidencia</h5>
-                            <p class="card-text">Máxima autoridad de la filá, responsable de la dirección general y representación oficial.</p>
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card-body" style="background: white; color: black;">
+                            <i class="fas fa-crown fa-3x mb-3" style="color: #DC143C;"></i>
+                            <h5 class="card-title" style="color: black;">Presidencia</h5>
+                            <p class="card-text" style="color: black;">Máxima autoridad de la filá, responsable de la dirección general y representación oficial.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-user-tie fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">Vicepresidencia</h5>
-                            <p class="card-text">Apoyo directo a la presidencia y suplencia en caso de ausencia del presidente.</p>
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card-body" style="background: white; color: black;">
+                            <i class="fas fa-user-tie fa-3x mb-3" style="color: #DC143C;"></i>
+                            <h5 class="card-title" style="color: black;">Vicepresidencia</h5>
+                            <p class="card-text" style="color: black;">Apoyo directo a la presidencia y suplencia en caso de ausencia del presidente.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-clipboard-list fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">Secretaría</h5>
-                            <p class="card-text">Gestión administrativa, documentación y comunicación oficial de la filá.</p>
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card-body" style="background: white; color: black;">
+                            <i class="fas fa-clipboard-list fa-3x mb-3" style="color: #DC143C;"></i>
+                            <h5 class="card-title" style="color: black;">Secretaría</h5>
+                            <p class="card-text" style="color: black;">Gestión administrativa, documentación y comunicación oficial de la filá.</p>
                         </div>
                     </div>
                 </div>
@@ -218,15 +273,32 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/utils.js?v=2.0"></script>
-    <script src="assets/js/main.js?v=2.0"></script>
-    <script src="assets/js/animations.js?v=2.0"></script>
     <script>
-        // Cargar datos específicos de esta página
+        // Script simplificado para la página de directiva
         document.addEventListener('DOMContentLoaded', function() {
-            if (typeof app !== 'undefined') {
-                app.loadDirectiva();
-            }
+            console.log('Página de directiva cargada correctamente');
+            
+            // Asegurar que el contenido sea visible
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.style.background = 'white';
+                section.style.color = 'black';
+                section.style.position = 'relative';
+                section.style.zIndex = '10';
+            });
+            
+            // Añadir animaciones simples
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
         });
     </script>
 </body>

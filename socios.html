@@ -131,26 +131,57 @@
     </nav>
 
     <!-- Socios Section -->
-    <section id="socios" class="py-5" style="margin-top: 80px;">
-        <div class="container">
+    <section id="socios" class="py-5" style="margin-top: 80px; background: white; color: black;">
+        <div class="container" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Socios</h2>
-                    <p class="section-subtitle">Información para socios de la Filá</p>
+                    <h2 style="color: black; font-weight: bold;">Socios</h2>
+                    <p style="color: black;">Información para socios de la Filá</p>
                 </div>
             </div>
             <div class="row mb-4">
                 <div class="col-12 text-center">
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginSociosModal">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginSociosModal" style="background: #DC143C; border: 2px solid #DC143C; color: white; padding: 10px 20px; border-radius: 5px;">
                         <i class="fas fa-sign-in-alt me-2"></i>Acceso Socios
                     </button>
                 </div>
             </div>
             <div class="row" id="socios-container">
-                <!-- El contenido para socios se cargará dinámicamente -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando información de socios...</span>
+                <!-- Información para socios -->
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card-body" style="background: white; color: black;">
+                            <i class="fas fa-user-plus fa-3x mb-3" style="color: #DC143C;"></i>
+                            <h5 class="card-title" style="color: black;">Hazte Socio</h5>
+                            <p class="card-text" style="color: black;">Únete a nuestra familia templaria y forma parte de la tradición.</p>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#solicitudSocioModal" style="background: #DC143C; border: 2px solid #DC143C; color: white;">
+                                <i class="fas fa-envelope me-2"></i>Más información
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card-body" style="background: white; color: black;">
+                            <i class="fas fa-percent fa-3x mb-3" style="color: #DC143C;"></i>
+                            <h5 class="card-title" style="color: black;">Ventajas</h5>
+                            <p class="card-text" style="color: black;">Disfruta de descuentos y ventajas exclusivas para socios.</p>
+                            <button class="btn btn-success" style="background: #28a745; border: 2px solid #28a745; color: white;">
+                                <i class="fas fa-gift me-2"></i>Ver ventajas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card-body" style="background: white; color: black;">
+                            <i class="fas fa-calendar-check fa-3x mb-3" style="color: #DC143C;"></i>
+                            <h5 class="card-title" style="color: black;">Actividades</h5>
+                            <p class="card-text" style="color: black;">Participa en actividades exclusivas para socios.</p>
+                            <a href="eventos.html" class="btn btn-warning" style="background: #ffc107; border: 2px solid #ffc107; color: black;">
+                                <i class="fas fa-calendar-alt me-2"></i>Ver actividades
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -190,39 +221,39 @@
     </div>
 
     <!-- Información para Socios -->
-    <section class="py-5 bg-light">
-        <div class="container">
+    <section class="py-5" style="background: #f8f9fa; color: black;">
+        <div class="container" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h3 class="section-title">Información para Socios</h3>
-                    <p class="section-subtitle">Todo lo que necesitas saber como socio de la Filá</p>
+                    <h3 style="color: black; font-weight: bold;">Información para Socios</h3>
+                    <p style="color: black;">Todo lo que necesitas saber como socio de la Filá</p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-calendar-check fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">Eventos y Actividades</h5>
-                            <p class="card-text">Participa en todas nuestras actividades, eventos y celebraciones como miembro activo de la filá.</p>
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card-body" style="background: white; color: black;">
+                            <i class="fas fa-calendar-check fa-3x mb-3" style="color: #DC143C;"></i>
+                            <h5 class="card-title" style="color: black;">Eventos y Actividades</h5>
+                            <p class="card-text" style="color: black;">Participa en todas nuestras actividades, eventos y celebraciones como miembro activo de la filá.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">Hermandad</h5>
-                            <p class="card-text">Forma parte de una hermandad centenaria y comparte experiencias únicas con otros socios.</p>
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card-body" style="background: white; color: black;">
+                            <i class="fas fa-users fa-3x mb-3" style="color: #DC143C;"></i>
+                            <h5 class="card-title" style="color: black;">Hermandad</h5>
+                            <p class="card-text" style="color: black;">Forma parte de una hermandad centenaria y comparte experiencias únicas con otros socios.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">Tradición</h5>
-                            <p class="card-text">Preserva y mantén viva la tradición templaria y las costumbres de nuestra filá.</p>
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card-body" style="background: white; color: black;">
+                            <i class="fas fa-shield-alt fa-3x mb-3" style="color: #DC143C;"></i>
+                            <h5 class="card-title" style="color: black;">Tradición</h5>
+                            <p class="card-text" style="color: black;">Preserva y mantén viva la tradición templaria y las costumbres de nuestra filá.</p>
                         </div>
                     </div>
                 </div>
@@ -231,56 +262,56 @@
     </section>
 
     <!-- Beneficios de ser Socio -->
-    <section class="py-5">
-        <div class="container">
+    <section class="py-5" style="background: white; color: black;">
+        <div class="container" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h3 class="section-title">Beneficios de ser Socio</h3>
-                    <p class="section-subtitle">Ventajas exclusivas para miembros de la Filá</p>
+                    <h3 style="color: black; font-weight: bold;">Beneficios de ser Socio</h3>
+                    <p style="color: black;">Ventajas exclusivas para miembros de la Filá</p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-6 mb-4">
-                    <div class="d-flex">
+                    <div class="d-flex" style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid #DC143C;">
                         <div class="flex-shrink-0">
-                            <i class="fas fa-check-circle text-primary fa-2x"></i>
+                            <i class="fas fa-check-circle fa-2x" style="color: #DC143C;"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h5>Acceso Exclusivo</h5>
-                            <p>Participa en eventos privados y actividades exclusivas para socios.</p>
+                            <h5 style="color: black;">Acceso Exclusivo</h5>
+                            <p style="color: black;">Participa en eventos privados y actividades exclusivas para socios.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 mb-4">
-                    <div class="d-flex">
+                    <div class="d-flex" style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid #DC143C;">
                         <div class="flex-shrink-0">
-                            <i class="fas fa-check-circle text-primary fa-2x"></i>
+                            <i class="fas fa-check-circle fa-2x" style="color: #DC143C;"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h5>Descuentos Especiales</h5>
-                            <p>Obtén descuentos en productos de la tienda y eventos especiales.</p>
+                            <h5 style="color: black;">Descuentos Especiales</h5>
+                            <p style="color: black;">Obtén descuentos en productos de la tienda y eventos especiales.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 mb-4">
-                    <div class="d-flex">
+                    <div class="d-flex" style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid #DC143C;">
                         <div class="flex-shrink-0">
-                            <i class="fas fa-check-circle text-primary fa-2x"></i>
+                            <i class="fas fa-check-circle fa-2x" style="color: #DC143C;"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h5>Información Prioritaria</h5>
-                            <p>Recibe información de primera mano sobre eventos y novedades.</p>
+                            <h5 style="color: black;">Información Prioritaria</h5>
+                            <p style="color: black;">Recibe información de primera mano sobre eventos y novedades.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 mb-4">
-                    <div class="d-flex">
+                    <div class="d-flex" style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid #DC143C;">
                         <div class="flex-shrink-0">
-                            <i class="fas fa-check-circle text-primary fa-2x"></i>
+                            <i class="fas fa-check-circle fa-2x" style="color: #DC143C;"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h5>Participación en Decisiones</h5>
-                            <p>Forma parte de las decisiones importantes de la filá.</p>
+                            <h5 style="color: black;">Participación en Decisiones</h5>
+                            <p style="color: black;">Forma parte de las decisiones importantes de la filá.</p>
                         </div>
                     </div>
                 </div>
@@ -315,15 +346,32 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/utils.js?v=2.0"></script>
-    <script src="assets/js/main.js?v=2.0"></script>
-    <script src="assets/js/animations.js?v=2.0"></script>
     <script>
-        // Cargar datos específicos de esta página
+        // Script simplificado para la página de socios
         document.addEventListener('DOMContentLoaded', function() {
-            if (typeof app !== 'undefined') {
-                app.loadSocios();
-            }
+            console.log('Página de socios cargada correctamente');
+            
+            // Asegurar que el contenido sea visible
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.style.background = 'white';
+                section.style.color = 'black';
+                section.style.position = 'relative';
+                section.style.zIndex = '10';
+            });
+            
+            // Añadir animaciones simples
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
 
             // Manejo de login de socios
             const loginForm = document.getElementById('sociosLoginForm');

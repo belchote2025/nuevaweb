@@ -17,10 +17,10 @@
     --templar-gray-light: #4A4A4A;  /* Gris claro */
     
     /* Colores de fondo */
-    --site-bg-color: #0A0A0A;
-    --site-bg-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), 
+    --site-bg-color: #f8f9fa;
+    --site-bg-image: linear-gradient(rgba(248, 249, 250, 0.9), rgba(248, 249, 250, 0.8)), 
                      url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
-    --site-bg-darken: rgba(0, 0, 0, 0.6);
+    --site-bg-darken: rgba(248, 249, 250, 0.8);
     
     /* Colores de Bootstrap sobrescritos */
     --bs-primary: var(--templar-red);
@@ -38,7 +38,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: var(--templar-white);
+    color: var(--templar-black);
     background-color: var(--site-bg-color);
     position: relative;
     min-height: 100vh;
@@ -48,6 +48,113 @@ body {
 body {
     background: var(--site-bg-color);
     background: var(--site-bg-image, var(--site-bg-color));
+}
+
+/* Asegurar que el contenido sea visible */
+section {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 2px solid var(--templar-red);
+    color: var(--templar-black) !important;
+    padding: 2rem 0;
+    margin: 1rem 0;
+    min-height: 200px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Forzar visibilidad de todo el contenido */
+body > * {
+    position: relative;
+    z-index: 5;
+}
+
+/* Asegurar que las secciones principales sean visibles */
+section, .container, .card, .navbar, .footer {
+    position: relative;
+    z-index: 10;
+}
+
+section.bg-light {
+    background: rgba(248, 249, 250, 0.9) !important;
+    color: var(--templar-black) !important;
+}
+
+/* Contenedor principal visible */
+.container {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 10px;
+    padding: 2rem;
+    margin: 1rem 0;
+    position: relative;
+    z-index: 15;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 2px solid var(--templar-red) !important;
+    color: var(--templar-black) !important;
+    position: relative;
+    z-index: 20;
+}
+
+.card-body {
+    color: var(--templar-black) !important;
+}
+
+.card-title {
+    color: var(--templar-black) !important;
+}
+
+.card-text {
+    color: var(--templar-black) !important;
+}
+
+/* Títulos y subtítulos visibles */
+.section-title {
+    color: var(--templar-black) !important;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.section-subtitle {
+    color: var(--templar-black) !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--templar-black) !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+p {
+    color: var(--templar-black) !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Spinner visible */
+.spinner-border {
+    color: var(--templar-red) !important;
+}
+
+/* Imágenes de la directiva visibles */
+.card-img-top {
+    border-radius: 10px 10px 0 0 !important;
+    border: 2px solid var(--templar-red) !important;
+}
+
+/* Texto de las tarjetas visible */
+.card-subtitle {
+    color: var(--templar-red) !important;
+    font-weight: bold;
+}
+
+/* Enlaces visibles */
+a {
+    color: var(--templar-red) !important;
+}
+
+a:hover {
+    color: var(--templar-red-light) !important;
 }
 
 body::before {
@@ -62,7 +169,8 @@ body::before {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    z-index: -2;
+    z-index: -10;
+    opacity: 0.1;
 }
 
 body::after {
@@ -72,8 +180,9 @@ body::after {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(0deg, var(--site-bg-darken), var(--site-bg-darken));
-    z-index: -2;
+    background: var(--site-bg-darken);
+    z-index: -9;
+    opacity: 0.1;
 }
 
 .container {
@@ -151,19 +260,19 @@ body::after {
 
 /* Secciones translúcidas para dejar ver el fondo */
 section {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border: 2px solid var(--templar-red);
     border-radius: 12px;
-    color: var(--templar-white);
+    color: var(--templar-black);
 }
 
 /* Para secciones oscuras (como contacto) mantener contraste pero translúcidas */
 section.bg-dark, .bg-dark.section, #contacto.bg-dark {
-    background: rgba(15, 15, 20, 0.65) !important;
-    color: #fff;
-    border-color: rgba(255,255,255,0.08);
+    background: rgba(248, 249, 250, 0.9) !important;
+    color: var(--templar-black);
+    border-color: var(--templar-red);
 }
 
 /* Hero Section con Carrusel Moderno */
@@ -782,15 +891,15 @@ section.bg-dark, .bg-dark.section, #contacto.bg-dark {
 /* ===== TARJETAS Y FICHAS TEMPLARIAS ===== */
 .services {
     padding: 80px 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.6);
     color: var(--templar-white);
 }
 
 /* Cards templarias */
 .card {
-    background: rgba(0, 0, 0, 0.9) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
     border: 2px solid var(--templar-red) !important;
-    color: var(--templar-white) !important;
+    color: var(--templar-black) !important;
     border-radius: 15px !important;
 }
 
@@ -801,16 +910,16 @@ section.bg-dark, .bg-dark.section, #contacto.bg-dark {
 }
 
 .card-body {
-    background: rgba(0, 0, 0, 0.8) !important;
-    color: var(--templar-white) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: var(--templar-black) !important;
 }
 
 .card-title {
-    color: var(--templar-white) !important;
+    color: var(--templar-black) !important;
 }
 
 .card-text {
-    color: rgba(255, 255, 255, 0.9) !important;
+    color: var(--templar-black) !important;
 }
 
 /* Badges templarios */
@@ -917,51 +1026,51 @@ footer a:hover {
 
 /* ===== FORMULARIOS TEMPLARIOS ===== */
 .form-control {
-    background-color: rgba(0, 0, 0, 0.8) !important;
+    background-color: rgba(255, 255, 255, 0.9) !important;
     border: 2px solid var(--templar-gray) !important;
-    color: var(--templar-white) !important;
+    color: var(--templar-black) !important;
     border-radius: 8px !important;
 }
 
 .form-control:focus {
-    background-color: rgba(0, 0, 0, 0.9) !important;
+    background-color: rgba(255, 255, 255, 1) !important;
     border-color: var(--templar-red) !important;
-    color: var(--templar-white) !important;
+    color: var(--templar-black) !important;
     box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25) !important;
 }
 
 .form-label {
-    color: var(--templar-white) !important;
+    color: var(--templar-black) !important;
     font-weight: 600;
 }
 
 /* ===== TÍTULOS Y TEXTOS TEMPLARIOS ===== */
 .section-title {
-    color: var(--templar-white) !important;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    color: var(--templar-black) !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .section-subtitle {
-    color: rgba(255, 255, 255, 0.9) !important;
+    color: var(--templar-black) !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: var(--templar-white) !important;
+    color: var(--templar-black) !important;
 }
 
 p {
-    color: rgba(255, 255, 255, 0.9) !important;
+    color: var(--templar-black) !important;
 }
 
 /* ===== NAVEGACIÓN DROPDOWN TEMPLARIA ===== */
 .dropdown-menu {
-    background: var(--templar-black) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
     border: 2px solid var(--templar-red) !important;
     border-radius: 8px !important;
 }
 
 .dropdown-item {
-    color: var(--templar-white) !important;
+    color: var(--templar-black) !important;
 }
 
 .dropdown-item:hover {
@@ -971,21 +1080,21 @@ p {
 
 /* ===== ALERTAS TEMPLARIAS ===== */
 .alert-primary {
-    background-color: rgba(220, 20, 60, 0.2) !important;
+    background-color: rgba(220, 20, 60, 0.1) !important;
     border-color: var(--templar-red) !important;
-    color: var(--templar-white) !important;
+    color: var(--templar-black) !important;
 }
 
 .alert-success {
-    background-color: rgba(0, 128, 0, 0.2) !important;
+    background-color: rgba(0, 128, 0, 0.1) !important;
     border-color: #00ff00 !important;
-    color: var(--templar-white) !important;
+    color: var(--templar-black) !important;
 }
 
 .alert-danger {
-    background-color: rgba(220, 20, 60, 0.2) !important;
+    background-color: rgba(220, 20, 60, 0.1) !important;
     border-color: var(--templar-red) !important;
-    color: var(--templar-white) !important;
+    color: var(--templar-black) !important;
 }
 
 /* ===== ANIMACIONES ESPECTACULARES ===== */

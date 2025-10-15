@@ -131,12 +131,12 @@
     </nav>
 
     <!-- Galería Section -->
-    <section id="galeria" class="py-5" style="margin-top: 80px;">
-        <div class="container">
+    <section id="galeria" class="py-5" style="margin-top: 80px; background: white; color: black;">
+        <div class="container" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Galería</h2>
-                    <p class="section-subtitle">Momentos especiales de nuestra hermandad</p>
+                    <h2 style="color: black; font-weight: bold;">Galería</h2>
+                    <p style="color: black;">Momentos especiales de nuestra hermandad</p>
                 </div>
             </div>
             
@@ -161,10 +161,59 @@
             </div>
             
             <div class="row" id="galeria-container">
-                <!-- Las imágenes se cargarán dinámicamente -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando galería...</span>
+                <!-- Galería de imágenes -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Fiestas de Moros y Cristianos" style="height: 200px; object-fit: cover;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Fiestas de Moros y Cristianos</h5>
+                            <p class="card-text" style="color: black;">Participación en las fiestas más importantes de Elche.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Desfile Templario" style="height: 200px; object-fit: cover;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Desfile Templario</h5>
+                            <p class="card-text" style="color: black;">Desfile con nuestros trajes tradicionales templarios.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Reunión de Socios" style="height: 200px; object-fit: cover;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Reunión de Socios</h5>
+                            <p class="card-text" style="color: black;">Encuentros mensuales de nuestra hermandad.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Actividades Culturales" style="height: 200px; object-fit: cover;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Actividades Culturales</h5>
+                            <p class="card-text" style="color: black;">Eventos educativos y culturales de la filá.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Banda Musical" style="height: 200px; object-fit: cover;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Banda Musical</h5>
+                            <p class="card-text" style="color: black;">Nuestra banda en conciertos y eventos.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Tradición Templaria" style="height: 200px; object-fit: cover;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Tradición Templaria</h5>
+                            <p class="card-text" style="color: black;">Preservando nuestras costumbres y tradiciones.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -292,16 +341,32 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/utils.js?v=2.0"></script>
-    <script src="assets/js/main.js?v=2.0"></script>
-    <script src="assets/js/gallery.js?v=2.0"></script>
-    <script src="assets/js/animations.js?v=2.0"></script>
     <script>
-        // Cargar datos específicos de esta página
+        // Script simplificado para la página de galería
         document.addEventListener('DOMContentLoaded', function() {
-            if (typeof app !== 'undefined') {
-                app.loadGaleria();
-            }
+            console.log('Página de galería cargada correctamente');
+            
+            // Asegurar que el contenido sea visible
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.style.background = 'white';
+                section.style.color = 'black';
+                section.style.position = 'relative';
+                section.style.zIndex = '10';
+            });
+            
+            // Añadir animaciones simples
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
         });
     </script>
 </body>

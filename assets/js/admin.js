@@ -92,8 +92,8 @@ class AdminApp {
             const result = await response.json();
             
             if (result.success) {
-                this.showLogin();
-                this.showNotification('Sesión cerrada', 'info');
+                // Redirigir al login tras cerrar sesión
+                window.location.href = 'login.html';
             }
         } catch (error) {
             console.error('Error en logout:', error);
