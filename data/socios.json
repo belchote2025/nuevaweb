@@ -1,1 +1,46 @@
-[]
+[
+    {
+        "id": "admin_001",
+        "nombre": "Administrador",
+        "email": "admin@mariscales.com",
+        "password": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+        "rol": "admin",
+        "activo": true,
+        "fecha_creacion": "2025-10-15",
+        "updated_at": "2025-10-15 23:40:00"
+    },
+    {
+        "id": "ejemplo123",
+        "nombre": "Ejemplo",
+        "email": "ejemplo@ejemplo.com",
+        "telefono": "",
+        "direccion": "",
+        "fecha_ingreso": "2025-10-15",
+        "password": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC\/.og\/at2.uheWG\/igi",
+        "updated_at": "2023-01-01T12:00:00"
+    },
+    {
+        "nombre": "edu",
+        "email": "charo1106@gmail.com",
+        "telefono": "",
+        "direccion": "",
+        "fecha_ingreso": "2025-10-15",
+        "numero_socio": "11",
+        "activo": true,
+        "id": "68efe722d489c",
+        "updated_at": "2025-10-15 20:46:21"
+    },
+    {
+        "id": "68efeb4fafcf39.90307024",
+        "nombre": "Socio de Prueba",
+        "email": "prueba@ejemplo.com",
+        "telefono": "123456789",
+        "direccion": "Calle Prueba 123",
+        "fecha_ingreso": "2025-10-15",
+        "password": "$2y$10$xpCDzG73kHrzVAyiPtsMhe4QaX8NAWtV4iqojdDYdiByIFE9F3mbG",
+        "activo": true,
+        "numero_socio": "SOC-68EFEB4FC723F",
+        "fecha_creacion": "2025-10-15 20:43:27",
+        "updated_at": "2025-10-15 20:43:27"
+    }
+]

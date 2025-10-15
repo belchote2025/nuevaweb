@@ -11,11 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Cargar usuarios desde JSON
-function loadUsers() {
-    $users_file = '../data/users.json';
-    if (!file_exists($users_file)) return [];
-    $data = json_decode(file_get_contents($users_file), true);
+// Cargar socios desde JSON
+function loadSocios() {
+    $socios_file = '../data/socios.json';
+    if (!file_exists($socios_file)) return [];
+    $data = json_decode(file_get_contents($socios_file), true);
     return $data ?: [];
 }
 
@@ -39,47 +39,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $input['email'];
     $password = $input['password'];
     
-    // Buscar usuario en la base de datos
-    $users = loadUsers();
-    $user = null;
+    // Buscar socio en la base de datos
+    $socios = loadSocios();
+    $socio = null;
     
-    foreach ($users as $u) {
-        if ($u['email'] === $email && $u['active']) {
-            $user = $u;
+    foreach ($socios as $s) {
+        if (strtolower($s['email']) === strtolower($email)) {
+            $socio = $s;
             break;
         }
     }
     
-    if ($user && password_verify($password, $user['password_hash'])) {
-        $_SESSION['admin_logged_in'] = true;
-        $_SESSION['admin_email'] = $email;
-        $_SESSION['admin_role'] = $user['role'];
-        $_SESSION['admin_user_id'] = $user['id'];
+    if ($socio && password_verify($password, $socio['password'])) {
+        $_SESSION['socio_logged_in'] = true;
+        $_SESSION['socio_email'] = $socio['email'];
+        $_SESSION['socio_nombre'] = $socio['nombre'];
+        $_SESSION['socio_id'] = $socio['id'];
         $_SESSION['login_time'] = time();
         
-        response(true, 'Login exitoso', [
-            'email' => $email,
-            'role' => $user['role'],
-            'name' => $user['name'],
-            'login_time' => $_SESSION['login_time']
+        // No devolver información sensible
+        unset($socio['password']);
+        
+        response(true, 'Inicio de sesión exitoso', [
+            'socio' => $socio,
+            'redirect' => 'socios-area.html'
         ]);
     } else {
-        response(false, 'Credenciales incorrectas o usuario inactivo');
+        response(false, 'Credenciales incorrectas o cuenta inactiva');
     }
 }
 
 // Logout
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'logout') {
     session_destroy();
+    response(true, 'Cierre de sesión exitoso');
     response(true, 'Logout exitoso');
 }
 
 // Verificar sesión
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'check') {
-    if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
+    if (isset($_SESSION['socio_logged_in']) && $_SESSION['socio_logged_in'] === true) {
         response(true, 'Sesión activa', [
-            'email' => $_SESSION['admin_email'],
-            'role' => $_SESSION['admin_role'] ?? 'admin',
+            'email' => $_SESSION['socio_email'],
+            'nombre' => $_SESSION['socio_nombre'],
+            'id' => $_SESSION['socio_id'],
             'login_time' => $_SESSION['login_time']
         ]);
     } else {

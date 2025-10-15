@@ -411,10 +411,28 @@ class AdminApp {
     getColumnsConfig(section) {
         const configs = {
             'users': [
-                { key: 'name', title: 'Nombre', type: 'text' },
+                { key: 'nombre', title: 'Nombre', type: 'text' },
                 { key: 'email', title: 'Email', type: 'text' },
-                { key: 'role', title: 'Rol', type: 'text' },
-                { key: 'active', title: 'Activo', type: 'boolean' }
+                { key: 'telefono', title: 'Teléfono', type: 'text' },
+                { key: 'rol', title: 'Rol', type: 'text' },
+                { 
+                    key: 'password', 
+                    title: 'Contraseña', 
+                    type: 'text',
+                    formatter: (value) => value ? '••••••••' : ''
+                },
+                { 
+                    key: 'fecha_ingreso', 
+                    title: 'Fecha Ingreso', 
+                    type: 'date',
+                    formatter: (value) => value ? new Date(value).toLocaleDateString('es-ES') : ''
+                },
+                { 
+                    key: 'activo', 
+                    title: 'Activo', 
+                    type: 'boolean',
+                    formatter: (value) => value === true ? 'Sí' : 'No'
+                }
             ],
             'carousel': [
                 { key: 'titulo', title: 'Título', type: 'text' },

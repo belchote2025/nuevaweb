@@ -6,9 +6,26 @@ header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
 // Verificar autenticación
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+if (!isset($_SESSION['socio_logged_in']) || $_SESSION['socio_logged_in'] !== true) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'No autorizado']);
+    echo json_encode(['success' => false, 'message' => 'No autorizado. Por favor inicie sesión.']);
+    exit();
+}
+
+// Verificar si el usuario es administrador
+$socios = json_decode(file_get_contents('../data/socios.json'), true);
+$usuario_actual = null;
+
+foreach ($socios as $socio) {
+    if (isset($socio['email']) && $socio['email'] === $_SESSION['socio_email']) {
+        $usuario_actual = $socio;
+        break;
+    }
+}
+
+if (!isset($usuario_actual['rol']) || $usuario_actual['rol'] !== 'admin') {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Acceso denegado. Se requieren privilegios de administrador.']);
     exit();
 }
 

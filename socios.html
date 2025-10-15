@@ -427,8 +427,33 @@
             // Manejo de solicitud de socio
             const solicitudForm = document.getElementById('solicitudSocioForm');
             if (solicitudForm) {
+                // Validar que las contraseñas coincidan
+                const password = document.getElementById('solicitudPassword');
+                const confirmPassword = document.getElementById('solicitudPasswordConfirm');
+                
+                function validatePassword() {
+                    if (password.value !== confirmPassword.value) {
+                        confirmPassword.setCustomValidity('Las contraseñas no coinciden');
+                        return false;
+                    } else if (password.value.length < 8) {
+                        password.setCustomValidity('La contraseña debe tener al menos 8 caracteres');
+                        return false;
+                    } else {
+                        confirmPassword.setCustomValidity('');
+                        return true;
+                    }
+                }
+
+                password.onchange = validatePassword;
+                confirmPassword.onkeyup = validatePassword;
+
                 solicitudForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
+                    
+                    if (!validatePassword()) {
+                        return false;
+                    }
+                    
                     const alertBox = document.getElementById('solicitud-alert');
                     const btn = solicitudForm.querySelector('button[type="submit"]');
                     const btnText = btn.querySelector('.btn-text');
@@ -441,39 +466,52 @@
 
                     try {
                         const formData = new FormData(solicitudForm);
-                        const payload = {
+                        const data = {
                             nombre: formData.get('nombre'),
                             email: formData.get('email'),
                             telefono: formData.get('telefono'),
-                            edad: formData.get('edad'),
-                            motivo: formData.get('motivo'),
-                            experiencia: formData.get('experiencia'),
-                            acepta: formData.get('acepta') === 'on'
+                            direccion: formData.get('direccion') || '',
+                            fecha_ingreso: new Date().toISOString().split('T')[0],
+                            password: formData.get('password'),
+                            activo: true,
+                            numero_socio: Math.floor(1000 + Math.random() * 9000).toString(),
+                            updated_at: new Date().toISOString()
                         };
 
-                        const resp = await fetch('api/solicitudes.php', {
+                        // Enviar datos al servidor
+                        const response = await fetch('api/socios.php', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
                         });
-                        const result = await resp.json();
 
-                        if (result.success) {
-                            alertBox.textContent = 'Solicitud enviada correctamente. Te contactaremos pronto.';
-                            alertBox.classList.remove('alert-danger');
+                        const result = await response.json();
+
+                        if (response.ok) {
+                            alertBox.textContent = '¡Registro exitoso! Ahora puedes iniciar sesión con tu correo y contraseña.';
+                            alertBox.classList.remove('alert-danger', 'd-none');
                             alertBox.classList.add('alert-success');
-                            alertBox.classList.remove('d-none');
                             solicitudForm.reset();
+                            
+                            // Cerrar el modal después de 3 segundos
                             setTimeout(() => {
-                                bootstrap.Modal.getInstance(document.getElementById('solicitudSocioModal')).hide();
-                            }, 2000);
+                                const modal = bootstrap.Modal.getInstance(document.getElementById('solicitudSocioModal'));
+                                if (modal) modal.hide();
+                                alertBox.classList.add('d-none');
+                                // Mostrar el modal de login
+                                const loginModal = new bootstrap.Modal(document.getElementById('loginSociosModal'));
+                                loginModal.show();
+                            }, 3000);
                         } else {
-                            alertBox.textContent = result.message || 'Error al enviar la solicitud';
-                            alertBox.classList.remove('d-none');
+                            throw new Error(result.message || 'Error al registrar el socio');
                         }
-                    } catch (err) {
-                        alertBox.textContent = 'Error de conexión. Inténtalo de nuevo.';
-                        alertBox.classList.remove('d-none');
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alertBox.textContent = error.message || 'Error al registrar el socio. Por favor, inténtalo de nuevo.';
+                        alertBox.classList.remove('d-none', 'alert-success');
+                        alertBox.classList.add('alert-danger');
                     } finally {
                         btn.disabled = false;
                         btnText.textContent = 'Enviar Solicitud';
@@ -513,6 +551,17 @@
                             <div class="col-md-6 mb-3">
                                 <label for="solicitudEdad" class="form-label">Edad</label>
                                 <input type="number" class="form-control" id="solicitudEdad" name="edad" min="18" max="100">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="solicitudPassword" class="form-label">Contraseña *</label>
+                                <input type="password" class="form-control" id="solicitudPassword" name="password" required>
+                                <small class="form-text text-muted">Mínimo 8 caracteres</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="solicitudPasswordConfirm" class="form-label">Confirmar Contraseña *</label>
+                                <input type="password" class="form-control" id="solicitudPasswordConfirm" name="password_confirm" required>
                             </div>
                         </div>
                         <div class="mb-3">

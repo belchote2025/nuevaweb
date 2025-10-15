@@ -376,18 +376,23 @@
                                     <p class="text-muted">Selecciona una sección para editar los textos.</p>
                             </div>
                         </div>
-                            </div>
-                        </div>
-                </main>
-            </div>
-        </div>
-    </div>
+                            <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Rol</th>
+        <th>Contraseña</th>
+        <th>Fecha Ingreso</th>
+        <th>Activo</th>
+        <th>Acciones</th>
+    </tr>
+</thead>
 
     <!-- Modal para añadir/editar -->
     <div class="modal fade" id="itemModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
                     <h5 class="modal-title" id="modal-title">Añadir Elemento</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -489,6 +494,48 @@
                 localStorage.setItem('admin_whatsapp_number', number);
                 updateWhatsAppButton();
             };
+
+            // Verificar sesión
+            async function checkSession() {
+                try {
+                    const response = await fetch('api/auth.php?action=check');
+                    const result = await response.json();
+                    
+                    if (!result.success) {
+                        window.location.href = 'login.html';
+                    } else {
+                        // Mostrar el panel
+                        document.getElementById('admin-dashboard').style.display = 'block';
+                        
+                        // Mostrar nombre de usuario si existe el elemento
+                        const adminName = document.getElementById('admin-name');
+                        if (adminName && result.data && result.data.nombre) {
+                            adminName.textContent = result.data.nombre;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error al verificar la sesión:', error);
+                    window.location.href = 'login.html';
+                }
+            }
+
+            // Manejar cierre de sesión
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    try {
+                        await fetch('api/auth.php?action=logout');
+                        window.location.href = 'login.html';
+                    } catch (error) {
+                        console.error('Error al cerrar sesión:', error);
+                        window.location.href = 'login.html';
+                    }
+                });
+            }
+
+            // Ejecutar verificación de sesión
+            checkSession();
         });
     </script>
     
@@ -497,4 +544,5 @@
     
     <!-- Admin JS -->
     <script src="assets/js/admin.js"></script>
+</body>
 </html>
