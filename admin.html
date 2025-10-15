@@ -108,6 +108,21 @@
 
     <!-- Admin Dashboard (oculto por defecto) -->
     <div id="admin-dashboard" class="admin-dashboard" style="display: none;">
+        <!-- Ventajas Popup HTML -->
+        <div id="ventajasPopup" class="ventajas-popup">
+            <div class="ventajas-content">
+                <span class="close-popup">&times;</span>
+                <h3><i class="fas fa-star me-2"></i>Ventajas Exclusivas</h3>
+                <ul class="ventajas-list">
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Descuentos exclusivos en eventos</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Acceso prioritario a entradas</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Contenido exclusivo</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Ofertas especiales</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Invitaciones VIP</li>
+                </ul>
+                <button class="btn btn-primary mt-3">¡Quiero más información!</button>
+            </div>
+        </div>
         <!-- Navigation -->
         <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
@@ -544,5 +559,138 @@
     
     <!-- Admin JS -->
     <script src="assets/js/admin.js"></script>
+
+    <!-- Ventajas Popup HTML se moverá al final del admin-dashboard -->
+
+    <style>
+        /* Estilos para el popup de ventajas */
+        .ventajas-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ventajas-popup.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .ventajas-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .ventajas-popup.show .ventajas-content {
+            transform: scale(1);
+        }
+
+        .ventajas-content h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .ventajas-list {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+
+        .ventajas-list li {
+            padding: 0.5rem 0;
+            color: #34495e;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .ventajas-list i {
+            margin-right: 0.5rem;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+            transition: color 0.3s;
+        }
+
+        .close-popup:hover {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 576px) {
+            .ventajas-content {
+                padding: 1.5rem;
+                width: 95%;
+            }
+            
+            .ventajas-list li {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const verVentajasBtn = document.getElementById('verVentajasBtn');
+            const ventajasPopup = document.getElementById('ventajasPopup');
+            const closePopup = document.querySelector('.close-popup');
+
+            if (verVentajasBtn) {
+                verVentajasBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    ventajasPopup.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+
+            if (closePopup) {
+                closePopup.addEventListener('click', function() {
+                    ventajasPopup.classList.remove('show');
+                    document.body.style.overflow = '';
+                });
+            }
+
+            // Cerrar al hacer clic fuera del contenido
+            if (ventajasPopup) {
+                ventajasPopup.addEventListener('click', function(e) {
+                    if (e.target === ventajasPopup) {
+                        ventajasPopup.classList.remove('show');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            // Cerrar con la tecla ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && ventajasPopup.classList.contains('show')) {
+                    ventajasPopup.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

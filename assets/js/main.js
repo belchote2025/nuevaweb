@@ -67,15 +67,23 @@ class FilaMariscalesApp {
     // ===== CARRUSEL HOME =====
     async loadCarousel() {
         const container = document.getElementById('home-carousel');
-        if (!container) return;
+        if (!container) {
+            console.log('Carousel container not found');
+            return;
+        }
 
         try {
             const response = await fetch(`${CONFIG.DATA_BASE_URL}carousel.json`);
+            if (!response.ok) throw new Error('Failed to load carousel data');
             const data = await response.json();
-            this.renderCarousel(data, container);
+            if (data && Array.isArray(data.slides)) {
+                this.renderCarousel(data, container);
+            } else {
+                throw new Error('Invalid carousel data format');
+            }
         } catch (error) {
-            console.error('Error cargando carrusel:', error);
-            container.innerHTML = '';
+            console.error('Error loading carousel:', error);
+            this.renderCarouselDefault(container);
         }
     }
 
@@ -848,14 +856,24 @@ class FilaMariscalesApp {
 
     setupSmoothScrolling() {
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            const href = anchor.getAttribute('href');
+            // Skip if href is just '#'
+            if (href === '#') {
+                return;
+            }
+            
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                try {
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                } catch (error) {
+                    console.warn('Error en scroll suave:', error);
                 }
             });
         });
