@@ -480,7 +480,42 @@ class AdminApp {
             'contactos': [
                 { key: 'nombre', title: 'Nombre', type: 'text' },
                 { key: 'email', title: 'Email', type: 'text' },
-                { key: 'fecha', title: 'Fecha', type: 'date' },
+                { key: 'telefono', title: 'Teléfono', type: 'text' },
+                { key: 'asunto', title: 'Asunto', type: 'text' },
+                { 
+                    key: 'estado', 
+                    title: 'Estado', 
+                    type: 'text',
+                    formatter: (value) => {
+                        const estados = {
+                            'nuevo': '<span class="badge bg-primary">Nuevo</span>',
+                            'leido': '<span class="badge bg-info">Leído</span>',
+                            'respondido': '<span class="badge bg-success">Respondido</span>',
+                            'cerrado': '<span class="badge bg-secondary">Cerrado</span>'
+                        };
+                        return estados[value] || value;
+                    }
+                },
+                { 
+                    key: 'prioridad', 
+                    title: 'Prioridad', 
+                    type: 'text',
+                    formatter: (value) => {
+                        const prioridades = {
+                            'baja': '<span class="badge bg-success">Baja</span>',
+                            'media': '<span class="badge bg-warning">Media</span>',
+                            'alta': '<span class="badge bg-danger">Alta</span>',
+                            'urgente': '<span class="badge bg-dark">Urgente</span>'
+                        };
+                        return prioridades[value] || value;
+                    }
+                },
+                { 
+                    key: 'fecha', 
+                    title: 'Fecha', 
+                    type: 'date',
+                    formatter: (value) => value ? new Date(value).toLocaleDateString('es-ES') : ''
+                },
                 { key: 'mensaje', title: 'Mensaje', type: 'text' }
             ],
             'socios': [
@@ -1084,6 +1119,27 @@ class AdminApp {
                 { key: 'fecha_ingreso', label: 'Fecha de Ingreso', type: 'date', required: true },
                 { key: 'numero_socio', label: 'Número de Socio', type: 'text' },
                 { key: 'activo', label: 'Activo', type: 'checkbox' }
+            ],
+            'contactos': [
+                { key: 'nombre', label: 'Nombre', type: 'text', required: true },
+                { key: 'email', label: 'Email', type: 'email', required: true },
+                { key: 'telefono', label: 'Teléfono', type: 'text' },
+                { key: 'asunto', label: 'Asunto', type: 'text', required: true },
+                { key: 'mensaje', label: 'Mensaje', type: 'textarea', required: true },
+                { key: 'fecha', label: 'Fecha de Contacto', type: 'date', required: true },
+                { key: 'estado', label: 'Estado', type: 'select', options: [
+                    { value: 'nuevo', label: 'Nuevo' },
+                    { value: 'leido', label: 'Leído' },
+                    { value: 'respondido', label: 'Respondido' },
+                    { value: 'cerrado', label: 'Cerrado' }
+                ], required: true },
+                { key: 'prioridad', label: 'Prioridad', type: 'select', options: [
+                    { value: 'baja', label: 'Baja' },
+                    { value: 'media', label: 'Media' },
+                    { value: 'alta', label: 'Alta' },
+                    { value: 'urgente', label: 'Urgente' }
+                ], required: true },
+                { key: 'notas', label: 'Notas Internas', type: 'textarea' }
             ]
         };
         
@@ -1701,6 +1757,17 @@ class AdminApp {
                 { value: '', label: 'Todos' },
                 { value: 'activo:true', label: 'Activos' },
                 { value: 'activo:false', label: 'Inactivos' }
+            ],
+            'contactos': [
+                { value: '', label: 'Todos' },
+                { value: 'estado:nuevo', label: 'Nuevos' },
+                { value: 'estado:leido', label: 'Leídos' },
+                { value: 'estado:respondido', label: 'Respondidos' },
+                { value: 'estado:cerrado', label: 'Cerrados' },
+                { value: 'prioridad:urgente', label: 'Urgentes' },
+                { value: 'prioridad:alta', label: 'Alta Prioridad' },
+                { value: 'prioridad:media', label: 'Media Prioridad' },
+                { value: 'prioridad:baja', label: 'Baja Prioridad' }
             ]
         };
         

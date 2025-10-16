@@ -1,13 +1,14 @@
 [
     {
-        "id": 1,
         "titulo": "Presentaci\u00f3n de la Fil\u00e1 2025",
         "descripcion": "Presentaci\u00f3n oficial de la Fil\u00e1 Mariscales de Caballeros Templarios para la temporada 2025",
         "fecha": "2025-02-15",
         "hora": "20:00",
         "lugar": "Sede Social - Calle Templarios, 15",
         "tipo": "presentacion",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "id": "68f0e6fe44c8c",
+        "updated_at": "2025-10-16 14:37:18"
     },
     {
         "id": 2,
