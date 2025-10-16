@@ -360,3 +360,43 @@ main {
     }
 }
 
+/* ===== ESTILOS ESPECÍFICOS PARA EL MODAL ===== */
+#itemModal {
+    z-index: 9999 !important;
+}
+
+#itemModal .modal-dialog {
+    z-index: 10000 !important;
+}
+
+#itemModal .modal-content {
+    z-index: 10001 !important;
+    position: relative;
+}
+
+/* Asegurar que el modal sea visible */
+.modal.fade .modal-dialog {
+    transform: translate(0, 0);
+    transition: transform 0.3s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: none;
+}
+
+/* Forzar visibilidad del modal */
+.modal.show {
+    display: block !important;
+}
+
+/* Estilos para el backdrop */
+.modal-backdrop {
+    z-index: 9998 !important;
+}
+
+/* Asegurar que el modal esté en el centro */
+#itemModal .modal-dialog {
+    margin: 1.75rem auto;
+    max-width: 800px;
+}
+

@@ -122,9 +122,16 @@ class AdminApp {
         });
 
         // Add item button
-        document.getElementById('add-item-btn').addEventListener('click', () => {
-            this.showAddModal();
-        });
+        const addBtn = document.getElementById('add-item-btn');
+        if (addBtn) {
+            console.log('Configurando botón de añadir');
+            addBtn.addEventListener('click', () => {
+                console.log('Botón de añadir clickeado');
+                this.showAddModal();
+            });
+        } else {
+            console.error('Botón de añadir no encontrado');
+        }
 
         // Save item button (modal)
         const saveItemBtn = document.getElementById('save-item-btn');
@@ -531,6 +538,8 @@ class AdminApp {
 
     // ===== MODALES =====
     showAddModal() {
+        console.log('Mostrando modal de añadir para sección:', ADMIN_CONFIG.CURRENT_SECTION);
+        
         // Verificar permisos para crear socios
         if (ADMIN_CONFIG.CURRENT_SECTION === 'socios' && !this.isAdmin()) {
             this.showNotification('Solo los administradores pueden crear socios', 'error');
@@ -543,15 +552,41 @@ class AdminApp {
 
     async editItem(id) {
         try {
-            const data = await this.fetchData(ADMIN_CONFIG.CURRENT_SECTION);
+            console.log('Editando item con ID:', id);
+            console.log('Sección actual:', ADMIN_CONFIG.CURRENT_SECTION);
+            
+            // Usar los datos ya cargados en lugar de hacer una nueva petición
+            const data = ADMIN_CONFIG.CURRENT_DATA;
+            if (!data || data.length === 0) {
+                console.log('No hay datos cargados, cargando...');
+                // Si no hay datos cargados, cargarlos
+                const freshData = await this.fetchData(ADMIN_CONFIG.CURRENT_SECTION);
+                ADMIN_CONFIG.CURRENT_DATA = freshData;
+                ADMIN_CONFIG.FILTERED_DATA = [...freshData];
+            }
+            
             // Buscar por cualquier posible clave de ID y normalizar a string
-            const item = data.find(i => String(this.getItemId(i)) === String(id));
+            const currentData = ADMIN_CONFIG.CURRENT_DATA;
+            console.log('Datos disponibles:', currentData.length);
+            console.log('Buscando ID:', id, 'Tipo:', typeof id);
+            
+            const item = currentData.find(i => {
+                const itemId = this.getItemId(i);
+                console.log('Comparando:', String(itemId), 'con', String(id));
+                return String(itemId) === String(id);
+            });
             
             if (item) {
+                console.log('Item encontrado:', item);
                 ADMIN_CONFIG.EDITING_ITEM = item;
                 this.showItemModal('Editar', this.getFormFields(ADMIN_CONFIG.CURRENT_SECTION), item);
             } else {
                 console.error('Item no encontrado con id:', id);
+                console.log('Datos disponibles:', currentData.map(i => ({ 
+                    id: this.getItemId(i), 
+                    titulo: i.titulo || i.nombre || 'Sin título',
+                    tipo: typeof this.getItemId(i)
+                })));
                 this.showNotification('No se encontró el elemento a editar', 'error');
             }
         } catch (error) {
@@ -561,6 +596,10 @@ class AdminApp {
     }
 
     showItemModal(title, fields, data = null) {
+        console.log('Mostrando modal con título:', title);
+        console.log('Campos:', fields);
+        console.log('Datos:', data);
+        
         document.getElementById('modal-title').textContent = title;
         
         const formFields = document.getElementById('form-fields');
@@ -637,6 +676,24 @@ class AdminApp {
         }).join('');
         
         const modalElement = document.getElementById('itemModal');
+        
+        // Forzar visibilidad del modal
+        modalElement.style.display = 'block';
+        modalElement.classList.add('show');
+        modalElement.setAttribute('aria-hidden', 'false');
+        
+        // Crear backdrop manualmente si no existe
+        let backdrop = document.querySelector('.modal-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            backdrop.style.zIndex = '9998';
+            document.body.appendChild(backdrop);
+        }
+        
+        // Prevenir scroll del body
+        document.body.classList.add('modal-open');
+        
         const modal = new bootstrap.Modal(modalElement);
         
         // Manejar eventos del modal para accesibilidad
@@ -653,9 +710,15 @@ class AdminApp {
         modalElement.addEventListener('hidden.bs.modal', () => {
             // Limpiar el formulario cuando se cierra
             document.getElementById('form-fields').innerHTML = '';
+            // Remover backdrop
+            if (backdrop) {
+                backdrop.remove();
+            }
+            document.body.classList.remove('modal-open');
         });
         
-        modal.show();
+        // Usar método personalizado en lugar de Bootstrap
+        this.showCustomModal();
         
         // Event listener para botones de subir imagen y limpiar errores
         setTimeout(() => {
@@ -678,6 +741,275 @@ class AdminApp {
         }, 100);
     }
 
+    // ===== MÉTODO ALTERNATIVO PARA MOSTRAR MODAL =====
+    showCustomModal() {
+        // Crear modal completamente nuevo
+        this.createNewModal();
+        console.log('Modal completamente nuevo creado y mostrado');
+    }
+    
+    createNewModal() {
+        // Remover modal existente si existe
+        const existingModal = document.getElementById('newItemModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // Crear el HTML del modal
+        const modalHTML = `
+            <div id="newItemModal" style="
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background-color: rgba(0, 0, 0, 0.5) !important;
+                z-index: 99999 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            ">
+                <div style="
+                    background-color: white !important;
+                    border-radius: 8px !important;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+                    max-width: 800px !important;
+                    width: 90% !important;
+                    max-height: 90% !important;
+                    overflow-y: auto !important;
+                    position: relative !important;
+                ">
+                    <div style="
+                        padding: 20px !important;
+                        border-bottom: 1px solid #dee2e6 !important;
+                        display: flex !important;
+                        justify-content: space-between !important;
+                        align-items: center !important;
+                    ">
+                        <h5 id="newModalTitle" style="margin: 0 !important;">Editar</h5>
+                        <button id="newModalClose" style="
+                            background: none !important;
+                            border: none !important;
+                            font-size: 24px !important;
+                            cursor: pointer !important;
+                            color: #6c757d !important;
+                        ">&times;</button>
+                    </div>
+                    <div style="padding: 20px !important;">
+                        <form id="newItemForm">
+                            <div id="newFormFields">
+                                <!-- Los campos se generarán aquí -->
+                            </div>
+                        </form>
+                    </div>
+                    <div style="
+                        padding: 20px !important;
+                        border-top: 1px solid #dee2e6 !important;
+                        display: flex !important;
+                        justify-content: flex-end !important;
+                        gap: 10px !important;
+                    ">
+                        <button id="newModalCancel" type="button" style="
+                            padding: 8px 16px !important;
+                            border: 1px solid #6c757d !important;
+                            background: white !important;
+                            color: #6c757d !important;
+                            border-radius: 4px !important;
+                            cursor: pointer !important;
+                        ">Cancelar</button>
+                        <button id="newModalSave" type="button" style="
+                            padding: 8px 16px !important;
+                            border: none !important;
+                            background: #007bff !important;
+                            color: white !important;
+                            border-radius: 4px !important;
+                            cursor: pointer !important;
+                        ">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Insertar el modal en el body
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Prevenir scroll del body
+        document.body.style.overflow = 'hidden';
+        
+        // Configurar event listeners
+        this.setupNewModalEvents();
+        
+        // Llenar el modal con los datos
+        this.populateNewModal();
+    }
+    
+    setupNewModalEvents() {
+        const modal = document.getElementById('newItemModal');
+        const closeBtn = document.getElementById('newModalClose');
+        const cancelBtn = document.getElementById('newModalCancel');
+        const saveBtn = document.getElementById('newModalSave');
+        
+        // Cerrar con botón X
+        closeBtn.onclick = () => this.hideNewModal();
+        
+        // Cerrar con botón Cancelar
+        cancelBtn.onclick = () => this.hideNewModal();
+        
+        // Guardar
+        saveBtn.onclick = () => this.saveNewItem();
+        
+        // Cerrar con backdrop
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                this.hideNewModal();
+            }
+        };
+    }
+    
+    populateNewModal() {
+        const title = document.getElementById('newModalTitle');
+        const formFields = document.getElementById('newFormFields');
+        
+        // Obtener datos del modal original
+        const originalTitle = document.getElementById('modal-title').textContent;
+        const originalFields = document.getElementById('form-fields').innerHTML;
+        
+        title.textContent = originalTitle;
+        formFields.innerHTML = originalFields;
+        
+        // Enfocar el primer campo
+        setTimeout(() => {
+            const firstInput = formFields.querySelector('input:not([type="checkbox"]), textarea, select');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }, 100);
+    }
+    
+    hideNewModal() {
+        // Remover el modal nuevo
+        const modal = document.getElementById('newItemModal');
+        if (modal) {
+            modal.remove();
+        }
+        
+        // Limpiar cualquier backdrop que pueda haber quedado
+        const backdrops = document.querySelectorAll('.modal-backdrop, .custom-modal-backdrop');
+        backdrops.forEach(backdrop => backdrop.remove());
+        
+        // Remover clases del body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Limpiar cualquier estilo que pueda haber quedado
+        document.body.removeAttribute('style');
+        
+        console.log('Nuevo modal ocultado y limpieza completa realizada');
+    }
+    
+    async saveNewItem() {
+        try {
+            // Obtener los datos del formulario del nuevo modal
+            const formData = this.getFormDataFromNewModal();
+            const section = ADMIN_CONFIG.CURRENT_SECTION;
+            
+            console.log('Guardando desde nuevo modal en sección:', section);
+            
+            // Preparar los datos para el envío
+            let payload = {
+                type: section,
+                data: formData
+            };
+            
+            // Si es una edición, asegurarse de incluir el ID
+            if (ADMIN_CONFIG.EDITING_ITEM) {
+                payload.edit_id = this.getItemId(ADMIN_CONFIG.EDITING_ITEM);
+            }
+            
+            // Determinar el endpoint correcto
+            const isUsers = section === 'users';
+            const endpoint = isUsers ? 'users.php' : 'admin.php';
+            
+            // Mostrar indicador de carga
+            const saveButton = document.getElementById('newModalSave');
+            const originalButtonText = saveButton.innerHTML;
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<span style="display: inline-block; width: 16px; height: 16px; border: 2px solid #ffffff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></span> Guardando...';
+            
+            try {
+                // Construir body según endpoint
+                const body = isUsers ? JSON.stringify(formData) : JSON.stringify(payload);
+                const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    this.showNotification('Elemento guardado correctamente', 'success');
+                    this.hideNewModal();
+                    this.loadSectionData(section);
+                } else {
+                    this.showNotification(result.message || 'Error al guardar el elemento', 'error');
+                }
+            } finally {
+                // Restaurar el botón
+                saveButton.disabled = false;
+                saveButton.innerHTML = originalButtonText;
+            }
+        } catch (error) {
+            console.error('Error guardando elemento:', error);
+            this.showNotification('Error al procesar la solicitud', 'error');
+        }
+    }
+    
+    getFormDataFromNewModal() {
+        const formData = {};
+        const formFields = document.getElementById('newFormFields');
+        
+        // Obtener todos los inputs del nuevo modal
+        const inputs = formFields.querySelectorAll('input, textarea, select');
+        
+        inputs.forEach(input => {
+            if (input.type === 'checkbox') {
+                formData[input.id] = input.checked;
+            } else {
+                formData[input.id] = input.value;
+            }
+        });
+        
+        return formData;
+    }
+    
+    hideCustomModal() {
+        const modalElement = document.getElementById('itemModal');
+        
+        // Ocultar modal
+        modalElement.style.display = 'none';
+        modalElement.classList.remove('show');
+        modalElement.removeAttribute('style');
+        
+        // Restaurar scroll del body
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Limpiar formulario
+        const formFields = document.getElementById('form-fields');
+        if (formFields) {
+            formFields.innerHTML = '';
+        }
+        
+        // Limpiar cualquier backdrop personalizado
+        const backdrops = document.querySelectorAll('.custom-modal-backdrop');
+        backdrops.forEach(backdrop => backdrop.remove());
+        
+        console.log('Modal personalizado ocultado');
+    }
 
     getFormFields(section) {
         const fields = {
@@ -846,8 +1178,7 @@ class AdminApp {
                 
                 if (result.success) {
                     this.showNotification('Elemento guardado correctamente', 'success');
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('itemModal'));
-                    if (modal) modal.hide();
+                    this.hideCustomModal();
                     this.loadSectionData(section);
                 } else {
                     this.showNotification(result.message || 'Error al guardar el elemento', 'error');
@@ -1614,6 +1945,31 @@ class AdminApp {
         }
     }
 }
+
+// ===== MÉTODO DE EMERGENCIA PARA LIMPIAR BACKDROP =====
+function clearAllBackdrops() {
+    // Remover todos los backdrops posibles
+    const backdrops = document.querySelectorAll('.modal-backdrop, .custom-modal-backdrop, .fade, [class*="backdrop"]');
+    backdrops.forEach(backdrop => backdrop.remove());
+    
+    // Limpiar body completamente
+    document.body.classList.remove('modal-open');
+    document.body.removeAttribute('style');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+    
+    // Remover cualquier modal que pueda estar oculto
+    const modals = document.querySelectorAll('#itemModal, #newItemModal');
+    modals.forEach(modal => {
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+    });
+    
+    console.log('Limpieza completa de backdrops realizada');
+}
+
+// Hacer el método disponible globalmente
+window.clearAllBackdrops = clearAllBackdrops;
 
 // ===== INICIALIZACIÓN =====
 let adminApp;
