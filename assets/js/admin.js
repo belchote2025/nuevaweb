@@ -1654,6 +1654,14 @@ class AdminApp {
             
             if (result.success) {
                 this.showNotification('Textos guardados correctamente', 'success');
+                
+                // Recargar textos en la web si está disponible
+                if (typeof window.reloadTextos === 'function') {
+                    window.reloadTextos();
+                }
+                
+                // También intentar recargar en otras pestañas si están abiertas
+                this.broadcastTextUpdate();
             } else {
                 this.showNotification(result.message, 'error');
             }
@@ -1661,6 +1669,18 @@ class AdminApp {
             console.error('Error guardando textos:', error);
             this.showNotification('Error guardando textos', 'error');
         }
+    }
+    
+    broadcastTextUpdate() {
+        // Enviar mensaje a otras pestañas para que recarguen los textos
+        if (typeof BroadcastChannel !== 'undefined') {
+            const channel = new BroadcastChannel('textos-update');
+            channel.postMessage({ type: 'textos-updated', timestamp: Date.now() });
+            channel.close();
+        }
+        
+        // También usar localStorage como fallback
+        localStorage.setItem('textos-updated', Date.now().toString());
     }
 
     previewTextSection(section) {

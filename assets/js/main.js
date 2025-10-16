@@ -43,6 +43,7 @@ class FilaMariscalesApp {
     async loadInitialData() {
         try {
             await Promise.all([
+                this.loadTextos(),
                 this.loadCarousel(),
                 this.loadDirectiva(),
                 this.loadNoticias(),
@@ -1147,6 +1148,138 @@ class FilaMariscalesApp {
     showNotification(message, type = 'info') {
         return Utils.showNotification(message, type);
     }
+    
+    // ===== CARGA DE TEXTOS =====
+    async loadTextos() {
+        try {
+            const response = await fetch(`${CONFIG.DATA_BASE_URL}textos.json`);
+            const textos = await response.json();
+            
+            // Almacenar textos globalmente
+            window.TEXTOS = textos;
+            
+            // Aplicar textos a la página
+            this.applyTextos(textos);
+            
+            console.log('Textos cargados correctamente');
+        } catch (error) {
+            console.error('Error cargando textos:', error);
+            // Usar textos por defecto si hay error
+            this.applyDefaultTextos();
+        }
+    }
+    
+    applyTextos(textos) {
+        // Aplicar textos del home
+        if (textos.home) {
+            this.updateElementText('hero-title', textos.home.titulo_principal);
+            this.updateElementText('hero-subtitle', textos.home.subtitulo_principal);
+            this.updateElementText('hero-description', textos.home.descripcion_hero);
+            this.updateElementText('welcome-text', textos.home.texto_bienvenida);
+        }
+        
+        // Aplicar textos de historia
+        if (textos.historia) {
+            this.updateElementText('historia-title', textos.historia.titulo);
+            this.updateElementText('historia-subtitle', textos.historia.subtitulo);
+            this.updateElementText('historia-description', textos.historia.descripcion);
+            this.updateElementText('fecha-fundacion', textos.historia.fecha_fundacion);
+            this.updateElementText('fundadores', textos.historia.fundadores);
+        }
+        
+        // Aplicar textos de directiva
+        if (textos.directiva) {
+            this.updateElementText('directiva-title', textos.directiva.titulo);
+            this.updateElementText('directiva-subtitle', textos.directiva.subtitulo);
+            this.updateElementText('directiva-description', textos.directiva.descripcion);
+        }
+        
+        // Aplicar textos de socios
+        if (textos.socios) {
+            this.updateElementText('socios-title', textos.socios.titulo);
+            this.updateElementText('socios-subtitle', textos.socios.subtitulo);
+            this.updateElementText('socios-description', textos.socios.descripcion);
+        }
+        
+        // Aplicar textos de eventos
+        if (textos.eventos) {
+            this.updateElementText('eventos-title', textos.eventos.titulo);
+            this.updateElementText('eventos-subtitle', textos.eventos.subtitulo);
+            this.updateElementText('eventos-description', textos.eventos.descripcion);
+        }
+        
+        // Aplicar textos de galería
+        if (textos.galeria) {
+            this.updateElementText('galeria-title', textos.galeria.titulo);
+            this.updateElementText('galeria-subtitle', textos.galeria.subtitulo);
+            this.updateElementText('galeria-description', textos.galeria.descripcion);
+        }
+        
+        // Aplicar textos de noticias
+        if (textos.noticias) {
+            this.updateElementText('noticias-title', textos.noticias.titulo);
+            this.updateElementText('noticias-subtitle', textos.noticias.subtitulo);
+            this.updateElementText('noticias-description', textos.noticias.descripcion);
+        }
+        
+        // Aplicar textos de contacto
+        if (textos.contacto) {
+            this.updateElementText('contacto-title', textos.contacto.titulo);
+            this.updateElementText('contacto-subtitle', textos.contacto.subtitulo);
+            this.updateElementText('contacto-description', textos.contacto.descripcion);
+            this.updateElementText('contacto-direccion', textos.contacto.direccion);
+            this.updateElementText('contacto-email', textos.contacto.email);
+            this.updateElementText('contacto-telefono', textos.contacto.telefono);
+            this.updateElementText('contacto-horario', textos.contacto.horario_atencion);
+        }
+        
+        // Aplicar textos del footer
+        if (textos.footer) {
+            this.updateElementText('footer-copyright', textos.footer.texto_copyright);
+            this.updateElementText('footer-description', textos.footer.descripcion);
+        }
+        
+        // Aplicar meta tags
+        if (textos.meta) {
+            this.updateMetaTags(textos.meta);
+        }
+    }
+    
+    updateElementText(selector, text) {
+        const element = document.getElementById(selector);
+        if (element && text) {
+            element.textContent = text;
+        }
+    }
+    
+    updateMetaTags(meta) {
+        // Actualizar meta description
+        if (meta.descripcion_seo) {
+            let metaDesc = document.querySelector('meta[name="description"]');
+            if (!metaDesc) {
+                metaDesc = document.createElement('meta');
+                metaDesc.name = 'description';
+                document.head.appendChild(metaDesc);
+            }
+            metaDesc.content = meta.descripcion_seo;
+        }
+        
+        // Actualizar meta keywords
+        if (meta.keywords) {
+            let metaKeywords = document.querySelector('meta[name="keywords"]');
+            if (!metaKeywords) {
+                metaKeywords = document.createElement('meta');
+                metaKeywords.name = 'keywords';
+                document.head.appendChild(metaKeywords);
+            }
+            metaKeywords.content = meta.keywords;
+        }
+    }
+    
+    applyDefaultTextos() {
+        // Textos por defecto si no se pueden cargar
+        console.log('Aplicando textos por defecto');
+    }
 }
 
 // ===== INICIALIZACIÓN =====
@@ -1165,5 +1298,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Función global para recargar textos desde el admin
+    window.reloadTextos = function() {
+        if (app && app.loadTextos) {
+            app.loadTextos();
+            console.log('Textos recargados desde el admin');
+        }
+    };
+    
+    // Escuchar actualizaciones de textos desde otras pestañas
+    if (typeof BroadcastChannel !== 'undefined') {
+        const channel = new BroadcastChannel('textos-update');
+        channel.addEventListener('message', (event) => {
+            if (event.data.type === 'textos-updated') {
+                console.log('Recibida actualización de textos desde otra pestaña');
+                window.reloadTextos();
+            }
+        });
+    }
+    
+    // También escuchar cambios en localStorage
+    window.addEventListener('storage', (event) => {
+        if (event.key === 'textos-updated') {
+            console.log('Recibida actualización de textos desde localStorage');
+            window.reloadTextos();
+        }
     });
 });
