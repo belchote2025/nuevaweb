@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Require admin session
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+if (!isset($_SESSION['socio_logged_in']) || $_SESSION['socio_logged_in'] !== true) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'No autorizado']);
     exit();

@@ -22,7 +22,7 @@ function response($success, $message, $data = null) {
 
 // Verificar autenticación para operaciones admin
 function checkAdminAuth() {
-    if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    if (!isset($_SESSION['socio_logged_in']) || $_SESSION['socio_logged_in'] !== true) {
         response(false, 'Acceso no autorizado');
     }
 }

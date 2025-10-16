@@ -73,16 +73,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'logout') {
     session_destroy();
     response(true, 'Cierre de sesión exitoso');
-    response(true, 'Logout exitoso');
 }
 
 // Verificar sesión
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'check') {
     if (isset($_SESSION['socio_logged_in']) && $_SESSION['socio_logged_in'] === true) {
+        // Obtener información del usuario incluyendo el rol
+        $socios = loadSocios();
+        $usuario_actual = null;
+        
+        foreach ($socios as $socio) {
+            if (isset($socio['email']) && $socio['email'] === $_SESSION['socio_email']) {
+                $usuario_actual = $socio;
+                break;
+            }
+        }
+        
         response(true, 'Sesión activa', [
             'email' => $_SESSION['socio_email'],
             'nombre' => $_SESSION['socio_nombre'],
             'id' => $_SESSION['socio_id'],
+            'role' => $usuario_actual['rol'] ?? 'socio',
             'login_time' => $_SESSION['login_time']
         ]);
     } else {
