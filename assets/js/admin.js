@@ -488,6 +488,41 @@ class AdminApp {
                 { key: 'campo', title: 'Campo', type: 'text' },
                 { key: 'valor', title: 'Valor', type: 'text' },
                 { key: 'descripcion', title: 'Descripción', type: 'text' }
+            ],
+            'solicitudes': [
+                { key: 'nombre', title: 'Nombre', type: 'text' },
+                { key: 'email', title: 'Email', type: 'text' },
+                { key: 'telefono', title: 'Teléfono', type: 'text' },
+                { key: 'edad', title: 'Edad', type: 'number' },
+                { key: 'motivo', title: 'Motivo', type: 'text' },
+                { key: 'experiencia', title: 'Experiencia', type: 'text' },
+                { 
+                    key: 'estado', 
+                    title: 'Estado', 
+                    type: 'text',
+                    formatter: (value) => {
+                        const estados = {
+                            'pendiente': '<span class="badge bg-warning">Pendiente</span>',
+                            'aprobada': '<span class="badge bg-success">Aprobada</span>',
+                            'rechazada': '<span class="badge bg-danger">Rechazada</span>'
+                        };
+                        return estados[value] || value;
+                    }
+                },
+                { 
+                    key: 'fecha_solicitud', 
+                    title: 'Fecha Solicitud', 
+                    type: 'date',
+                    formatter: (value) => value ? new Date(value).toLocaleDateString('es-ES') : ''
+                },
+                { 
+                    key: 'fecha_revision', 
+                    title: 'Fecha Revisión', 
+                    type: 'date',
+                    formatter: (value) => value ? new Date(value).toLocaleDateString('es-ES') : 'Sin revisar'
+                },
+                { key: 'revisado_por', title: 'Revisado por', type: 'text' },
+                { key: 'observaciones', title: 'Observaciones', type: 'text' }
             ]
         };
         
@@ -1569,7 +1604,7 @@ class AdminApp {
             if (result.success) {
                 ADMIN_CONFIG.CURRENT_DATA = result.data;
                 ADMIN_CONFIG.FILTERED_DATA = [...result.data];
-                this.renderSolicitudesTable();
+                this.renderTableWithPagination();
             } else {
                 this.showNotification('Error cargando solicitudes: ' + result.message, 'error');
             }
