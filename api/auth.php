@@ -56,12 +56,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['socio_nombre'] = $socio['nombre'];
         $_SESSION['socio_id'] = $socio['id'];
         $_SESSION['login_time'] = time();
+        // Guardar también el rol en sesión para otras APIs que lo consultan
+        $_SESSION['admin_role'] = $socio['rol'] ?? 'socio';
         
         // No devolver información sensible
         unset($socio['password']);
         
         response(true, 'Inicio de sesión exitoso', [
             'socio' => $socio,
+            'role' => $socio['rol'] ?? 'socio',
             'redirect' => 'socios-area.html'
         ]);
     } else {

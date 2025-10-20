@@ -24,6 +24,12 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home me-1"></i>Inicio</a></li>
                     <li class="nav-item"><a class="nav-link" href="socios.html"><i class="fas fa-user-friends me-1"></i>Socios</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="chat.html">
+                            <i class="fas fa-comments me-1"></i>Chat
+                            <span class="badge bg-danger ms-1 d-none" id="chat-badge">0</span>
+                        </a>
+                    </li>
                 </ul>
                 <div class="d-flex align-items-center text-white small me-3" id="user-info">
                     <i class="fas fa-user-circle me-2"></i><span id="user-email">Cargando...</span>
@@ -79,6 +85,20 @@
                         <div class="mb-2"><strong>Nombre:</strong> <span id="profile-name">-</span></div>
                         <div class="mb-2"><strong>Email:</strong> <span id="profile-email">-</span></div>
                         <div class="mb-2"><strong>Rol:</strong> <span id="profile-role">-</span></div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-comments text-primary me-2"></i>
+                        Chat interno
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">Habla con otros socios o abre privados.</p>
+                        <a href="chat.html" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-comments me-2"></i>Abrir chat
+                            <span class="badge bg-danger ms-2 d-none" id="chat-badge-card">0</span>
+                        </a>
                     </div>
                 </div>
 
@@ -181,6 +201,30 @@
                     <i class="fas fa-info-circle me-2"></i>Bienvenido al área privada. Próximamente añadiremos comunicados oficiales.
                 </div>
             `;
+            // Iniciar contador de no leídos del chat
+            try {
+                await updateChatNotifications();
+                setInterval(updateChatNotifications, 7000);
+            } catch (e) {}
+        }
+
+        async function updateChatNotifications() {
+            try {
+                const resp = await fetch('api/chat.php?action=getNotifications', { credentials: 'include' });
+                const data = await resp.json();
+                if (data && data.success) {
+                    const n = (data.data && data.data.private_unread) ? data.data.private_unread : 0;
+                    const badge1 = document.getElementById('chat-badge');
+                    const badge2 = document.getElementById('chat-badge-card');
+                    [badge1, badge2].forEach(b => {
+                        if (!b) return;
+                        b.textContent = n;
+                        if (n > 0) b.classList.remove('d-none'); else b.classList.add('d-none');
+                    });
+                }
+            } catch (e) {
+                // ignorar errores de red
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
