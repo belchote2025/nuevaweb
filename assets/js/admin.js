@@ -147,6 +147,7 @@ class AdminApp {
             tableBody.addEventListener('click', (e) => {
                 const editBtn = e.target.closest('.btn-edit');
                 const deleteBtn = e.target.closest('.btn-delete');
+                const estadoBtn = e.target.closest('button[data-action="estado"]');
                 
                 if (editBtn) {
                     e.preventDefault();
@@ -156,6 +157,11 @@ class AdminApp {
                     e.preventDefault();
                     const id = deleteBtn.dataset.id;
                     this.deleteItem(id);
+                } else if (estadoBtn) {
+                    e.preventDefault();
+                    const id = estadoBtn.dataset.id;
+                    const estado = estadoBtn.dataset.estado;
+                    this.updateReservaEstado(id, estado);
                 }
             });
         }
@@ -251,7 +257,8 @@ class AdminApp {
             'carousel': 'Carrusel',
             'socios': 'Socios',
             'textos': 'Textos',
-            'fondos': 'Fondos'
+            'fondos': 'Fondos',
+            'reservas': 'Reservas'
         };
         
         document.getElementById('section-title').textContent = titles[section] || 'Dashboard';
@@ -277,6 +284,14 @@ class AdminApp {
             document.getElementById('section-content').style.display = 'block';
             document.getElementById('textos-content').style.display = 'none';
             document.getElementById('add-item-btn').style.display = 'block';
+            document.getElementById('search-filter-bar').style.display = 'block';
+            document.getElementById('table-actions').style.display = 'inline-flex';
+            this.loadSectionData(section);
+        } else if (section === 'reservas') {
+            document.getElementById('dashboard-content').style.display = 'none';
+            document.getElementById('section-content').style.display = 'block';
+            document.getElementById('textos-content').style.display = 'none';
+            document.getElementById('add-item-btn').style.display = 'none';
             document.getElementById('search-filter-bar').style.display = 'block';
             document.getElementById('table-actions').style.display = 'inline-flex';
             this.loadSectionData(section);
@@ -350,6 +365,8 @@ class AdminApp {
             endpoint = 'users.php';
         } else if (type === 'fondos') {
             endpoint = 'fondos.php';
+        } else if (type === 'reservas') {
+            endpoint = 'reservas.php';
         } else {
             endpoint = 'admin.php';
         }
@@ -421,7 +438,18 @@ class AdminApp {
                         value = value.substring(0, 50) + '...';
                     }
                     
-                    return `<td>${value}</td>`;
+                // Acciones rápidas para reservas (cambiar estado)
+                if (ADMIN_CONFIG.CURRENT_SECTION === 'reservas' && col.key === 'estado') {
+                    return `<td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button class="btn btn-outline-secondary" data-action="estado" data-id="${item.id}" data-estado="pendiente">Pendiente</button>
+                            <button class="btn btn-outline-success" data-action="estado" data-id="${item.id}" data-estado="confirmada">Confirmar</button>
+                            <button class="btn btn-outline-danger" data-action="estado" data-id="${item.id}" data-estado="cancelada">Cancelar</button>
+                        </div>
+                        <div class="mt-1"><span class="badge ${value==='confirmada'?'bg-success':value==='cancelada'?'bg-danger':'bg-warning text-dark'}">${value||'pendiente'}</span></div>
+                    </td>`;
+                }
+                return `<td>${value}</td>`;
                 }).join('')}
                 <td>
                     <button class="btn btn-sm btn-outline-primary me-1 btn-edit" data-id="${item.id ?? item.imagen_id ?? item._id}">
@@ -537,6 +565,16 @@ class AdminApp {
                     formatter: (value) => value ? new Date(value).toLocaleDateString('es-ES') : ''
                 },
                 { key: 'mensaje', title: 'Mensaje', type: 'text' }
+            ],
+            'reservas': [
+                { key: 'id', title: 'ID', type: 'text' },
+                { key: 'nombre', title: 'Nombre', type: 'text' },
+                { key: 'email', title: 'Email', type: 'text' },
+                { key: 'telefono', title: 'Teléfono', type: 'text' },
+                { key: 'evento_id', title: 'Evento', type: 'text' },
+                { key: 'num_personas', title: 'Personas', type: 'number' },
+                { key: 'estado', title: 'Estado', type: 'text' },
+                { key: 'fecha_reserva', title: 'Fecha Reserva', type: 'date' }
             ],
             'socios': [
                 { key: 'nombre', title: 'Nombre', type: 'text' },
@@ -1229,6 +1267,20 @@ class AdminApp {
                 { key: 'paginas', label: 'Páginas (separadas por comas)', type: 'text', required: true },
                 { key: 'descripcion', label: 'Descripción', type: 'textarea' },
                 { key: 'activo', label: 'Activo', type: 'checkbox' }
+            ],
+            'reservas': [
+                { key: 'id', label: 'ID', type: 'text' },
+                { key: 'nombre', label: 'Nombre', type: 'text', required: true },
+                { key: 'email', label: 'Email', type: 'email', required: true },
+                { key: 'telefono', label: 'Teléfono', type: 'text', required: true },
+                { key: 'evento_id', label: 'Evento (ID)', type: 'text', required: true },
+                { key: 'num_personas', label: 'Nº Personas', type: 'number', required: true },
+                { key: 'comentarios', label: 'Comentarios', type: 'textarea' },
+                { key: 'estado', label: 'Estado', type: 'select', options: [
+                    { value: 'pendiente', label: 'Pendiente' },
+                    { value: 'confirmada', label: 'Confirmada' },
+                    { value: 'cancelada', label: 'Cancelada' }
+                ], required: true }
             ]
         };
         
@@ -1597,6 +1649,30 @@ class AdminApp {
         } catch (error) {
             console.error('Error en saveItemFromNewModal:', error);
             this.showNotification('Error al actualizar el elemento', 'error');
+        }
+    }
+
+    // ===== RESERVAS: CAMBIO RÁPIDO DE ESTADO =====
+    async updateReservaEstado(id, estado) {
+        if (!id) return;
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}reservas.php`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id, estado })
+            });
+            const result = await response.json();
+            if (result.success) {
+                this.showNotification('Estado actualizado', 'success');
+                this.loadSectionData('reservas');
+            } else {
+                this.showNotification(result.error || 'No se pudo actualizar', 'error');
+            }
+        } catch (error) {
+            console.error('Error actualizando estado:', error);
+            this.showNotification('Error de conexión', 'error');
         }
     }
 
@@ -2008,6 +2084,12 @@ class AdminApp {
                 { value: 'prioridad:alta', label: 'Alta Prioridad' },
                 { value: 'prioridad:media', label: 'Media Prioridad' },
                 { value: 'prioridad:baja', label: 'Baja Prioridad' }
+            ],
+            'reservas': [
+                { value: '', label: 'Todas' },
+                { value: 'estado:pendiente', label: 'Pendientes' },
+                { value: 'estado:confirmada', label: 'Confirmadas' },
+                { value: 'estado:cancelada', label: 'Canceladas' }
             ]
         };
         
