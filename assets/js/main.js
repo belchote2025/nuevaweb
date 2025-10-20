@@ -907,7 +907,28 @@ class FilaMariscalesApp {
         try {
             const response = await fetch(`${CONFIG.DATA_BASE_URL}eventos.json`);
             const eventos = await response.json();
-            this.renderEventos(eventos, container);
+            // Filtro por categoría desde query ?category=
+            let filtered = eventos;
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const category = params.get('category');
+                if (category) {
+                    filtered = eventos.filter(e => String(e.tipo || '').toLowerCase() === String(category).toLowerCase());
+                }
+            } catch (e) { /* noop */ }
+
+            this.renderEventos(filtered, container);
+
+            // Click en tarjetas de categorías
+            document.querySelectorAll('.evento-categoria[data-tipo]').forEach(card => {
+                card.addEventListener('click', () => {
+                    const tipo = card.getAttribute('data-tipo');
+                    if (!tipo) return;
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('category', tipo);
+                    window.location.href = url.toString();
+                });
+            });
         } catch (error) {
             console.error('Error cargando eventos:', error);
             this.renderEventosDefault(container);
