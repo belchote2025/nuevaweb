@@ -374,6 +374,13 @@ class AdminApp {
         const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}${type === 'fondos' ? '' : `?type=${type}`}`);
         const result = await response.json();
         
+        // El endpoint de reservas devuelve un array plano (sin { success, data })
+        if (type === 'reservas') {
+            if (Array.isArray(result)) return result;
+            if (result && result.success && Array.isArray(result.data)) return result.data;
+            throw new Error((result && (result.message || result.error)) || 'Error cargando reservas');
+        }
+        
         if (result.success) {
             return result.data;
         } else {
@@ -572,7 +579,7 @@ class AdminApp {
                 { key: 'email', title: 'Email', type: 'text' },
                 { key: 'telefono', title: 'Teléfono', type: 'text' },
                 { key: 'evento_id', title: 'Evento', type: 'text' },
-                { key: 'num_personas', title: 'Personas', type: 'number' },
+                { key: 'num_personas', title: 'Plazas', type: 'number' },
                 { key: 'estado', title: 'Estado', type: 'text' },
                 { key: 'fecha_reserva', title: 'Fecha Reserva', type: 'date' }
             ],
@@ -1661,14 +1668,15 @@ class AdminApp {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify({ id, estado })
             });
             const result = await response.json();
-            if (result.success) {
+            if (result && result.success) {
                 this.showNotification('Estado actualizado', 'success');
                 this.loadSectionData('reservas');
             } else {
-                this.showNotification(result.error || 'No se pudo actualizar', 'error');
+                this.showNotification((result && (result.error || result.message)) || 'No se pudo actualizar', 'error');
             }
         } catch (error) {
             console.error('Error actualizando estado:', error);

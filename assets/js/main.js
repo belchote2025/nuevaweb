@@ -937,6 +937,11 @@ class FilaMariscalesApp {
                             </div>
                         </div>
                     </div>
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
+                        <a class="btn btn-primary w-100" href="reservas.html?eventId=${encodeURIComponent(evento.id)}">
+                            <i class="fas fa-ticket-alt me-2"></i>Reservar
+                        </a>
+                    </div>
                 </div>
             </div>
         `).join('');

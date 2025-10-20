@@ -12,6 +12,17 @@ class ReservasApp {
         await this.loadReservas();
         this.setupEventListeners();
         this.renderEventos();
+        // Si viene eventId en la URL, abrir modal precargado
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const eventId = params.get('eventId');
+            if (eventId) {
+                // Esperar pequeño tiempo para asegurar render
+                setTimeout(() => this.abrirModalReserva(eventId), 300);
+            }
+        } catch (e) {
+            console.warn('No se pudo leer eventId:', e);
+        }
     }
 
     async loadEventos() {
