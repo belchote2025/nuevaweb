@@ -34,9 +34,106 @@ class FilaMariscalesApp {
             link.addEventListener('click', this.handleNavClick.bind(this));
         });
 
+        // Mejorar comportamiento del menú hamburguesa
+        this.setupMobileMenu();
+
         // Eventos de scroll
         window.addEventListener('scroll', this.handleScroll.bind(this));
         window.addEventListener('resize', this.handleResize.bind(this));
+    }
+
+    setupMobileMenu() {
+        const navbarToggler = document.querySelector('.navbar-toggler');
+        const navbarCollapse = document.querySelector('.navbar-collapse');
+        
+        if (navbarToggler && navbarCollapse) {
+            // Mejorar el comportamiento del toggler
+            navbarToggler.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('Menú hamburguesa clickeado');
+            });
+
+            // Cerrar menú al hacer clic fuera con verificación de elementos
+            document.addEventListener('click', (e) => {
+                try {
+                    if (navbarCollapse && navbarToggler && 
+                        !navbarCollapse.contains(e.target) && 
+                        !navbarToggler.contains(e.target)) {
+                        if (navbarCollapse.classList.contains('show')) {
+                            navbarToggler.click();
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Error cerrando menú:', error);
+                }
+            });
+
+            // Mejorar dropdowns en móvil con verificación
+            this.setupDropdowns();
+
+            // Cerrar dropdowns al hacer clic fuera con verificación
+            document.addEventListener('click', (e) => {
+                try {
+                    if (!e.target.closest('.dropdown')) {
+                        const openMenus = document.querySelectorAll('.dropdown-menu.show');
+                        openMenus.forEach(menu => {
+                            if (menu && menu.classList) {
+                                menu.classList.remove('show');
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.warn('Error cerrando dropdowns:', error);
+                }
+            });
+        }
+    }
+
+    setupDropdowns() {
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        dropdownToggles.forEach(toggle => {
+            if (toggle) {
+                // Remover todos los event listeners existentes
+                const newToggle = toggle.cloneNode(true);
+                toggle.parentNode.replaceChild(newToggle, toggle);
+                
+                // Remover atributos de Bootstrap
+                newToggle.removeAttribute('data-bs-toggle');
+                newToggle.removeAttribute('data-bs-auto-close');
+                newToggle.removeAttribute('aria-expanded');
+                
+                newToggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    console.log('Dropdown clickeado:', newToggle.textContent.trim());
+                    
+                    const dropdown = newToggle.nextElementSibling;
+                    if (dropdown && dropdown.classList) {
+                        // Cerrar otros dropdowns
+                        const openMenus = document.querySelectorAll('.dropdown-menu.show');
+                        openMenus.forEach(menu => {
+                            if (menu && menu !== dropdown && menu.classList) {
+                                menu.classList.remove('show');
+                            }
+                        });
+                        
+                        // Toggle el dropdown actual
+                        dropdown.classList.toggle('show');
+                        console.log('Dropdown toggled:', dropdown.classList.contains('show'));
+                        
+                        // Forzar visibilidad con timeout
+                        if (dropdown.classList.contains('show')) {
+                            setTimeout(() => {
+                                dropdown.style.display = 'block';
+                                dropdown.style.opacity = '1';
+                                dropdown.style.visibility = 'visible';
+                            }, 10);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     // ===== CARGA DE DATOS INICIALES =====
@@ -164,21 +261,36 @@ class FilaMariscalesApp {
             });
         }
 
-        // Efectos de transición personalizados
+        // Efectos de transición personalizados con verificación de elementos
         carousel.addEventListener('slide.bs.carousel', (e) => {
-            const activeItem = e.target.querySelector('.carousel-item.active');
-            const nextItem = e.relatedTarget;
-            
-            // Añadir clase de animación
-            if (activeItem) activeItem.classList.add('fade-out');
-            if (nextItem) nextItem.classList.add('fade-in');
+            try {
+                const activeItem = e.target.querySelector('.carousel-item.active');
+                const nextItem = e.relatedTarget;
+                
+                // Verificar que los elementos existen antes de manipular classList
+                if (activeItem && activeItem.classList) {
+                    activeItem.classList.add('fade-out');
+                }
+                if (nextItem && nextItem.classList) {
+                    nextItem.classList.add('fade-in');
+                }
+            } catch (error) {
+                console.warn('Error en transición del carrusel:', error);
+            }
         });
 
         carousel.addEventListener('slid.bs.carousel', (e) => {
-            // Limpiar clases de animación
-            e.target.querySelectorAll('.carousel-item').forEach(item => {
-                item.classList.remove('fade-out', 'fade-in');
-            });
+            try {
+                // Limpiar clases de animación con verificación
+                const items = e.target.querySelectorAll('.carousel-item');
+                items.forEach(item => {
+                    if (item && item.classList) {
+                        item.classList.remove('fade-out', 'fade-in');
+                    }
+                });
+            } catch (error) {
+                console.warn('Error limpiando animaciones del carrusel:', error);
+            }
         });
     }
 
@@ -919,11 +1031,20 @@ class FilaMariscalesApp {
 
     // ===== MANEJO DE EVENTOS =====
     handleNavClick(event) {
-        // Cerrar menú móvil si está abierto
-        const navbarCollapse = document.querySelector('.navbar-collapse');
-        if (navbarCollapse.classList.contains('show')) {
-            const navbarToggler = document.querySelector('.navbar-toggler');
-            navbarToggler.click();
+        // Solo cerrar menú móvil si se hace clic en un enlace (no en dropdowns)
+        const target = event.target;
+        const isDropdownToggle = target.classList.contains('dropdown-toggle') || target.closest('.dropdown-toggle');
+        const isDropdownMenu = target.closest('.dropdown-menu');
+        
+        // Solo cerrar si es un enlace directo, no un dropdown
+        if (!isDropdownToggle && !isDropdownMenu) {
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                const navbarToggler = document.querySelector('.navbar-toggler');
+                if (navbarToggler) {
+                    navbarToggler.click();
+                }
+            }
         }
     }
 
@@ -1254,121 +1375,131 @@ class FilaMariscalesApp {
     }
 
     applyPageEffects(pageKey) {
-        // Aplicar efectos uniformes para todas las páginas (igual que historia)
-        const effects = {
-            'historia': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
-            },
-            'directiva': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
-            },
-            'socios': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
-            },
-            'eventos': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
-            },
-            'galeria': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
-            },
-            'noticias': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
-            },
-            'contacto': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
-            },
-            'calendario': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
-            },
-            'musica': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
-            },
-            'recursos': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
-            },
-            'lafila': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
-            },
-            'libro': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
-            },
-            'actividades': {
-                overlay: 'rgba(0, 0, 0, 0.2)',
-                contentOpacity: '0.6',
-                blur: '2px'
+        try {
+            // Aplicar efectos uniformes para todas las páginas (igual que historia)
+            const effects = {
+                'historia': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                },
+                'directiva': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                },
+                'socios': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                },
+                'eventos': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                },
+                'galeria': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                },
+                'noticias': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                },
+                'contacto': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                },
+                'calendario': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                },
+                'musica': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                },
+                'recursos': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                },
+                'lafila': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                },
+                'libro': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                },
+                'actividades': {
+                    overlay: 'rgba(0, 0, 0, 0.2)',
+                    contentOpacity: '0.6',
+                    blur: '2px'
+                }
+            };
+
+            const effect = effects[pageKey];
+            if (!effect) return;
+
+            // Crear overlay si no existe con verificación
+            let overlay = document.getElementById('page-overlay');
+            if (!overlay && document.body) {
+                overlay = document.createElement('div');
+                overlay.id = 'page-overlay';
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: -1;
+                    pointer-events: none;
+                `;
+                document.body.appendChild(overlay);
             }
-        };
 
-        const effect = effects[pageKey];
-        if (!effect) return;
+            // Aplicar overlay con verificación
+            if (overlay) {
+                overlay.style.backgroundColor = effect.overlay;
+            }
 
-        // Crear overlay si no existe
-        let overlay = document.getElementById('page-overlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.id = 'page-overlay';
-            overlay.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                z-index: -1;
-                pointer-events: none;
-            `;
-            document.body.appendChild(overlay);
-        }
-
-        // Aplicar overlay
-        overlay.style.backgroundColor = effect.overlay;
-
-        // Aplicar efectos a secciones y contenedores
-        const sections = document.querySelectorAll('section, .container, .card, .timeline, .historia-content, .historia-image');
-        sections.forEach(section => {
-            // Forzar aplicación de estilos
-            section.style.setProperty('background', `rgba(255, 255, 255, ${effect.contentOpacity})`, 'important');
-            section.style.setProperty('backdrop-filter', `blur(${effect.blur})`, 'important');
-            section.style.setProperty('-webkit-backdrop-filter', `blur(${effect.blur})`, 'important');
-            section.style.setProperty('border-radius', '10px', 'important');
-            section.style.setProperty('box-shadow', '0 4px 6px rgba(0,0,0,0.1)', 'important');
-            section.style.setProperty('position', 'relative', 'important');
-            section.style.setProperty('z-index', '10', 'important');
-        });
-
-        // Efectos específicos para timeline (historia)
-        if (pageKey === 'historia') {
-            const timelineItems = document.querySelectorAll('.timeline-item');
-            timelineItems.forEach(item => {
-                item.style.background = 'rgba(255, 255, 255, 0.5)';
-                item.style.backdropFilter = 'blur(0.5px)';
-                item.style.webkitBackdropFilter = 'blur(0.5px)';
-                item.style.borderRadius = '8px';
-                item.style.border = '1px solid rgba(220, 20, 60, 0.3)';
+            // Aplicar efectos a secciones y contenedores con verificación
+            const sections = document.querySelectorAll('section, .container, .card, .timeline, .historia-content, .historia-image');
+            sections.forEach(section => {
+                if (section && section.style) {
+                    // Forzar aplicación de estilos
+                    section.style.setProperty('background', `rgba(255, 255, 255, ${effect.contentOpacity})`, 'important');
+                    section.style.setProperty('backdrop-filter', `blur(${effect.blur})`, 'important');
+                    section.style.setProperty('-webkit-backdrop-filter', `blur(${effect.blur})`, 'important');
+                    section.style.setProperty('border-radius', '10px', 'important');
+                    section.style.setProperty('box-shadow', '0 4px 6px rgba(0,0,0,0.1)', 'important');
+                    section.style.setProperty('position', 'relative', 'important');
+                    section.style.setProperty('z-index', '10', 'important');
+                }
             });
+
+            // Efectos específicos para timeline (historia) con verificación
+            if (pageKey === 'historia') {
+                const timelineItems = document.querySelectorAll('.timeline-item');
+                timelineItems.forEach(item => {
+                    if (item && item.style) {
+                        item.style.background = 'rgba(255, 255, 255, 0.5)';
+                        item.style.backdropFilter = 'blur(0.5px)';
+                        item.style.webkitBackdropFilter = 'blur(0.5px)';
+                        item.style.borderRadius = '8px';
+                        item.style.border = '1px solid rgba(220, 20, 60, 0.3)';
+                    }
+                });
+            }
+        } catch (error) {
+            console.warn('Error aplicando efectos de página:', error);
         }
     }
 
@@ -1560,4 +1691,17 @@ document.addEventListener('DOMContentLoaded', function() {
             app.loadFondos();
         }
     }, 2000);
+    
+    // Remover atributos de Bootstrap que interfieren con dropdowns
+    setTimeout(() => {
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        dropdownToggles.forEach(toggle => {
+            if (toggle) {
+                // Remover atributos de Bootstrap que interfieren
+                toggle.removeAttribute('data-bs-toggle');
+                toggle.removeAttribute('data-bs-auto-close');
+                toggle.removeAttribute('aria-expanded');
+            }
+        });
+    }, 1000);
 });

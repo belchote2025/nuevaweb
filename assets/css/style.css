@@ -1324,6 +1324,139 @@ p {
     box-shadow: 0 4px 30px rgba(220, 20, 60, 0.3);
 }
 
+/* ===== MENÚ RESPONSIVE ===== */
+.navbar-toggler {
+    border: 2px solid var(--templar-red) !important;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25);
+    border-color: var(--templar-red) !important;
+}
+
+.navbar-toggler:hover {
+    background-color: rgba(220, 20, 60, 0.1);
+    border-color: var(--templar-red-light) !important;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28220, 20, 60, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Mejorar el comportamiento del menú colapsado */
+.navbar-collapse {
+    transition: all 0.3s ease;
+}
+
+.navbar-collapse.show {
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 4px 20px rgba(220, 20, 60, 0.3);
+}
+
+/* Dropdowns en modo móvil */
+@media (max-width: 991.98px) {
+    .navbar-nav .dropdown-menu {
+        background: rgba(220, 20, 60, 0.1) !important;
+        border: 1px solid var(--templar-red) !important;
+        margin-left: 1rem;
+        margin-top: 0.5rem;
+        border-radius: 8px;
+        position: static !important;
+        float: none !important;
+        width: auto !important;
+        margin-top: 0 !important;
+        background-color: rgba(0, 0, 0, 0.8) !important;
+        border: 1px solid var(--templar-red) !important;
+        box-shadow: 0 4px 20px rgba(220, 20, 60, 0.3) !important;
+    }
+    
+    .navbar-nav .dropdown-menu.show {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateY(0) !important;
+    }
+    
+    .navbar-nav .dropdown-item {
+        color: var(--templar-white) !important;
+        padding: 0.75rem 1rem;
+        border-radius: 4px;
+        margin: 0.25rem 0;
+        transition: all 0.3s ease;
+        display: block !important;
+        width: 100% !important;
+    }
+    
+    .navbar-nav .dropdown-item:hover {
+        background-color: var(--templar-red) !important;
+        color: var(--templar-white) !important;
+        transform: translateX(5px);
+    }
+    
+    .navbar-nav .nav-link {
+        color: var(--templar-white) !important;
+        padding: 0.75rem 1rem;
+        border-radius: 4px;
+        margin: 0.25rem 0;
+        transition: all 0.3s ease;
+    }
+    
+    .navbar-nav .nav-link:hover {
+        background-color: rgba(220, 20, 60, 0.2);
+        color: var(--templar-white) !important;
+        transform: translateX(5px);
+    }
+    
+    .navbar-nav .nav-link.active {
+        background-color: var(--templar-red) !important;
+        color: var(--templar-white) !important;
+    }
+    
+    /* Forzar visibilidad de dropdowns */
+    .navbar-nav .dropdown-menu {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateY(-10px) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .navbar-nav .dropdown-menu.show {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateY(0) !important;
+        position: static !important;
+        float: none !important;
+        width: 100% !important;
+        margin-top: 0.5rem !important;
+        background-color: rgba(0, 0, 0, 0.9) !important;
+        border: 1px solid var(--templar-red) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 20px rgba(220, 20, 60, 0.3) !important;
+        z-index: 1000 !important;
+    }
+    
+    /* Prevenir que Bootstrap interfiera */
+    .navbar-nav .dropdown-toggle[data-bs-toggle="dropdown"] {
+        pointer-events: auto !important;
+    }
+    
+    /* Asegurar que los dropdowns se mantengan abiertos */
+    .navbar-nav .dropdown.show .dropdown-menu {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+}
+
 .nav-link {
     position: relative;
     overflow: hidden;
