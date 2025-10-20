@@ -250,7 +250,8 @@ class AdminApp {
             'users': 'Usuarios',
             'carousel': 'Carrusel',
             'socios': 'Socios',
-            'textos': 'Textos'
+            'textos': 'Textos',
+            'fondos': 'Fondos'
         };
         
         document.getElementById('section-title').textContent = titles[section] || 'Dashboard';
@@ -271,6 +272,14 @@ class AdminApp {
             document.getElementById('add-item-btn').style.display = 'none';
             document.getElementById('search-filter-bar').style.display = 'none';
             document.getElementById('table-actions').style.display = 'none';
+        } else if (section === 'fondos') {
+            document.getElementById('dashboard-content').style.display = 'none';
+            document.getElementById('section-content').style.display = 'block';
+            document.getElementById('textos-content').style.display = 'none';
+            document.getElementById('add-item-btn').style.display = 'block';
+            document.getElementById('search-filter-bar').style.display = 'block';
+            document.getElementById('table-actions').style.display = 'inline-flex';
+            this.loadSectionData(section);
         } else {
             document.getElementById('dashboard-content').style.display = 'none';
             document.getElementById('section-content').style.display = 'block';
@@ -305,6 +314,7 @@ class AdminApp {
 
     async loadSectionData(section) {
         try {
+            console.log('Cargando datos de la sección:', section);
             let data;
             
             if (section === 'solicitudes') {
@@ -313,6 +323,7 @@ class AdminApp {
                 return;
             } else {
                 data = await this.fetchData(section);
+                console.log('Datos cargados:', data);
                 ADMIN_CONFIG.CURRENT_DATA = data;
                 ADMIN_CONFIG.FILTERED_DATA = data;
                 ADMIN_CONFIG.CURRENT_PAGE = 1;
@@ -324,6 +335,7 @@ class AdminApp {
                 const searchInput = document.getElementById('search-input');
                 if (searchInput) searchInput.value = '';
                 
+                console.log('Renderizando tabla con', data.length, 'elementos');
                 this.filterAndRenderTable();
             }
         } catch (error) {
@@ -333,8 +345,16 @@ class AdminApp {
     }
 
     async fetchData(type) {
-        const endpoint = type === 'users' ? 'users.php' : 'admin.php';
-        const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}?type=${type}`);
+        let endpoint;
+        if (type === 'users') {
+            endpoint = 'users.php';
+        } else if (type === 'fondos') {
+            endpoint = 'fondos.php';
+        } else {
+            endpoint = 'admin.php';
+        }
+        
+        const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}${type === 'fondos' ? '' : `?type=${type}`}`);
         const result = await response.json();
         
         if (result.success) {
@@ -565,6 +585,14 @@ class AdminApp {
                 },
                 { key: 'revisado_por', title: 'Revisado por', type: 'text' },
                 { key: 'observaciones', title: 'Observaciones', type: 'text' }
+            ],
+            'fondos': [
+                { key: 'nombre', title: 'Nombre', type: 'text' },
+                { key: 'tipo', title: 'Tipo', type: 'text' },
+                { key: 'imagen_url', title: 'Imagen', type: 'image' },
+                { key: 'color', title: 'Color', type: 'text' },
+                { key: 'paginas', title: 'Páginas', type: 'text' },
+                { key: 'activo', title: 'Activo', type: 'boolean' }
             ]
         };
         
@@ -683,9 +711,21 @@ class AdminApp {
             const isGallery = section === 'galeria';
             const isCarousel = section === 'carousel';
             const isProducts = section === 'productos';
-            const imageFields = ['imagen_url'].concat(isGallery ? ['thumb_url'] : []);
-            if (imageFields.includes(field.key) && (isGallery || isCarousel || isProducts)) {
-                const uploadType = isCarousel ? 'carousel' : (isProducts ? 'products' : 'gallery');
+            const isFondos = section === 'fondos';
+            const isDirectiva = section === 'directiva';
+            const isNews = section === 'noticias';
+            const isEvents = section === 'eventos';
+            const imageFields = ['imagen_url', 'imagen'].concat(isGallery ? ['thumb_url'] : []);
+            
+            if (imageFields.includes(field.key) && (isGallery || isCarousel || isProducts || isFondos || isDirectiva || isNews || isEvents)) {
+                let uploadType = 'gallery';
+                if (isCarousel) uploadType = 'carousel';
+                else if (isProducts) uploadType = 'products';
+                else if (isFondos) uploadType = 'backgrounds';
+                else if (isDirectiva) uploadType = 'directiva';
+                else if (isNews) uploadType = 'news';
+                else if (isEvents) uploadType = 'events';
+                
                 uploadButton = `
                     <div class="mt-2">
                         <button type="button" class="btn btn-outline-secondary btn-sm btn-upload-image" data-field="${field.key}" data-type="${uploadType}">
@@ -763,7 +803,7 @@ class AdminApp {
                     e.preventDefault();
                     const fieldKey = btn.dataset.field;
                     const uploadType = btn.dataset.type;
-                    this.uploadImage(fieldKey, uploadType);
+                    this.uploadImage(fieldKey, uploadType, btn);
                 });
             });
             
@@ -890,8 +930,16 @@ class AdminApp {
         // Cerrar con botón Cancelar
         cancelBtn.onclick = () => this.hideNewModal();
         
-        // Guardar
-        saveBtn.onclick = () => this.saveNewItem();
+        // Guardar - verificar si se está editando
+        saveBtn.onclick = () => {
+            if (ADMIN_CONFIG.EDITING_ITEM) {
+                console.log('Botón guardar: Modo edición detectado, usando saveItemFromNewModal');
+                this.saveItemFromNewModal();
+            } else {
+                console.log('Botón guardar: Modo creación, usando saveNewItem');
+                this.saveNewItem();
+            }
+        };
         
         // Cerrar con backdrop
         modal.onclick = (e) => {
@@ -912,8 +960,26 @@ class AdminApp {
         title.textContent = originalTitle;
         formFields.innerHTML = originalFields;
         
-        // Enfocar el primer campo
+        // Configurar event listeners para botones de subir imagen
         setTimeout(() => {
+            // Botones de subir imagen
+            formFields.querySelectorAll('.btn-upload-image').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const fieldKey = btn.dataset.field;
+                    const uploadType = btn.dataset.type;
+                    this.uploadImage(fieldKey, uploadType, btn);
+                });
+            });
+            
+            // Limpiar errores cuando el usuario empieza a escribir
+            formFields.querySelectorAll('input, textarea, select').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    e.target.classList.remove('is-invalid');
+                });
+            });
+            
+            // Enfocar el primer campo
             const firstInput = formFields.querySelector('input:not([type="checkbox"]), textarea, select');
             if (firstInput) {
                 firstInput.focus();
@@ -950,21 +1016,25 @@ class AdminApp {
             const section = ADMIN_CONFIG.CURRENT_SECTION;
             
             console.log('Guardando desde nuevo modal en sección:', section);
+            console.log('¿Está editando?', !!ADMIN_CONFIG.EDITING_ITEM);
             
-            // Preparar los datos para el envío
+            // Si está editando, usar saveItem en lugar de saveNewItem
+            if (ADMIN_CONFIG.EDITING_ITEM) {
+                console.log('Modo edición detectado, usando saveItem');
+                this.saveItem();
+                return;
+            }
+            
+            // Preparar los datos para el envío (solo para creación)
             let payload = {
                 type: section,
                 data: formData
             };
             
-            // Si es una edición, asegurarse de incluir el ID
-            if (ADMIN_CONFIG.EDITING_ITEM) {
-                payload.edit_id = this.getItemId(ADMIN_CONFIG.EDITING_ITEM);
-            }
-            
             // Determinar el endpoint correcto
             const isUsers = section === 'users';
-            const endpoint = isUsers ? 'users.php' : 'admin.php';
+            const isFondos = section === 'fondos';
+            const endpoint = isUsers ? 'users.php' : (isFondos ? 'fondos.php' : 'admin.php');
             
             // Mostrar indicador de carga
             const saveButton = document.getElementById('newModalSave');
@@ -974,9 +1044,10 @@ class AdminApp {
             
             try {
                 // Construir body según endpoint
-                const body = isUsers ? JSON.stringify(formData) : JSON.stringify(payload);
+                const body = isUsers ? JSON.stringify(formData) : (isFondos ? JSON.stringify(formData) : JSON.stringify(payload));
+                const method = isFondos ? 'POST' : 'POST'; // Para fondos siempre POST (crear nuevo)
                 const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
-                    method: 'POST',
+                    method: method,
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -986,10 +1057,15 @@ class AdminApp {
                 const result = await response.json();
                 
                 if (result.success) {
+                    console.log('Nuevo elemento guardado correctamente:', result);
                     this.showNotification('Elemento guardado correctamente', 'success');
                     this.hideNewModal();
+                    console.log('Recargando datos de la sección:', section);
                     this.loadSectionData(section);
+                    // Limpiar estado de edición DESPUÉS de cargar los datos
+                    ADMIN_CONFIG.EDITING_ITEM = null;
                 } else {
+                    console.error('Error guardando nuevo elemento:', result);
                     this.showNotification(result.message || 'Error al guardar el elemento', 'error');
                 }
             } finally {
@@ -1059,7 +1135,7 @@ class AdminApp {
             'carousel': [
                 { key: 'titulo', label: 'Título', type: 'text', required: true },
                 { key: 'subtitulo', label: 'Subtítulo', type: 'text' },
-                { key: 'imagen_url', label: 'URL de Imagen', type: 'url' },
+                { key: 'imagen_url', label: 'Imagen', type: 'file', accept: 'image/*', uploadType: 'carousel' },
                 { key: 'enlace', label: 'Enlace', type: 'text' },
                 { key: 'activo', label: 'Activo', type: 'checkbox' }
             ],
@@ -1067,7 +1143,7 @@ class AdminApp {
                 { key: 'titulo', label: 'Título', type: 'text', required: true },
                 { key: 'resumen', label: 'Resumen', type: 'textarea', required: true },
                 { key: 'contenido', label: 'Contenido', type: 'textarea', required: true },
-                { key: 'imagen_url', label: 'URL de Imagen', type: 'url' },
+                { key: 'imagen_url', label: 'Imagen', type: 'file', accept: 'image/*', uploadType: 'news' },
                 { key: 'fecha_publicacion', label: 'Fecha de Publicación', type: 'date', required: true },
                 { key: 'autor', label: 'Autor', type: 'text', required: true },
                 { key: 'destacada', label: 'Destacada', type: 'checkbox' }
@@ -1084,13 +1160,12 @@ class AdminApp {
                     { value: 'ensayo', label: 'Ensayo' },
                     { value: 'desfile', label: 'Desfile' }
                 ]},
-                { key: 'imagen_url', label: 'URL de Imagen', type: 'url' }
+                { key: 'imagen_url', label: 'Imagen', type: 'file', accept: 'image/*', uploadType: 'events' }
             ],
             'galeria': [
                 { key: 'titulo', label: 'Título', type: 'text', required: true },
                 { key: 'descripcion', label: 'Descripción', type: 'textarea' },
-                { key: 'imagen_url', label: 'URL de Imagen', type: 'url', required: true },
-                { key: 'thumb_url', label: 'URL de Miniatura', type: 'url' },
+                { key: 'imagen_url', label: 'Imagen', type: 'file', accept: 'image/*', uploadType: 'gallery', required: true },
                 { key: 'categoria', label: 'Categoría', type: 'text' },
                 { key: 'fecha_subida', label: 'Fecha de Subida', type: 'date', required: true },
                 { key: 'orden', label: 'Orden', type: 'number' }
@@ -1100,7 +1175,7 @@ class AdminApp {
                 { key: 'descripcion', label: 'Descripción', type: 'textarea', required: true },
                 { key: 'precio', label: 'Precio', type: 'number', required: true, step: '0.01' },
                 { key: 'precio_oferta', label: 'Precio de Oferta', type: 'number', step: '0.01' },
-                { key: 'imagen_url', label: 'URL de Imagen', type: 'url' },
+                { key: 'imagen_url', label: 'Imagen', type: 'file', accept: 'image/*', uploadType: 'products' },
                 { key: 'categoria', label: 'Categoría', type: 'text' },
                 { key: 'stock', label: 'Stock', type: 'number', required: true },
                 { key: 'destacado', label: 'Destacado', type: 'checkbox' }
@@ -1108,7 +1183,7 @@ class AdminApp {
             'directiva': [
                 { key: 'nombre', label: 'Nombre', type: 'text', required: true },
                 { key: 'cargo', label: 'Cargo', type: 'text', required: true },
-                { key: 'imagen', label: 'URL de Imagen', type: 'url' },
+                { key: 'imagen', label: 'Imagen', type: 'file', accept: 'image/*', uploadType: 'directiva' },
                 { key: 'descripcion', label: 'Descripción', type: 'textarea' }
             ],
             'socios': [
@@ -1140,6 +1215,20 @@ class AdminApp {
                     { value: 'urgente', label: 'Urgente' }
                 ], required: true },
                 { key: 'notas', label: 'Notas Internas', type: 'textarea' }
+            ],
+            'fondos': [
+                { key: 'nombre', label: 'Nombre del Fondo', type: 'text', required: true },
+                { key: 'tipo', label: 'Tipo de Fondo', type: 'select', options: [
+                    { value: 'imagen', label: 'Imagen' },
+                    { value: 'color', label: 'Color Sólido' },
+                    { value: 'gradiente', label: 'Gradiente' }
+                ], required: true },
+                { key: 'imagen_url', label: 'URL de Imagen', type: 'text' },
+                { key: 'color', label: 'Color (hex)', type: 'text' },
+                { key: 'color_secundario', label: 'Color Secundario (para gradientes)', type: 'text' },
+                { key: 'paginas', label: 'Páginas (separadas por comas)', type: 'text', required: true },
+                { key: 'descripcion', label: 'Descripción', type: 'textarea' },
+                { key: 'activo', label: 'Activo', type: 'checkbox' }
             ]
         };
         
@@ -1155,6 +1244,7 @@ class AdminApp {
             console.log('Guardando item en sección:', section);
             console.log('Datos del formulario:', formData);
             console.log('Modo edición:', !!ADMIN_CONFIG.EDITING_ITEM);
+            console.log('Elemento a editar:', ADMIN_CONFIG.EDITING_ITEM);
             
             // Validación de campos requeridos
             const requiredFields = this.getFormFields(section).filter(f => f.required);
@@ -1211,7 +1301,8 @@ class AdminApp {
             
             // Determinar el endpoint correcto
             const isUsers = section === 'users';
-            const endpoint = isUsers ? 'users.php' : 'admin.php';
+            const isFondos = section === 'fondos';
+            const endpoint = isUsers ? 'users.php' : (isFondos ? 'fondos.php' : 'admin.php');
             
             // Mostrar indicador de carga
             const saveButton = document.querySelector('#itemModal .btn-primary');
@@ -1221,9 +1312,33 @@ class AdminApp {
             
             try {
                 // Construir body según endpoint
-                const body = isUsers ? JSON.stringify(formData) : JSON.stringify(payload);
+                let body;
+                if (isFondos) {
+                    // Para fondos, incluir el ID en el cuerpo para actualización
+                    const fondoData = { ...formData };
+                    if (ADMIN_CONFIG.EDITING_ITEM && ADMIN_CONFIG.EDITING_ITEM.id) {
+                        fondoData.id = ADMIN_CONFIG.EDITING_ITEM.id;
+                        console.log('Editando fondo con ID:', ADMIN_CONFIG.EDITING_ITEM.id);
+                        console.log('Datos del fondo:', fondoData);
+                    } else {
+                        console.error('No se encontró ID del elemento a editar');
+                    }
+                    body = JSON.stringify(fondoData);
+                } else {
+                    // Para noticias y otros elementos, usar el formato estándar
+                    if (ADMIN_CONFIG.EDITING_ITEM && ADMIN_CONFIG.EDITING_ITEM.id) {
+                        payload.edit_id = this.getItemId(ADMIN_CONFIG.EDITING_ITEM);
+                        console.log('Editando elemento con ID:', ADMIN_CONFIG.EDITING_ITEM.id);
+                        console.log('Payload completo:', payload);
+                        console.log('Edit ID incluido:', payload.edit_id);
+                    } else {
+                        console.log('No se encontró elemento a editar, creando nuevo');
+                    }
+                    body = isUsers ? JSON.stringify(formData) : JSON.stringify(payload);
+                }
+                const method = isFondos ? 'PUT' : 'POST'; // Para fondos usar PUT (actualizar)
                 const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
-                    method: 'POST',
+                    method: method,
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -1236,7 +1351,10 @@ class AdminApp {
                     this.showNotification('Elemento guardado correctamente', 'success');
                     this.hideCustomModal();
                     this.loadSectionData(section);
+                    // Limpiar estado de edición DESPUÉS de cargar los datos
+                    ADMIN_CONFIG.EDITING_ITEM = null;
                 } else {
+                    console.error('Error guardando elemento:', result);
                     this.showNotification(result.message || 'Error al guardar el elemento', 'error');
                 }
             } finally {
@@ -1309,7 +1427,8 @@ class AdminApp {
         
         try {
             const isUsers = ADMIN_CONFIG.CURRENT_SECTION === 'users';
-            const endpoint = isUsers ? 'users.php' : 'admin.php';
+            const isFondos = ADMIN_CONFIG.CURRENT_SECTION === 'fondos';
+            const endpoint = isUsers ? 'users.php' : (isFondos ? 'fondos.php' : 'admin.php');
             const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
                 method: 'DELETE',
                 headers: {
@@ -1317,6 +1436,8 @@ class AdminApp {
                 },
                 body: JSON.stringify(
                     isUsers
+                        ? { id }
+                        : isFondos
                         ? { id }
                         : { type: ADMIN_CONFIG.CURRENT_SECTION, id }
                 )
@@ -1403,12 +1524,99 @@ class AdminApp {
         return item.id ?? item.imagen_id ?? item._id ?? null;
     }
 
+    // ===== EDICIÓN DESDE MODAL NUEVO =====
+    async saveItemFromNewModal() {
+        try {
+            // Obtener los datos del formulario del nuevo modal
+            const formData = this.getFormDataFromNewModal();
+            const section = ADMIN_CONFIG.CURRENT_SECTION;
+            
+            console.log('Editando desde nuevo modal en sección:', section);
+            console.log('Elemento a editar:', ADMIN_CONFIG.EDITING_ITEM);
+            console.log('Datos del formulario:', formData);
+            
+            // Preparar los datos para el envío
+            let payload = {
+                type: section,
+                data: formData,
+                edit_id: this.getItemId(ADMIN_CONFIG.EDITING_ITEM)
+            };
+            
+            console.log('Payload de edición:', payload);
+            
+            // Determinar el endpoint correcto
+            const isUsers = section === 'users';
+            const isFondos = section === 'fondos';
+            const endpoint = isUsers ? 'users.php' : (isFondos ? 'fondos.php' : 'admin.php');
+            
+            // Mostrar indicador de carga
+            const saveButton = document.querySelector('#newModalSave');
+            const originalButtonText = saveButton.innerHTML;
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
+            
+            try {
+                // Construir body según endpoint
+                let body;
+                if (isFondos) {
+                    // Para fondos, incluir el ID en el cuerpo para actualización
+                    const fondoData = { ...formData };
+                    fondoData.id = ADMIN_CONFIG.EDITING_ITEM.id;
+                    body = JSON.stringify(fondoData);
+                } else {
+                    // Para noticias y otros elementos, usar el formato estándar
+                    body = isUsers ? JSON.stringify(formData) : JSON.stringify(payload);
+                }
+                
+                const method = isFondos ? 'PUT' : 'POST';
+                const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: body
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    this.showNotification('Elemento actualizado correctamente', 'success');
+                    this.hideNewModal();
+                    this.loadSectionData(section);
+                    // Limpiar estado de edición DESPUÉS de cargar los datos
+                    ADMIN_CONFIG.EDITING_ITEM = null;
+                } else {
+                    console.error('Error actualizando elemento:', result);
+                    this.showNotification(result.message || 'Error al actualizar el elemento', 'error');
+                }
+            } finally {
+                // Restaurar el botón
+                saveButton.disabled = false;
+                saveButton.innerHTML = originalButtonText;
+            }
+        } catch (error) {
+            console.error('Error en saveItemFromNewModal:', error);
+            this.showNotification('Error al actualizar el elemento', 'error');
+        }
+    }
+
     // ===== SUBIDA DE IMÁGENES =====
-    async uploadImage(fieldKey, uploadType) {
-        // Verificar que el usuario es administrador
-        if (!this.isAdmin()) {
+    async uploadImage(fieldKey, uploadType, triggerButton) {
+        // Verificar que el usuario es administrador (excepto para fondos)
+        if (uploadType !== 'backgrounds' && !this.isAdmin()) {
             this.showNotification('Solo los administradores pueden subir imágenes', 'error');
             return;
+        }
+
+        // Evitar reentradas: si el botón está deshabilitado, salir
+        if (triggerButton && triggerButton.disabled) return;
+
+        // Deshabilitar botón mientras se procesa
+        if (triggerButton) {
+            triggerButton.disabled = true;
+            const originalText = triggerButton.innerHTML;
+            triggerButton.setAttribute('data-original-text', originalText);
+            triggerButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Subiendo...';
         }
 
         const input = document.createElement('input');
@@ -1468,6 +1676,18 @@ class AdminApp {
             } catch (error) {
                 console.error('Error subiendo imagen:', error);
                 this.showNotification('Error subiendo imagen', 'error');
+            }
+            finally {
+                // Rehabilitar botón y restaurar texto
+                if (triggerButton) {
+                    const originalText = triggerButton.getAttribute('data-original-text');
+                    if (originalText) triggerButton.innerHTML = originalText;
+                    triggerButton.disabled = false;
+                    triggerButton.removeAttribute('data-original-text');
+                }
+
+                // Limpiar input temporal para evitar reutilización del mismo cambio
+                input.value = '';
             }
         };
 

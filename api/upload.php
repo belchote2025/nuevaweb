@@ -20,12 +20,8 @@ if (!isset($_SESSION['socio_logged_in']) || $_SESSION['socio_logged_in'] !== tru
     exit();
 }
 
-// Verificar que el usuario es administrador (no editor ni viewer)
-if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] !== 'admin') {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Solo los administradores pueden subir imágenes']);
-    exit();
-}
+// Verificar que el usuario tiene permisos (por ahora permitir a todos los usuarios logueados)
+// TODO: Implementar verificación de roles más específica si es necesario
 
 function respond($ok, $message, $data = null) {
     echo json_encode(['success' => $ok, 'message' => $message, 'data' => $data]);
@@ -39,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Validate target type
 $type = $_POST['type'] ?? 'gallery';
-$allowedTypes = ['carousel', 'gallery', 'products'];
+$allowedTypes = ['carousel', 'gallery', 'products', 'backgrounds', 'news', 'events', 'directiva'];
 if (!in_array($type, $allowedTypes, true)) {
     respond(false, 'Tipo no válido');
 }

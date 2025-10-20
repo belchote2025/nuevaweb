@@ -172,16 +172,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Añadir timestamp
     $item['updated_at'] = date('Y-m-d H:i:s');
     
+    // Debug: Log de entrada
+    error_log("API Admin - Input recibido: " . json_encode($input));
+    error_log("API Admin - Edit ID presente: " . (isset($input['edit_id']) ? 'SÍ' : 'NO'));
+    if (isset($input['edit_id'])) {
+        error_log("API Admin - Edit ID valor: " . $input['edit_id']);
+    }
+    
     // Si es nuevo elemento
     if (!isset($input['edit_id'])) {
+        error_log("API Admin - Creando nuevo elemento");
         $data[] = $item;
     } else {
         // Actualizar elemento existente
         $edit_id = $input['edit_id'];
         $found = false;
         
+        error_log("API Admin - Buscando elemento con ID: " . $edit_id);
+        error_log("API Admin - Elementos disponibles: " . json_encode(array_column($data, 'id')));
+        
         foreach ($data as $key => $existing_item) {
             if ($existing_item['id'] == $edit_id) {
+                error_log("API Admin - Elemento encontrado en posición: " . $key);
                 $data[$key] = $item;
                 $found = true;
                 break;
@@ -189,7 +201,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         if (!$found) {
+            error_log("API Admin - Elemento no encontrado con ID: " . $edit_id);
             response(false, 'Elemento no encontrado');
+        } else {
+            error_log("API Admin - Elemento actualizado correctamente");
         }
     }
     

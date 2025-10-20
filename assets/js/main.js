@@ -57,7 +57,8 @@ class FilaMariscalesApp {
                 this.loadPatrocinadores(),
                 this.loadHermanamientos(),
                 this.loadSocios(),
-                this.loadEventos()
+                this.loadEventos(),
+                this.loadFondos()
             ]);
         } catch (error) {
             console.error('Error cargando datos iniciales:', error);
@@ -1168,6 +1169,217 @@ class FilaMariscalesApp {
             this.applyDefaultTextos();
         }
     }
+
+    // ===== FONDOS DE PÁGINA =====
+    async loadFondos() {
+        try {
+            const response = await fetch(`${CONFIG.DATA_BASE_URL}fondos.json`, { cache: 'no-store' });
+            if (!response.ok) throw new Error('No se pudieron cargar los fondos');
+            const fondos = await response.json();
+            
+            // Aplicar fondos con un pequeño retraso para asegurar que el DOM esté listo
+            setTimeout(() => {
+                this.applyFondos(fondos);
+            }, 100);
+        } catch (error) {
+            console.warn('Fondos no disponibles o error cargando:', error);
+            // Aplicar fondo por defecto si no se puede cargar el JSON
+            this.applyDefaultFondo();
+        }
+    }
+
+    applyDefaultFondo() {
+        console.log('Aplicando fondo por defecto...');
+        // Aplicar fondo.jpg por defecto a todas las páginas
+        document.body.style.setProperty('background-image', 'url("assets/images/backgrounds/fondo.jpg")', 'important');
+        document.body.style.setProperty('background-size', 'cover', 'important');
+        document.body.style.setProperty('background-position', 'center', 'important');
+        document.body.style.setProperty('background-repeat', 'no-repeat', 'important');
+        document.body.style.setProperty('background-attachment', 'fixed', 'important');
+        
+        // Aplicar efectos de transparencia
+        this.applyPageEffects(this.getCurrentPageKey());
+    }
+
+    applyFondos(fondos) {
+        if (!Array.isArray(fondos) || fondos.length === 0) {
+            console.log('No hay fondos disponibles');
+            return;
+        }
+
+        const current = this.getCurrentPageKey();
+        console.log('Aplicando fondos para página:', current);
+
+        // Buscar el último fondo activo que aplique a esta página
+        const applicable = fondos.filter(f => {
+            if (f.activo === false) return false;
+            if (!f.paginas) return false;
+            const pages = String(f.paginas)
+                .split(',')
+                .map(p => p.trim().toLowerCase())
+                .filter(Boolean);
+            return pages.includes(current);
+        });
+
+        console.log('Fondos aplicables:', applicable);
+
+        if (applicable.length === 0) {
+            console.log('No hay fondos aplicables para esta página');
+            return;
+        }
+
+        const fondo = applicable[applicable.length - 1];
+        console.log('Aplicando fondo:', fondo);
+
+        // Aplicar según tipo
+        if (fondo.tipo === 'imagen' && fondo.imagen_url) {
+            // Forzar aplicación del fondo
+            document.body.style.setProperty('background-image', `url('${fondo.imagen_url}')`, 'important');
+            document.body.style.setProperty('background-size', 'cover', 'important');
+            document.body.style.setProperty('background-position', 'center', 'important');
+            document.body.style.setProperty('background-repeat', 'no-repeat', 'important');
+            document.body.style.setProperty('background-attachment', 'fixed', 'important');
+            console.log('✅ Fondo de imagen aplicado:', fondo.imagen_url);
+        } else if (fondo.tipo === 'color' && fondo.color) {
+            document.body.style.setProperty('background', fondo.color, 'important');
+            console.log('✅ Fondo de color aplicado:', fondo.color);
+        } else if (fondo.tipo === 'gradiente' && fondo.color && fondo.color_secundario) {
+            document.body.style.setProperty('background-image', `linear-gradient(135deg, ${fondo.color}, ${fondo.color_secundario})`, 'important');
+            document.body.style.setProperty('background-attachment', 'fixed', 'important');
+            console.log('✅ Fondo de gradiente aplicado');
+        }
+
+        // Aplicar transparencias y efectos según el tipo de página
+        this.applyPageEffects(current);
+    }
+
+    applyPageEffects(pageKey) {
+        // Aplicar efectos uniformes para todas las páginas (igual que historia)
+        const effects = {
+            'historia': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            },
+            'directiva': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            },
+            'socios': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            },
+            'eventos': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            },
+            'galeria': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            },
+            'noticias': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            },
+            'contacto': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            },
+            'calendario': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            },
+            'musica': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            },
+            'recursos': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            },
+            'lafila': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            },
+            'libro': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            },
+            'actividades': {
+                overlay: 'rgba(0, 0, 0, 0.2)',
+                contentOpacity: '0.6',
+                blur: '2px'
+            }
+        };
+
+        const effect = effects[pageKey];
+        if (!effect) return;
+
+        // Crear overlay si no existe
+        let overlay = document.getElementById('page-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'page-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: -1;
+                pointer-events: none;
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        // Aplicar overlay
+        overlay.style.backgroundColor = effect.overlay;
+
+        // Aplicar efectos a secciones y contenedores
+        const sections = document.querySelectorAll('section, .container, .card, .timeline, .historia-content, .historia-image');
+        sections.forEach(section => {
+            // Forzar aplicación de estilos
+            section.style.setProperty('background', `rgba(255, 255, 255, ${effect.contentOpacity})`, 'important');
+            section.style.setProperty('backdrop-filter', `blur(${effect.blur})`, 'important');
+            section.style.setProperty('-webkit-backdrop-filter', `blur(${effect.blur})`, 'important');
+            section.style.setProperty('border-radius', '10px', 'important');
+            section.style.setProperty('box-shadow', '0 4px 6px rgba(0,0,0,0.1)', 'important');
+            section.style.setProperty('position', 'relative', 'important');
+            section.style.setProperty('z-index', '10', 'important');
+        });
+
+        // Efectos específicos para timeline (historia)
+        if (pageKey === 'historia') {
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach(item => {
+                item.style.background = 'rgba(255, 255, 255, 0.5)';
+                item.style.backdropFilter = 'blur(0.5px)';
+                item.style.webkitBackdropFilter = 'blur(0.5px)';
+                item.style.borderRadius = '8px';
+                item.style.border = '1px solid rgba(220, 20, 60, 0.3)';
+            });
+        }
+    }
+
+    getCurrentPageKey() {
+        // Obtiene el nombre de archivo sin extensión: p.ej. historia.html => 'historia'
+        const path = window.location.pathname;
+        const file = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+        const base = file.toLowerCase().split('?')[0].split('#')[0];
+        const key = base.endsWith('.html') ? base.replace('.html', '') : base || 'index';
+        return key;
+    }
     
     applyTextos(textos) {
         // Aplicar textos del home
@@ -1282,7 +1494,7 @@ class FilaMariscalesApp {
     }
 }
 
-// ===== INICIALIZACIÓN =====
+    // ===== INICIALIZACIÓN =====
 let app;
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1308,6 +1520,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
+    // Función global para recargar fondos
+    window.reloadFondos = function() {
+        if (app && app.loadFondos) {
+            app.loadFondos();
+            console.log('Fondos recargados');
+        }
+    };
+    
     // Escuchar actualizaciones de textos desde otras pestañas
     if (typeof BroadcastChannel !== 'undefined') {
         const channel = new BroadcastChannel('textos-update');
@@ -1326,4 +1546,18 @@ document.addEventListener('DOMContentLoaded', function() {
             window.reloadTextos();
         }
     });
+    
+    // Aplicar fondo inmediatamente
+    if (app && app.applyDefaultFondo) {
+        console.log('Aplicando fondo inmediatamente...');
+        app.applyDefaultFondo();
+    }
+    
+    // Forzar recarga de fondos después de 2 segundos para páginas existentes
+    setTimeout(() => {
+        if (app && app.loadFondos) {
+            console.log('Recargando fondos automáticamente...');
+            app.loadFondos();
+        }
+    }, 2000);
 });

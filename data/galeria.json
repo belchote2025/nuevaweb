@@ -1,73 +1,35 @@
 [
     {
-        "id": 1,
         "titulo": "Fil\u00e1 Mariscales en Desfile 2024",
         "descripcion": "Participaci\u00f3n de la Fil\u00e1 Mariscales de Caballeros Templarios en el desfile de Moros y Cristianos de Elche",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+        "imagen_url": "uploads\/images\/gallery\/gallery_68f215130072e.jpg",
         "thumb_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
         "categoria": "desfiles",
         "fecha_subida": "2024-10-28",
-        "orden": 1
+        "orden": "1",
+        "id": "68f216c429053",
+        "updated_at": "2025-10-17 12:13:24"
     },
     {
-        "id": 2,
         "titulo": "Cena de Hermandad Templaria",
         "descripcion": "Momentos de convivencia en la tradicional cena de hermandad de la Fil\u00e1",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+        "imagen_url": "uploads\/images\/gallery\/gallery_68f21526de3e0.jpg",
         "thumb_url": "https:\/\/images.unsplash.com\/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
         "categoria": "eventos",
         "fecha_subida": "2024-10-20",
-        "orden": 2
+        "orden": "2",
+        "id": 2,
+        "updated_at": "2025-10-17 12:06:32"
     },
     {
-        "id": 3,
         "titulo": "Presentaci\u00f3n Oficial 2024",
         "descripcion": "Acto de presentaci\u00f3n oficial de la Fil\u00e1 Mariscales para la temporada 2024",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+        "imagen_url": "uploads\/images\/gallery\/gallery_68f2153ee3634.jpg",
         "thumb_url": "https:\/\/images.unsplash.com\/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
         "categoria": "eventos",
         "fecha_subida": "2024-10-15",
-        "orden": 3
-    },
-    {
-        "id": 4,
-        "titulo": "Actuaci\u00f3n Musical Templaria",
-        "descripcion": "Presentaci\u00f3n musical de la Fil\u00e1 Mariscales en eventos culturales",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
-        "thumb_url": "https:\/\/images.unsplash.com\/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-        "categoria": "musica",
-        "fecha_subida": "2024-09-15",
-        "orden": 4
-    },
-    {
-        "id": 5,
-        "titulo": "Reuni\u00f3n de Directiva",
-        "descripcion": "Sesi\u00f3n de trabajo de la directiva de la Fil\u00e1 Mariscales",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
-        "thumb_url": "https:\/\/images.unsplash.com\/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-        "categoria": "reuniones",
-        "fecha_subida": "2024-09-10",
-        "orden": 5
-    },
-    {
-        "id": 6,
-        "titulo": "Ensayo de la Banda",
-        "descripcion": "Ensayo de la banda musical de la Fil\u00e1 Mariscales",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
-        "thumb_url": "https:\/\/images.unsplash.com\/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-        "categoria": "musica",
-        "fecha_subida": "2024-09-05",
-        "orden": 6
-    },
-    {
-        "titulo": "prueba",
-        "descripcion": "prueba",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1600&q=80",
-        "thumb_url": "",
-        "categoria": "prueba",
-        "fecha_subida": "2025-10-10",
-        "orden": "2",
-        "id": "68e8d86ac9570",
-        "updated_at": "2025-10-10 11:56:58"
+        "orden": "3",
+        "id": 3,
+        "updated_at": "2025-10-17 12:06:56"
     }
 ]

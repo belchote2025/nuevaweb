@@ -1,33 +1,35 @@
 [
     {
-        "titulo": "Fil\u00e1 Mariscales 2025: Nueva Temporada",
-        "resumen": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y actividades programadas.",
-        "contenido": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y un programa especial de actividades que incluye presentaciones, ensayos, eventos sociales y la participaci\u00f3n en las fiestas de Moros y Cristianos de Elche. Este a\u00f1o contamos con un equipo renovado y nuevas propuestas para mantener viva la tradici\u00f3n templaria.",
+        "titulo": "Fil\u00e1 Mariscales 2025: Nueva Temporada prueba 2",
+        "resumen": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y actividades programadas. prueba1",
+        "contenido": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y un programa especial de actividades que incluye presentaciones, ensayos, eventos sociales y la participaci\u00f3n en las fiestas de Moros y Cristianos de Elche. Este a\u00f1o contamos con un equipo renovado y nuevas propuestas para mantener viva la tradici\u00f3n templaria. prueba 1",
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "fecha_publicacion": "2025-01-15",
+        "autor": "Administrador",
+        "destacada": false,
+        "id": "68f2261ee36a9",
+        "updated_at": "2025-10-17 13:18:54"
+    },
+    {
+        "titulo": "Fil\u00e1 Mariscales 2025: Nueva Temporada prueba 3",
+        "resumen": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y actividades programadas. prueba1",
+        "contenido": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y un programa especial de actividades que incluye presentaciones, ensayos, eventos sociales y la participaci\u00f3n en las fiestas de Moros y Cristianos de Elche. Este a\u00f1o contamos con un equipo renovado y nuevas propuestas para mantener viva la tradici\u00f3n templaria. prueba 1",
         "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         "fecha_publicacion": "2025-01-15",
         "autor": "Administrador",
         "destacada": true,
-        "id": "68f0e6bdcd569",
-        "updated_at": "2025-10-16 14:36:13"
+        "id": "68f2136d595bb",
+        "updated_at": "2025-10-17 11:59:09"
     },
     {
-        "id": 2,
-        "titulo": "Cena de Hermandad Templaria",
-        "resumen": "Celebramos nuestra tradicional cena de hermandad donde fortalecemos los lazos de amistad templaria.",
-        "contenido": "Celebramos nuestra tradicional cena de hermandad templaria donde todos los miembros de la fil\u00e1 se re\u00fanen para compartir momentos especiales y fortalecer los lazos de amistad que nos unen como familia templaria. Un evento que refuerza nuestros valores de honor, lealtad y tradici\u00f3n.",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-        "fecha_publicacion": "2025-01-10",
+        "titulo": "Fil\u00e1 Mariscales 2025: Nueva Temporada prueba 2",
+        "resumen": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y actividades programadas. prueba1",
+        "contenido": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y un programa especial de actividades que incluye presentaciones, ensayos, eventos sociales y la participaci\u00f3n en las fiestas de Moros y Cristianos de Elche. Este a\u00f1o contamos con un equipo renovado y nuevas propuestas para mantener viva la tradici\u00f3n templaria. prueba 2",
+        "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "fecha_publicacion": "2025-01-15",
         "autor": "Administrador",
-        "destacada": false
-    },
-    {
-        "id": 3,
-        "titulo": "Preparaci\u00f3n para Moros y Cristianos 2025",
-        "resumen": "Iniciamos los preparativos para nuestra participaci\u00f3n en las fiestas de Moros y Cristianos de Elche.",
-        "contenido": "Iniciamos los preparativos para nuestra participaci\u00f3n en las fiestas de Moros y Cristianos de Elche. Los ensayos comenzar\u00e1n pr\u00f3ximamente y todos los miembros est\u00e1n invitados a participar en la preparaci\u00f3n del desfile y las actividades programadas para esta importante celebraci\u00f3n.",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-        "fecha_publicacion": "2025-01-05",
-        "autor": "Administrador",
-        "destacada": false
+        "destacada": true,
+        "id": "68f214914915d",
+        "updated_at": "2025-10-17 12:04:01"
     }
 ]
