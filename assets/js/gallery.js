@@ -10,6 +10,7 @@ class AdvancedGallery {
 
     async init() {
         await this.loadGalleryData();
+        this.injectStyles();
         this.setupGalleryUI();
         this.setupEventListeners();
         this.renderGallery();
@@ -217,6 +218,8 @@ class AdvancedGallery {
         }
 
         this.setupImageModals();
+        // Actualizar estadísticas tras renderizar
+        this.updateStats();
     }
 
     renderGridView(container) {
@@ -227,7 +230,8 @@ class AdvancedGallery {
                         <div class="gallery-image-container">
                             <img src="${item.thumb_url}" 
                                  alt="${item.titulo}" 
-                                 class="gallery-image"
+                                class="gallery-image"
+                                 style="width:100%;height:150px;object-fit:cover;display:block;"
                                  loading="lazy">
                             <div class="gallery-overlay">
                                 <div class="gallery-actions">
@@ -270,6 +274,7 @@ class AdvancedGallery {
                                 <img src="${item.thumb_url}" 
                                      alt="${item.titulo}" 
                                      class="gallery-image"
+                                     style="width:100%;height:auto;display:block;"
                                      loading="lazy">
                                 <div class="gallery-overlay">
                                     <div class="gallery-actions">
@@ -358,6 +363,11 @@ class AdvancedGallery {
 
         container.style.columnCount = '4';
         container.style.columnGap = '1rem';
+        // Asegurar que los ítems ocupen todo el ancho de la columna
+        container.querySelectorAll('.masonry-item').forEach(item => {
+            item.style.breakInside = 'avoid';
+            item.style.marginBottom = '1rem';
+        });
 
         // Responsive columns
         const updateColumns = () => {
@@ -375,6 +385,26 @@ class AdvancedGallery {
 
         updateColumns();
         window.addEventListener('resize', updateColumns);
+    }
+
+    // ===== ESTILOS DINÁMICOS =====
+    injectStyles() {
+        const id = 'gallery-dynamic-styles';
+        if (document.getElementById(id)) return;
+        const css = `
+.gallery-card{border-radius:8px;overflow:hidden;background:rgba(255,255,255,0.7)}
+.gallery-image-container{position:relative}
+.gallery-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.2);opacity:0;transition:opacity .2s}
+.gallery-image-container:hover .gallery-overlay{opacity:1}
+.gallery-actions .btn{margin:0 .15rem}
+@media (max-width: 767.98px){
+  .gallery-image{height:130px !important;}
+}
+`;
+        const style = document.createElement('style');
+        style.id = id;
+        style.textContent = css;
+        document.head.appendChild(style);
     }
 
     // ===== MODALES =====
@@ -477,10 +507,26 @@ class AdvancedGallery {
     updateStats() {
         const totalImages = document.getElementById('total-images');
         const filterInfo = document.getElementById('filter-info');
+        const statTotal = document.getElementById('stat-total-images');
+        const statEvents = document.getElementById('stat-events-count');
+        const statCats = document.getElementById('stat-categories-count');
+        const statYears = document.getElementById('stat-years-count');
 
-        if (totalImages) {
-            totalImages.textContent = this.filteredData.length;
-        }
+        const total = this.galleryData.length;
+        if (totalImages) totalImages.textContent = this.filteredData.length;
+        if (statTotal) statTotal.textContent = String(total);
+        
+        // Fotos de eventos
+        const eventsCount = this.galleryData.filter(i => (i.categoria || '').toLowerCase().includes('evento')).length;
+        if (statEvents) statEvents.textContent = String(eventsCount);
+
+        // Categorías distintas
+        const categories = new Set(this.galleryData.map(i => i.categoria || ''));
+        if (statCats) statCats.textContent = String(categories.size);
+
+        // Años distintos en fecha_subida
+        const years = new Set(this.galleryData.map(i => (i.fecha_subida || '').slice(0,4)).filter(Boolean));
+        if (statYears) statYears.textContent = String(years.size);
 
         if (filterInfo) {
             if (this.currentFilter === 'all') {

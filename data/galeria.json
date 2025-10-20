@@ -1,20 +1,20 @@
 [
     {
-        "titulo": "Fil\u00e1 Mariscales en Desfile 2024",
-        "descripcion": "Participaci\u00f3n de la Fil\u00e1 Mariscales de Caballeros Templarios en el desfile de Moros y Cristianos de Elche",
+        "titulo": "Filá Mariscales en Desfile 2024",
+        "descripcion": "Participación de la Filá Mariscales de Caballeros Templarios en el desfile de Moros y Cristianos de Elche",
         "imagen_url": "uploads\/images\/gallery\/gallery_68f215130072e.jpg",
-        "thumb_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+        "thumb_url": "uploads\/images\/gallery\/gallery_68f215130072e.jpg",
         "categoria": "desfiles",
         "fecha_subida": "2024-10-28",
         "orden": "1",
-        "id": "68f216c429053",
-        "updated_at": "2025-10-17 12:13:24"
+        "id": "68f629785d97e",
+        "updated_at": "2025-10-20 14:22:16"
     },
     {
         "titulo": "Cena de Hermandad Templaria",
-        "descripcion": "Momentos de convivencia en la tradicional cena de hermandad de la Fil\u00e1",
+        "descripcion": "Momentos de convivencia en la tradicional cena de hermandad de la Filá",
         "imagen_url": "uploads\/images\/gallery\/gallery_68f21526de3e0.jpg",
-        "thumb_url": "https:\/\/images.unsplash.com\/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+        "thumb_url": "uploads\/images\/gallery\/gallery_68f21526de3e0.jpg",
         "categoria": "eventos",
         "fecha_subida": "2024-10-20",
         "orden": "2",
@@ -22,10 +22,10 @@
         "updated_at": "2025-10-17 12:06:32"
     },
     {
-        "titulo": "Presentaci\u00f3n Oficial 2024",
-        "descripcion": "Acto de presentaci\u00f3n oficial de la Fil\u00e1 Mariscales para la temporada 2024",
+        "titulo": "Presentación Oficial 2024",
+        "descripcion": "Acto de presentación oficial de la Filá Mariscales para la temporada 2024",
         "imagen_url": "uploads\/images\/gallery\/gallery_68f2153ee3634.jpg",
-        "thumb_url": "https:\/\/images.unsplash.com\/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+        "thumb_url": "uploads\/images\/gallery\/gallery_68f2153ee3634.jpg",
         "categoria": "eventos",
         "fecha_subida": "2024-10-15",
         "orden": "3",
