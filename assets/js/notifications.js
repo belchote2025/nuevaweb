@@ -41,6 +41,12 @@ class NotificationManager {
         if (sendBtn) {
             sendBtn.addEventListener('click', () => this.showSendModal());
         }
+
+        // Botón de prueba de notificación
+        const testBtn = document.getElementById('test-notification-btn');
+        if (testBtn) {
+            testBtn.addEventListener('click', () => this.testNotification());
+        }
     }
 
     async checkSubscription() {
@@ -84,7 +90,7 @@ class NotificationManager {
             }
 
             // Obtener clave pública VAPID
-            const response = await fetch('/api/notifications.php?action=vapid-key');
+            const response = await fetch('/fila-mariscales-web/api/notifications.php?action=vapid-key');
             const data = await response.json();
             
             if (!data.success) {
@@ -100,7 +106,7 @@ class NotificationManager {
 
             // Enviar suscripción al servidor
             const userInfo = this.getUserInfo();
-            const subscribeResponse = await fetch('/api/notifications.php', {
+            const subscribeResponse = await fetch('/fila-mariscales-web/api/notifications.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -135,7 +141,7 @@ class NotificationManager {
             await this.subscription.unsubscribe();
 
             // Notificar al servidor
-            const response = await fetch('/api/notifications.php', {
+            const response = await fetch('/fila-mariscales-web/api/notifications.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -205,7 +211,7 @@ class NotificationManager {
     // Método para enviar notificación (solo admin)
     async sendNotification(title, body, type = 'general', url = '', targetUsers = 'all') {
         try {
-            const response = await fetch('/api/notifications.php', {
+            const response = await fetch('/fila-mariscales-web/api/notifications.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -221,6 +227,14 @@ class NotificationManager {
                 })
             });
 
+            // Verificar si la respuesta es JSON válido
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                console.error('Respuesta no es JSON:', text);
+                throw new Error('El servidor devolvió una respuesta no válida');
+            }
+            
             const result = await response.json();
             
             if (result.success) {
@@ -379,6 +393,27 @@ class NotificationManager {
         const url = prompt('URL (opcional):', '');
         
         this.sendNotification(title, body, type, url, target);
+    }
+
+    // Método para probar notificaciones
+    async testNotification() {
+        try {
+            // Crear una notificación de prueba
+            const result = await this.sendNotification(
+                '🔔 Notificación de Prueba',
+                'Esta es una notificación de prueba del sistema. Si ves esto, el sistema funciona correctamente.',
+                'general',
+                '',
+                'all'
+            );
+            
+            if (result) {
+                this.showMessage('Notificación de prueba enviada correctamente', 'success');
+            }
+        } catch (error) {
+            console.error('Error en notificación de prueba:', error);
+            this.showMessage('Error enviando notificación de prueba', 'error');
+        }
     }
 
     showMessage(message, type = 'info') {
