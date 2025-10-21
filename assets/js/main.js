@@ -1976,3 +1976,91 @@ function shareOnLinkedIn() {
     const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
     window.open(url, '_blank', 'width=600,height=400');
 }
+
+// ===== SISTEMA DE BÚSQUEDA =====
+
+// Función para buscar contenido
+async function buscarContenido(event) {
+    event.preventDefault();
+    
+    const query = document.getElementById('search-input').value;
+    if (!query.trim()) return;
+    
+    try {
+        const response = await fetch(`/fila-mariscales-web/api/busqueda.php?q=${encodeURIComponent(query)}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            mostrarResultadosBusqueda(result.data);
+        } else {
+            mostrarMensaje('Error en la búsqueda: ' + result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error buscando:', error);
+        mostrarMensaje('Error de conexión en la búsqueda', 'error');
+    }
+}
+
+// Mostrar resultados de búsqueda
+function mostrarResultadosBusqueda(data) {
+    const modal = document.createElement('div');
+    modal.className = 'modal fade';
+    modal.innerHTML = `
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-search me-2"></i>Resultados de Búsqueda
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">Se encontraron ${data.total} resultados para "${data.query}"</p>
+                    <div class="list-group">
+                        ${data.resultados.map(item => `
+                            <a href="${item.url}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">${item.titulo}</h6>
+                                    <small class="text-muted">${item.tipo}</small>
+                                </div>
+                                <p class="mb-1">${item.descripcion}</p>
+                                <small>${item.fecha || ''}</small>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
+    
+    modal.addEventListener('hidden.bs.modal', () => {
+        if (document.body.contains(modal)) {
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+// Función para mostrar mensajes
+function mostrarMensaje(mensaje, tipo = 'info') {
+    // Crear toast o alert
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${tipo === 'error' ? 'danger' : tipo} alert-dismissible fade show position-fixed`;
+    toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999;';
+    toast.innerHTML = `
+        ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (document.body.contains(toast)) {
+            document.body.removeChild(toast);
+        }
+    }, 5000);
+}

@@ -1,0 +1,33 @@
+{
+    "meta_tags": {
+        "title": "Filá Mariscales de Caballeros Templarios - Tradición y Pasión",
+        "description": "Descubre la historia, tradiciones y eventos de la Filá Mariscales. Únete a nuestra hermandad y forma parte de una tradición centenaria.",
+        "keywords": "filá, mariscales, caballeros templarios, moros y cristianos, tradición, hermandad, fiestas",
+        "author": "Filá Mariscales",
+        "robots": "index, follow",
+        "viewport": "width=device-width, initial-scale=1.0"
+    },
+    "open_graph": {
+        "og:title": "Filá Mariscales de Caballeros Templarios",
+        "og:description": "Tradición, pasión y hermandad en cada evento",
+        "og:image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+        "og:url": "https://filamariscales.com",
+        "og:type": "website",
+        "og:site_name": "Filá Mariscales"
+    },
+    "twitter": {
+        "twitter:card": "summary_large_image",
+        "twitter:title": "Filá Mariscales de Caballeros Templarios",
+        "twitter:description": "Tradición, pasión y hermandad en cada evento",
+        "twitter:image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+    },
+    "structured_data": {
+        "organization": {
+            "@type": "Organization",
+            "name": "Filá Mariscales de Caballeros Templarios",
+            "url": "https://filamariscales.com",
+            "logo": "https://filamariscales.com/assets/images/logo.png",
+            "description": "Hermandad dedicada a preservar las tradiciones de Moros y Cristianos"
+        }
+    }
+}

@@ -61,7 +61,9 @@ function getDataFile($type) {
         'carousel' => __DIR__ . '/../data/carousel.json',
         'socios' => __DIR__ . '/../data/socios.json',
         'textos' => __DIR__ . '/../data/textos.json',
-        'imagenes-sitio' => __DIR__ . '/../data/imagenes-sitio.json'
+        'imagenes-sitio' => __DIR__ . '/../data/imagenes-sitio.json',
+        'temas' => __DIR__ . '/../data/temas.json',
+        'alertas' => __DIR__ . '/../data/alertas.json'
     ];
     
     return $files[$type] ?? null;

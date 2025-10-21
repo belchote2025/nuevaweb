@@ -715,6 +715,18 @@ class AdminApp {
                 { key: 'url', title: 'URL de la Imagen', type: 'text' },
                 { key: 'pagina', title: 'Página', type: 'text' },
                 { key: 'activa', title: 'Activa', type: 'boolean' }
+            ],
+            'temas': [
+                { key: 'nombre', title: 'Nombre', type: 'text' },
+                { key: 'descripcion', title: 'Descripción', type: 'text' },
+                { key: 'activo', title: 'Activo', type: 'boolean' }
+            ],
+            'alertas': [
+                { key: 'titulo', title: 'Título', type: 'text' },
+                { key: 'mensaje', title: 'Mensaje', type: 'text' },
+                { key: 'tipo', title: 'Tipo', type: 'text' },
+                { key: 'fecha', title: 'Fecha', type: 'date' },
+                { key: 'leida', title: 'Leída', type: 'boolean' }
             ]
         };
         
