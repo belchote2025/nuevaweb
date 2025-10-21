@@ -1731,3 +1731,248 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, 1000);
 });
+
+// ===== FUNCIONES GLOBALES PARA COMPARTIR Y DESCARGAR =====
+
+// Función para descargar PDF
+function downloadPDF() {
+    // Simular descarga del PDF
+    const link = document.createElement('a');
+    link.href = 'assets/docs/libro-fila-mariscales.pdf';
+    link.download = 'Libro_Fila_Mariscales.pdf';
+    link.click();
+    
+    // Mostrar notificación
+    if (typeof showNotification === 'function') {
+        showNotification('Descargando PDF...', 'info');
+    } else {
+        alert('Descargando PDF...');
+    }
+}
+
+// Función para compartir libro
+function shareBook() {
+    const shareData = {
+        title: 'Libro de la Filá Mariscales',
+        text: 'Descubre la historia y tradiciones de la Filá Mariscales en nuestro libro interactivo',
+        url: window.location.href
+    };
+
+    // Verificar si el navegador soporta Web Share API
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+        navigator.share(shareData)
+            .then(() => {
+                if (typeof showNotification === 'function') {
+                    showNotification('¡Libro compartido exitosamente!', 'success');
+                } else {
+                    alert('¡Libro compartido exitosamente!');
+                }
+            })
+            .catch((error) => {
+                console.error('Error compartiendo:', error);
+                showFallbackShare();
+            });
+    } else {
+        // Fallback para navegadores que no soportan Web Share API
+        showFallbackShare();
+    }
+}
+
+// Función de fallback para compartir
+function showFallbackShare() {
+    const shareModal = document.createElement('div');
+    shareModal.className = 'modal fade';
+    shareModal.innerHTML = `
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-share me-2"></i>Compartir Libro
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-link me-2"></i>Enlace Directo</h6>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="share-url" value="${window.location.href}" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('share-url')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-qrcode me-2"></i>Código QR</h6>
+                            <div class="text-center">
+                                <div id="qr-code" class="mb-3"></div>
+                                <button class="btn btn-sm btn-outline-primary" onclick="downloadQR()">
+                                    <i class="fas fa-download me-1"></i>Descargar QR
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-envelope me-2"></i>Compartir por Email</h6>
+                            <button class="btn btn-outline-primary w-100 mb-2" onclick="shareByEmail()">
+                                <i class="fas fa-envelope me-2"></i>Enviar por Email
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-mobile-alt me-2"></i>Compartir por WhatsApp</h6>
+                            <button class="btn btn-outline-success w-100 mb-2" onclick="shareByWhatsApp()">
+                                <i class="fab fa-whatsapp me-2"></i>Compartir en WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6><i class="fab fa-facebook me-2"></i>Redes Sociales</h6>
+                            <div class="btn-group w-100" role="group">
+                                <button class="btn btn-outline-primary" onclick="shareOnFacebook()">
+                                    <i class="fab fa-facebook-f"></i>
+                                </button>
+                                <button class="btn btn-outline-info" onclick="shareOnTwitter()">
+                                    <i class="fab fa-twitter"></i>
+                                </button>
+                                <button class="btn btn-outline-danger" onclick="shareOnLinkedIn()">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-copy me-2"></i>Texto para Copiar</h6>
+                            <textarea class="form-control" id="share-text" rows="3" readonly>Descubre la historia y tradiciones de la Filá Mariscales en nuestro libro interactivo: ${window.location.href}</textarea>
+                            <button class="btn btn-outline-secondary btn-sm mt-2" onclick="copyToClipboard('share-text')">
+                                <i class="fas fa-copy me-1"></i>Copiar Texto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(shareModal);
+    const bsModal = new bootstrap.Modal(shareModal);
+    bsModal.show();
+
+    // Generar código QR
+    generateQRCode();
+
+    // Limpiar modal cuando se cierre
+    shareModal.addEventListener('hidden.bs.modal', () => {
+        if (document.body.contains(shareModal)) {
+            document.body.removeChild(shareModal);
+        }
+    });
+}
+
+// Función para copiar al portapapeles
+function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    element.select();
+    element.setSelectionRange(0, 99999); // Para móviles
+    
+    try {
+        document.execCommand('copy');
+        if (typeof showNotification === 'function') {
+            showNotification('¡Copiado al portapapeles!', 'success');
+        } else {
+            alert('¡Copiado al portapapeles!');
+        }
+    } catch (err) {
+        // Fallback para navegadores modernos
+        navigator.clipboard.writeText(element.value).then(() => {
+            if (typeof showNotification === 'function') {
+                showNotification('¡Copiado al portapapeles!', 'success');
+            } else {
+                alert('¡Copiado al portapapeles!');
+            }
+        }).catch(() => {
+            if (typeof showNotification === 'function') {
+                showNotification('No se pudo copiar automáticamente', 'error');
+            } else {
+                alert('No se pudo copiar automáticamente');
+            }
+        });
+    }
+}
+
+// Función para generar código QR
+function generateQRCode() {
+    // Crear QR simple con canvas
+    const qrContainer = document.getElementById('qr-code');
+    if (qrContainer) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 150;
+        canvas.height = 150;
+        qrContainer.appendChild(canvas);
+        
+        // Generar QR simple
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, 150, 150);
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(10, 10, 130, 130);
+        
+        // Texto en el centro
+        ctx.fillStyle = '#000';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('QR Code', 75, 75);
+    }
+}
+
+// Función para descargar QR
+function downloadQR() {
+    const canvas = document.querySelector('#qr-code canvas');
+    if (canvas) {
+        const link = document.createElement('a');
+        link.download = 'qr-libro-fila-mariscales.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    }
+}
+
+// Función para compartir por email
+function shareByEmail() {
+    const subject = 'Libro de la Filá Mariscales';
+    const body = `Descubre la historia y tradiciones de la Filá Mariscales en nuestro libro interactivo: ${window.location.href}`;
+    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoLink);
+}
+
+// Función para compartir por WhatsApp
+function shareByWhatsApp() {
+    const text = `Descubre la historia y tradiciones de la Filá Mariscales en nuestro libro interactivo: ${window.location.href}`;
+    const whatsappLink = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(whatsappLink, '_blank');
+}
+
+// Función para compartir en Facebook
+function shareOnFacebook() {
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank', 'width=600,height=400');
+}
+
+// Función para compartir en Twitter
+function shareOnTwitter() {
+    const text = 'Descubre la historia y tradiciones de la Filá Mariscales';
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank', 'width=600,height=400');
+}
+
+// Función para compartir en LinkedIn
+function shareOnLinkedIn() {
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank', 'width=600,height=400');
+}

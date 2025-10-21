@@ -708,6 +708,13 @@ class AdminApp {
                 { key: 'color', title: 'Color', type: 'text' },
                 { key: 'paginas', title: 'Páginas', type: 'text' },
                 { key: 'activo', title: 'Activo', type: 'boolean' }
+            ],
+            'imagenes-sitio': [
+                { key: 'nombre', title: 'Nombre', type: 'text' },
+                { key: 'descripcion', title: 'Descripción', type: 'text' },
+                { key: 'url', title: 'URL de la Imagen', type: 'text' },
+                { key: 'pagina', title: 'Página', type: 'text' },
+                { key: 'activa', title: 'Activa', type: 'boolean' }
             ]
         };
         
@@ -1358,6 +1365,19 @@ class AdminApp {
                     { value: 'rechazada', label: 'Rechazada' }
                 ], required: true },
                 { key: 'observaciones', label: 'Observaciones', type: 'textarea' }
+            ],
+            'imagenes-sitio': [
+                { key: 'nombre', label: 'Nombre', type: 'text', required: true },
+                { key: 'descripcion', label: 'Descripción', type: 'text' },
+                { key: 'url', label: 'URL de la Imagen', type: 'url', required: true },
+                { key: 'pagina', label: 'Página', type: 'select', options: [
+                    { value: 'historia', label: 'Historia' },
+                    { value: 'galeria', label: 'Galería' },
+                    { value: 'eventos', label: 'Eventos' },
+                    { value: 'musica', label: 'Música' },
+                    { value: 'general', label: 'General' }
+                ], required: true },
+                { key: 'activa', label: 'Activa', type: 'checkbox' }
             ],
             'reservas': [
                 { key: 'id', label: 'ID', type: 'text' },
