@@ -496,24 +496,23 @@ class AdminApp {
     getColumnsConfig(section) {
         const configs = {
             'users': [
-                { key: 'nombre', title: 'Nombre', type: 'text' },
+                { key: 'name', title: 'Nombre', type: 'text' },
                 { key: 'email', title: 'Email', type: 'text' },
-                { key: 'telefono', title: 'Teléfono', type: 'text' },
-                { key: 'rol', title: 'Rol', type: 'text' },
+                { key: 'role', title: 'Rol', type: 'text' },
                 { 
-                    key: 'password', 
-                    title: 'Contraseña', 
-                    type: 'text',
-                    formatter: (value) => value ? '••••••••' : ''
-                },
-                { 
-                    key: 'fecha_ingreso', 
-                    title: 'Fecha Ingreso', 
+                    key: 'created_at', 
+                    title: 'Fecha Creación', 
                     type: 'date',
                     formatter: (value) => value ? new Date(value).toLocaleDateString('es-ES') : ''
                 },
                 { 
-                    key: 'activo', 
+                    key: 'updated_at', 
+                    title: 'Última Actualización', 
+                    type: 'date',
+                    formatter: (value) => value ? new Date(value).toLocaleDateString('es-ES') : ''
+                },
+                { 
+                    key: 'active', 
                     title: 'Activo', 
                     type: 'boolean',
                     formatter: (value) => value === true ? 'Sí' : 'No'
