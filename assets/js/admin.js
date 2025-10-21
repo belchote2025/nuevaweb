@@ -148,6 +148,7 @@ class AdminApp {
                 const editBtn = e.target.closest('.btn-edit');
                 const deleteBtn = e.target.closest('.btn-delete');
                 const estadoBtn = e.target.closest('button[data-action="estado"]');
+                const resetPasswordBtn = e.target.closest('.btn-reset-password');
                 
                 if (editBtn) {
                     e.preventDefault();
@@ -162,6 +163,12 @@ class AdminApp {
                     const id = estadoBtn.dataset.id;
                     const estado = estadoBtn.dataset.estado;
                     this.updateReservaEstado(id, estado);
+                } else if (resetPasswordBtn) {
+                    e.preventDefault();
+                    const id = resetPasswordBtn.dataset.id;
+                    const nombre = resetPasswordBtn.dataset.nombre;
+                    const email = resetPasswordBtn.dataset.email;
+                    this.resetSocioPassword(id, nombre, email);
                 }
             });
         }
@@ -456,12 +463,28 @@ class AdminApp {
                         <div class="mt-1"><span class="badge ${value==='confirmada'?'bg-success':value==='cancelada'?'bg-danger':'bg-warning text-dark'}">${value||'pendiente'}</span></div>
                     </td>`;
                 }
+                
+                // Información especial para socios (estado de contraseña)
+                if (ADMIN_CONFIG.CURRENT_SECTION === 'socios' && col.key === 'password_status') {
+                    const badgeClass = value === 'Asignada' ? 'bg-success' : 'bg-danger';
+                    const icon = value === 'Asignada' ? 'fa-check-circle' : 'fa-exclamation-circle';
+                    return `<td>
+                        <span class="badge ${badgeClass}">
+                            <i class="fas ${icon} me-1"></i>${value}
+                        </span>
+                    </td>`;
+                }
                 return `<td>${value}</td>`;
                 }).join('')}
                 <td>
                     <button class="btn btn-sm btn-outline-primary me-1 btn-edit" data-id="${item.id ?? item.imagen_id ?? item._id}">
                         <i class="fas fa-edit"></i>
                     </button>
+                    ${ADMIN_CONFIG.CURRENT_SECTION === 'socios' ? `
+                        <button class="btn btn-sm btn-outline-warning me-1 btn-reset-password" data-id="${item.id}" data-nombre="${item.nombre}" data-email="${item.email}">
+                            <i class="fas fa-key"></i>
+                        </button>
+                    ` : ''}
                     <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${item.id ?? item.imagen_id ?? item._id}">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -587,7 +610,10 @@ class AdminApp {
                 { key: 'nombre', title: 'Nombre', type: 'text' },
                 { key: 'email', title: 'Email', type: 'text' },
                 { key: 'telefono', title: 'Teléfono', type: 'text' },
+                { key: 'direccion', title: 'Dirección', type: 'text' },
                 { key: 'fecha_ingreso', title: 'Fecha de Ingreso', type: 'date' },
+                { key: 'numero_socio', title: 'Número Socio', type: 'text' },
+                { key: 'password_status', title: 'Contraseña', type: 'text' },
                 { key: 'activo', title: 'Activo', type: 'boolean' }
             ],
             'textos': [
@@ -2340,6 +2366,98 @@ class AdminApp {
             console.error('Error cargando solicitudes:', error);
             this.showNotification('Error de conexión al cargar solicitudes', 'error');
         }
+    }
+
+    // ===== SOCIOS - RESETEAR CONTRASEÑA =====
+    async resetSocioPassword(id, nombre, email) {
+        if (!confirm(`¿Estás seguro de que quieres resetear la contraseña de ${nombre}?`)) {
+            return;
+        }
+
+        try {
+            // Generar nueva contraseña
+            const nuevaPassword = this.generatePassword(8);
+            
+            // Actualizar contraseña en el servidor
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}socios.php`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    password: nuevaPassword
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // Mostrar modal con la nueva contraseña
+                this.showPasswordModal(nombre, email, nuevaPassword);
+                
+                // Recargar datos
+                await this.loadSectionData('socios');
+                this.showNotification('Contraseña reseteada exitosamente', 'success');
+            } else {
+                this.showNotification(result.message || 'Error al resetear la contraseña', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.showNotification('Error de conexión al resetear contraseña', 'error');
+        }
+    }
+
+    generatePassword(length = 8) {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let password = '';
+        for (let i = 0; i < length; i++) {
+            password += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return password;
+    }
+
+    showPasswordModal(nombre, email, password) {
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.innerHTML = `
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-key me-2"></i>Nueva Contraseña Generada
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <h6>Credenciales para ${nombre}:</h6>
+                            <p><strong>Email:</strong> ${email}</p>
+                            <p><strong>Contraseña:</strong> <span class="badge bg-warning text-dark fs-6">${password}</span></p>
+                        </div>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Importante:</strong> Comunica estas credenciales al socio de forma segura.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" onclick="navigator.clipboard.writeText('${password}')">
+                            <i class="fas fa-copy me-2"></i>Copiar Contraseña
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+        
+        // Limpiar modal cuando se cierre
+        modal.addEventListener('hidden.bs.modal', () => {
+            document.body.removeChild(modal);
+        });
     }
 }
 

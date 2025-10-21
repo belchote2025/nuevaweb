@@ -3,7 +3,7 @@
         "id": "admin_001",
         "nombre": "Administrador",
         "email": "admin@mariscales.com",
-        "password": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+        "password": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC\/.og\/at2.uheWG\/igi",
         "rol": "admin",
         "activo": true,
         "fecha_creacion": "2025-10-15",
@@ -28,7 +28,8 @@
         "numero_socio": "11",
         "activo": true,
         "id": "68efe722d489c",
-        "updated_at": "2025-10-15 20:46:21"
+        "updated_at": "2025-10-21 14:53:50",
+        "password": "$2y$10$JrQ8WQv3oJLFZCe6548NvOtgHOT3WRJTfoLM5HtHbByMVdjYejxEm"
     },
     {
         "id": "68efeb4fafcf39.90307024",
@@ -42,5 +43,17 @@
         "numero_socio": "SOC-68EFEB4FC723F",
         "fecha_creacion": "2025-10-15 20:43:27",
         "updated_at": "2025-10-15 20:43:27"
+    },
+    {
+        "nombre": "charo",
+        "email": "charo1106@gmail.com",
+        "telefono": "688704737",
+        "direccion": "capita antoni mena 69 9 1",
+        "fecha_ingreso": "2025-10-21",
+        "numero_socio": "1",
+        "activo": true,
+        "id": "68f780581f4cd",
+        "updated_at": "2025-10-21 14:53:50",
+        "password": "$2y$10$Fb8ZvM6WJICjzq6Sx3PxdubjkvxeDQOBbb5iRrM.60MeIFhSjoyrO"
     }
 ]

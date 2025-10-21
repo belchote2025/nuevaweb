@@ -12,6 +12,7 @@ class ReservasApp {
         await this.loadReservas();
         this.setupEventListeners();
         this.renderEventos();
+        this.updateHeroStats();
         // Si viene eventId en la URL, abrir modal precargado
         try {
             const params = new URLSearchParams(window.location.search);
@@ -339,6 +340,30 @@ class ReservasApp {
                 alert.parentNode.removeChild(alert);
             }
         }, 5000);
+    }
+
+    updateHeroStats() {
+        // Actualizar total de eventos disponibles
+        const eventosDisponibles = this.eventos.filter(evento => new Date(evento.fecha) > new Date());
+        const totalEventosEl = document.getElementById('totalEventos');
+        if (totalEventosEl) {
+            totalEventosEl.textContent = eventosDisponibles.length;
+        }
+
+        // Actualizar total de reservas
+        const totalReservasEl = document.getElementById('totalReservas');
+        if (totalReservasEl) {
+            totalReservasEl.textContent = this.reservas.length;
+        }
+
+        // Actualizar próximo evento
+        const proximoEventoEl = document.getElementById('proximoEvento');
+        if (proximoEventoEl && eventosDisponibles.length > 0) {
+            const proximoEvento = eventosDisponibles.sort((a, b) => new Date(a.fecha) - new Date(b.fecha))[0];
+            const fecha = new Date(proximoEvento.fecha);
+            const diasRestantes = Math.ceil((fecha - new Date()) / (1000 * 60 * 60 * 24));
+            proximoEventoEl.textContent = `${diasRestantes} días`;
+        }
     }
 }
 

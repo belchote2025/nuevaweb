@@ -13,7 +13,7 @@ if (!isset($_SESSION['socio_logged_in']) || $_SESSION['socio_logged_in'] !== tru
 }
 
 // Verificar si el usuario es administrador
-$socios = json_decode(file_get_contents('../data/socios.json'), true);
+$socios = json_decode(file_get_contents(__DIR__ . '/../data/socios.json'), true);
 $usuario_actual = null;
 
 foreach ($socios as $socio) {
@@ -46,15 +46,15 @@ function response($success, $message, $data = null) {
 
 function getDataFile($type) {
     $files = [
-        'noticias' => '../data/noticias.json',
-        'eventos' => '../data/eventos.json',
-        'galeria' => '../data/galeria.json',
-        'productos' => '../data/productos.json',
-        'directiva' => '../data/directiva.json',
-        'contactos' => '../data/contactos.json',
-        'carousel' => '../data/carousel.json',
-        'socios' => '../data/socios.json',
-        'textos' => '../data/textos.json'
+        'noticias' => __DIR__ . '/../data/noticias.json',
+        'eventos' => __DIR__ . '/../data/eventos.json',
+        'galeria' => __DIR__ . '/../data/galeria.json',
+        'productos' => __DIR__ . '/../data/productos.json',
+        'directiva' => __DIR__ . '/../data/directiva.json',
+        'contactos' => __DIR__ . '/../data/contactos.json',
+        'carousel' => __DIR__ . '/../data/carousel.json',
+        'socios' => __DIR__ . '/../data/socios.json',
+        'textos' => __DIR__ . '/../data/textos.json'
     ];
     
     return $files[$type] ?? null;
@@ -136,6 +136,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     
     $data = loadData($type);
+    
+    // Para la sección de socios, mostrar información adicional de contraseñas para administradores
+    if ($type === 'socios' && $current_role === 'admin') {
+        // Agregar información de contraseñas para administradores
+        foreach ($data as &$socio) {
+            if (isset($socio['password'])) {
+                $socio['has_password'] = true;
+                $socio['password_status'] = 'Asignada';
+            } else {
+                $socio['has_password'] = false;
+                $socio['password_status'] = 'Sin contraseña';
+            }
+        }
+    }
+    
     response(true, 'Datos obtenidos', $data);
 }
 
