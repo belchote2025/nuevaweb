@@ -37,6 +37,42 @@
             align-items: center;
             justify-content: center;
         }
+        
+        /* Mejorar el modal de notificaciones */
+        .modal-backdrop {
+            z-index: 1040 !important;
+        }
+        
+        .modal {
+            z-index: 1050 !important;
+        }
+        
+        .modal-dialog {
+            max-width: 600px;
+        }
+        
+        .modal-header.bg-primary {
+            background-color: #0d6efd !important;
+        }
+        
+        .form-text {
+            font-size: 0.875em;
+            color: #6c757d;
+        }
+        
+        /* Asegurar que el modal sea accesible */
+        .modal.show {
+            display: block !important;
+        }
+        
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out;
+            transform: translate(0, -50px);
+        }
+        
+        .modal.show .modal-dialog {
+            transform: none;
+        }
     </style>
     
     <style>
