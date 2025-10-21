@@ -149,6 +149,9 @@ class AdminApp {
                 const deleteBtn = e.target.closest('.btn-delete');
                 const estadoBtn = e.target.closest('button[data-action="estado"]');
                 const resetPasswordBtn = e.target.closest('.btn-reset-password');
+                const estadoSolicitudBtn = e.target.closest('button[data-action="estado-solicitud"]');
+                const approveSolicitudBtn = e.target.closest('.btn-approve-solicitud');
+                const rejectSolicitudBtn = e.target.closest('.btn-reject-solicitud');
                 
                 if (editBtn) {
                     e.preventDefault();
@@ -169,6 +172,23 @@ class AdminApp {
                     const nombre = resetPasswordBtn.dataset.nombre;
                     const email = resetPasswordBtn.dataset.email;
                     this.resetSocioPassword(id, nombre, email);
+                } else if (estadoSolicitudBtn) {
+                    e.preventDefault();
+                    const id = estadoSolicitudBtn.dataset.id;
+                    const estado = estadoSolicitudBtn.dataset.estado;
+                    this.updateSolicitudEstado(id, estado);
+                } else if (approveSolicitudBtn) {
+                    e.preventDefault();
+                    const id = approveSolicitudBtn.dataset.id;
+                    const nombre = approveSolicitudBtn.dataset.nombre;
+                    const email = approveSolicitudBtn.dataset.email;
+                    this.approveSolicitud(id, nombre, email);
+                } else if (rejectSolicitudBtn) {
+                    e.preventDefault();
+                    const id = rejectSolicitudBtn.dataset.id;
+                    const nombre = rejectSolicitudBtn.dataset.nombre;
+                    const email = rejectSolicitudBtn.dataset.email;
+                    this.rejectSolicitud(id, nombre, email);
                 }
             });
         }
@@ -474,6 +494,18 @@ class AdminApp {
                         </span>
                     </td>`;
                 }
+                
+                // Acciones rápidas para solicitudes (cambiar estado)
+                if (ADMIN_CONFIG.CURRENT_SECTION === 'solicitudes' && col.key === 'estado') {
+                    return `<td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button class="btn btn-outline-warning" data-action="estado-solicitud" data-id="${item.id}" data-estado="pendiente">Pendiente</button>
+                            <button class="btn btn-outline-success" data-action="estado-solicitud" data-id="${item.id}" data-estado="aprobada">Aprobar</button>
+                            <button class="btn btn-outline-danger" data-action="estado-solicitud" data-id="${item.id}" data-estado="rechazada">Rechazar</button>
+                        </div>
+                        <div class="mt-1">${value}</div>
+                    </td>`;
+                }
                 return `<td>${value}</td>`;
                 }).join('')}
                 <td>
@@ -483,6 +515,14 @@ class AdminApp {
                     ${ADMIN_CONFIG.CURRENT_SECTION === 'socios' ? `
                         <button class="btn btn-sm btn-outline-warning me-1 btn-reset-password" data-id="${item.id}" data-nombre="${item.nombre}" data-email="${item.email}">
                             <i class="fas fa-key"></i>
+                        </button>
+                    ` : ''}
+                    ${ADMIN_CONFIG.CURRENT_SECTION === 'solicitudes' ? `
+                        <button class="btn btn-sm btn-outline-success me-1 btn-approve-solicitud" data-id="${item.id}" data-nombre="${item.nombre}" data-email="${item.email}">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger me-1 btn-reject-solicitud" data-id="${item.id}" data-nombre="${item.nombre}" data-email="${item.email}">
+                            <i class="fas fa-times"></i>
                         </button>
                     ` : ''}
                     <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${item.id ?? item.imagen_id ?? item._id}">
@@ -653,8 +693,13 @@ class AdminApp {
                     type: 'date',
                     formatter: (value) => value ? new Date(value).toLocaleDateString('es-ES') : 'Sin revisar'
                 },
-                { key: 'revisado_por', title: 'Revisado por', type: 'text' },
-                { key: 'observaciones', title: 'Observaciones', type: 'text' }
+                { 
+                    key: 'observaciones', 
+                    title: 'Observaciones', 
+                    type: 'text',
+                    formatter: (value) => value || 'Sin observaciones'
+                },
+                { key: 'revisado_por', title: 'Revisado por', type: 'text' }
             ],
             'fondos': [
                 { key: 'nombre', title: 'Nombre', type: 'text' },
@@ -1299,6 +1344,20 @@ class AdminApp {
                 { key: 'paginas', label: 'Páginas (separadas por comas)', type: 'text', required: true },
                 { key: 'descripcion', label: 'Descripción', type: 'textarea' },
                 { key: 'activo', label: 'Activo', type: 'checkbox' }
+            ],
+            'solicitudes': [
+                { key: 'nombre', label: 'Nombre', type: 'text', required: true },
+                { key: 'email', label: 'Email', type: 'email', required: true },
+                { key: 'telefono', label: 'Teléfono', type: 'text' },
+                { key: 'edad', label: 'Edad', type: 'number' },
+                { key: 'motivo', label: 'Motivo de Solicitud', type: 'textarea', required: true },
+                { key: 'experiencia', label: 'Experiencia', type: 'textarea' },
+                { key: 'estado', label: 'Estado', type: 'select', options: [
+                    { value: 'pendiente', label: 'Pendiente' },
+                    { value: 'aprobada', label: 'Aprobada' },
+                    { value: 'rechazada', label: 'Rechazada' }
+                ], required: true },
+                { key: 'observaciones', label: 'Observaciones', type: 'textarea' }
             ],
             'reservas': [
                 { key: 'id', label: 'ID', type: 'text' },
@@ -2123,6 +2182,12 @@ class AdminApp {
                 { value: 'estado:pendiente', label: 'Pendientes' },
                 { value: 'estado:confirmada', label: 'Confirmadas' },
                 { value: 'estado:cancelada', label: 'Canceladas' }
+            ],
+            'solicitudes': [
+                { value: '', label: 'Todas' },
+                { value: 'estado:pendiente', label: 'Pendientes' },
+                { value: 'estado:aprobada', label: 'Aprobadas' },
+                { value: 'estado:rechazada', label: 'Rechazadas' }
             ]
         };
         
@@ -2364,6 +2429,129 @@ class AdminApp {
         } catch (error) {
             console.error('Error cargando solicitudes:', error);
             this.showNotification('Error de conexión al cargar solicitudes', 'error');
+        }
+    }
+
+    // Actualizar estado de solicitud
+    async updateSolicitudEstado(id, estado) {
+        if (!id) {
+            console.error('ID no proporcionado');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}solicitudes.php`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    estado: estado
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                this.showNotification(`Solicitud ${estado} exitosamente`, 'success');
+                await this.loadSolicitudes();
+            } else {
+                this.showNotification(result.message || 'Error al actualizar la solicitud', 'error');
+            }
+        } catch (error) {
+            console.error('Error en updateSolicitudEstado:', error);
+            this.showNotification('Error de conexión al actualizar solicitud', 'error');
+        }
+    }
+
+    // Aprobar solicitud
+    async approveSolicitud(id, nombre, email) {
+        if (!confirm(`¿Estás seguro de que quieres aprobar la solicitud de ${nombre}?`)) {
+            return;
+        }
+
+        try {
+            // Actualizar estado a aprobada
+            await this.updateSolicitudEstado(id, 'aprobada');
+            
+            // Opcional: Crear usuario automáticamente
+            if (confirm('¿Quieres crear un usuario automáticamente para este socio?')) {
+                await this.createUserFromSolicitud(id, nombre, email);
+            }
+            
+        } catch (error) {
+            console.error('Error aprobando solicitud:', error);
+            this.showNotification('Error al aprobar la solicitud', 'error');
+        }
+    }
+
+    // Rechazar solicitud
+    async rejectSolicitud(id, nombre, email) {
+        const motivo = prompt(`¿Motivo del rechazo para ${nombre}? (opcional)`);
+        
+        try {
+            // Actualizar estado a rechazada
+            await this.updateSolicitudEstado(id, 'rechazada');
+            
+            // Agregar observaciones si se proporcionó motivo
+            if (motivo) {
+                await this.addSolicitudObservaciones(id, motivo);
+            }
+            
+        } catch (error) {
+            console.error('Error rechazando solicitud:', error);
+            this.showNotification('Error al rechazar la solicitud', 'error');
+        }
+    }
+
+    // Crear usuario desde solicitud
+    async createUserFromSolicitud(solicitudId, nombre, email) {
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}solicitudes.php?action=aprobar&id=${solicitudId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                this.showNotification('Usuario creado exitosamente', 'success');
+            } else {
+                this.showNotification(result.message || 'Error al crear usuario', 'error');
+            }
+        } catch (error) {
+            console.error('Error creando usuario:', error);
+            this.showNotification('Error de conexión al crear usuario', 'error');
+        }
+    }
+
+    // Agregar observaciones a solicitud
+    async addSolicitudObservaciones(id, observaciones) {
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}solicitudes.php`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    observaciones: observaciones
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                this.showNotification('Observaciones agregadas', 'success');
+            } else {
+                this.showNotification(result.message || 'Error al agregar observaciones', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.showNotification('Error de conexión al agregar observaciones', 'error');
         }
     }
 

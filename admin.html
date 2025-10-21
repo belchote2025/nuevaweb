@@ -14,6 +14,31 @@
     <!-- Custom CSS -->
     <link href="assets/css/admin.css" rel="stylesheet">
     
+    <!-- Notificaciones CSS -->
+    <style>
+        .notification-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+    
     <style>
         /* Floating Action Buttons */
         .floating-buttons {
@@ -132,6 +157,9 @@
                     </span>
                 <div class="d-flex">
                     <span class="navbar-text me-3" id="admin-email"></span>
+                    <button class="btn btn-outline-light btn-sm me-2" id="send-notification-btn" title="Enviar Notificación">
+                        <i class="fas fa-bell me-1"></i>Notificaciones
+                    </button>
                     <button class="btn btn-outline-light btn-sm" id="logout-btn">
                         <i class="fas fa-sign-out-alt me-1"></i>Salir
                     </button>
@@ -703,5 +731,8 @@
             });
         });
     </script>
+    
+    <!-- Notificaciones Push -->
+    <script src="assets/js/notifications.js"></script>
 </body>
 </html>

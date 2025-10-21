@@ -10,16 +10,6 @@
         "updated_at": "2025-10-15 23:40:00"
     },
     {
-        "id": "ejemplo123",
-        "nombre": "Ejemplo",
-        "email": "ejemplo@ejemplo.com",
-        "telefono": "",
-        "direccion": "",
-        "fecha_ingreso": "2025-10-15",
-        "password": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC\/.og\/at2.uheWG\/igi",
-        "updated_at": "2023-01-01T12:00:00"
-    },
-    {
         "nombre": "edu",
         "email": "charo1106@gmail.com",
         "telefono": "",
