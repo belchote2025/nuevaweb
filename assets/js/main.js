@@ -146,6 +146,7 @@ class FilaMariscalesApp {
                 this.loadNoticias(),
                 this.loadBlog(),
                 this.loadCalendario(),
+                this.loadProximosEventos(),
                 this.loadGaleria(),
                 this.loadMusica(),
                 this.loadLibro(),
@@ -447,6 +448,81 @@ class FilaMariscalesApp {
             console.error('Error cargando calendario:', error);
             this.renderCalendarioDefault(container);
         }
+    }
+
+    // ===== CARGA DE PRÓXIMOS EVENTOS =====
+    async loadProximosEventos() {
+        const container = document.getElementById('proximos-eventos');
+        if (!container) return;
+
+        try {
+            const response = await fetch(`${CONFIG.DATA_BASE_URL}eventos.json`);
+            if (!response.ok) throw new Error('Error cargando eventos');
+            const eventos = await response.json();
+            
+            // Filtrar eventos futuros y ordenar por fecha
+            const hoy = new Date();
+            const eventosFuturos = eventos
+                .filter(evento => {
+                    const fechaEvento = new Date(evento.fecha);
+                    return fechaEvento >= hoy;
+                })
+                .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+                .slice(0, 6); // Mostrar solo los próximos 6 eventos
+
+            this.renderProximosEventos(eventosFuturos, container);
+        } catch (error) {
+            console.error('Error cargando próximos eventos:', error);
+            this.renderProximosEventosError(container);
+        }
+    }
+
+    renderProximosEventos(eventos, container) {
+        if (eventos.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        No hay próximos eventos programados.
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = eventos.map(evento => `
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title mb-0">${evento.titulo}</h5>
+                            <span class="badge bg-primary">${new Date(evento.fecha).toLocaleDateString('es-ES')}</span>
+                        </div>
+                        <p class="card-text text-muted">${evento.descripcion}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                ${evento.ubicacion || 'Ubicación por confirmar'}
+                            </small>
+                            <a href="eventos.html" class="btn btn-outline-primary btn-sm">
+                                Ver detalles
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    renderProximosEventosError(container) {
+        container.innerHTML = `
+            <div class="col-12 text-center">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Error al cargar los próximos eventos. Por favor, intenta de nuevo.
+                </div>
+            </div>
+        `;
     }
 
     renderCalendario(eventos, container) {
