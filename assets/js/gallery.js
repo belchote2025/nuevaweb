@@ -489,14 +489,14 @@ class AdvancedGallery {
         const shareData = {
             title: image.titulo,
             text: image.descripcion,
-            url: window.location.href + '#galeria'
+            url: window.location.href.replace(/\/[^\/]*$/, '/galeria.html')
         };
 
         if (navigator.share) {
             navigator.share(shareData);
         } else {
             // Fallback: copiar al portapapeles
-            const shareText = `${image.titulo}\n${image.descripcion}\n${window.location.href}#galeria`;
+            const shareText = `${image.titulo}\n${image.descripcion}\n${window.location.href.replace(/\/[^\/]*$/, '/galeria.html')}`;
             navigator.clipboard.writeText(shareText).then(() => {
                 this.showNotification('Enlace copiado al portapapeles', 'success');
             });

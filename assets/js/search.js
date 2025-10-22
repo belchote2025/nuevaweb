@@ -47,7 +47,7 @@ class SearchSystem {
                     ...item,
                     type: 'galeria',
                     searchText: `${item.titulo} ${item.descripcion} ${item.categoria}`.toLowerCase(),
-                    url: '#galeria'
+                    url: 'galeria.html'
                 })),
                 ...directiva.map(item => ({
                     ...item,

@@ -276,6 +276,7 @@ class AdminApp {
             'dashboard': 'Dashboard',
             'noticias': 'Noticias',
             'eventos': 'Eventos',
+            'temas': 'Temas',
             'galeria': 'Galería',
             'productos': 'Productos',
             'directiva': 'Directiva',
@@ -822,6 +823,9 @@ class AdminApp {
                     break;
                 case 'time':
                     inputHtml = `<input type="time" class="form-control" id="${field.key}" value="${value}" ${field.required ? 'required' : ''}>`;
+                    break;
+                case 'file':
+                    inputHtml = `<input type="file" class="form-control" id="${field.key}" ${field.accept ? `accept="${field.accept}"` : ''} ${field.required ? 'required' : ''}>`;
                     break;
                 case 'select':
                     const options = field.options.map(opt => 
@@ -1382,6 +1386,7 @@ class AdminApp {
                 { key: 'nombre', label: 'Nombre', type: 'text', required: true },
                 { key: 'descripcion', label: 'Descripción', type: 'text' },
                 { key: 'url', label: 'URL de la Imagen', type: 'url', required: true },
+                { key: 'imagen_local', label: 'Imagen Local', type: 'file', accept: 'image/*' },
                 { key: 'pagina', label: 'Página', type: 'select', options: [
                     { value: 'historia', label: 'Historia' },
                     { value: 'galeria', label: 'Galería' },
@@ -1463,15 +1468,48 @@ class AdminApp {
                 }
             }
             
-            // Preparar los datos para el envío
-            let payload = {
-                type: section,
-                data: formData
+            // Verificar si hay archivos para subir
+            const hasFiles = Object.values(formData).some(value => value instanceof File);
+            
+            let payload;
+            let headers = {
+                'Content-Type': 'application/json'
             };
             
-            // Si es una edición, asegurarse de incluir el ID
-            if (ADMIN_CONFIG.EDITING_ITEM) {
-                payload.edit_id = this.getItemId(ADMIN_CONFIG.EDITING_ITEM);
+            if (hasFiles) {
+                // Si hay archivos, usar FormData
+                const formDataToSend = new FormData();
+                formDataToSend.append('type', section);
+                
+                // Si es una edición, incluir el ID
+                if (ADMIN_CONFIG.EDITING_ITEM) {
+                    formDataToSend.append('edit_id', this.getItemId(ADMIN_CONFIG.EDITING_ITEM));
+                }
+                
+                // Añadir todos los datos al FormData
+                Object.entries(formData).forEach(([key, value]) => {
+                    if (value instanceof File) {
+                        formDataToSend.append(key, value);
+                    } else {
+                        formDataToSend.append(key, value);
+                    }
+                });
+                
+                payload = formDataToSend;
+                headers = {}; // FormData maneja el Content-Type automáticamente
+                console.log('Enviando con FormData (archivos incluidos)');
+            } else {
+                // Si no hay archivos, usar JSON normal
+                payload = {
+                    type: section,
+                    data: formData
+                };
+                
+                // Si es una edición, asegurarse de incluir el ID
+                if (ADMIN_CONFIG.EDITING_ITEM) {
+                    payload.edit_id = this.getItemId(ADMIN_CONFIG.EDITING_ITEM);
+                }
+                console.log('Enviando con JSON (sin archivos)');
             }
             
             // Determinar el endpoint correcto
@@ -1486,10 +1524,16 @@ class AdminApp {
             saveButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
             
             try {
-                // Construir body según endpoint
+                // Construir body según endpoint y si hay archivos
                 let body;
-                if (isFondos) {
-                    // Para fondos, incluir el ID en el cuerpo para actualización
+                let requestHeaders = headers;
+                
+                if (hasFiles) {
+                    // Si hay archivos, usar el payload FormData directamente
+                    body = payload;
+                    requestHeaders = {}; // FormData maneja el Content-Type
+                } else if (isFondos) {
+                    // Para fondos sin archivos, incluir el ID en el cuerpo para actualización
                     const fondoData = { ...formData };
                     if (ADMIN_CONFIG.EDITING_ITEM && ADMIN_CONFIG.EDITING_ITEM.id) {
                         fondoData.id = ADMIN_CONFIG.EDITING_ITEM.id;
@@ -1500,23 +1544,14 @@ class AdminApp {
                     }
                     body = JSON.stringify(fondoData);
                 } else {
-                    // Para noticias y otros elementos, usar el formato estándar
-                    if (ADMIN_CONFIG.EDITING_ITEM && ADMIN_CONFIG.EDITING_ITEM.id) {
-                        payload.edit_id = this.getItemId(ADMIN_CONFIG.EDITING_ITEM);
-                        console.log('Editando elemento con ID:', ADMIN_CONFIG.EDITING_ITEM.id);
-                        console.log('Payload completo:', payload);
-                        console.log('Edit ID incluido:', payload.edit_id);
-                    } else {
-                        console.log('No se encontró elemento a editar, creando nuevo');
-                    }
+                    // Para noticias y otros elementos sin archivos, usar el formato estándar
                     body = isUsers ? JSON.stringify(formData) : JSON.stringify(payload);
                 }
+                
                 const method = isFondos ? 'PUT' : 'POST'; // Para fondos usar PUT (actualizar)
                 const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
                     method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: requestHeaders,
                     body
                 });
                 
@@ -1573,6 +1608,14 @@ class AdminApp {
             if (field.type === 'checkbox') {
                 formData[field.key] = element.checked;
                 console.log('  - Valor checkbox:', element.checked);
+            } else if (field.type === 'file') {
+                // Manejar archivos
+                if (element.files && element.files.length > 0) {
+                    formData[field.key] = element.files[0];
+                    console.log('  - Archivo seleccionado:', element.files[0].name);
+                } else {
+                    console.log('  - No hay archivo seleccionado');
+                }
             } else if (field.key === 'password' && isEditing && !element.value) {
                 // No incluir la contraseña si estamos editando y el campo está vacío
                 console.log('  - Password vacío en edición, no se incluye');
@@ -1710,12 +1753,41 @@ class AdminApp {
             console.log('Elemento a editar:', ADMIN_CONFIG.EDITING_ITEM);
             console.log('Datos del formulario:', formData);
             
-            // Preparar los datos para el envío
-            let payload = {
-                type: section,
-                data: formData,
-                edit_id: this.getItemId(ADMIN_CONFIG.EDITING_ITEM)
+            // Verificar si hay archivos para subir
+            const hasFiles = Object.values(formData).some(value => value instanceof File);
+            
+            let payload;
+            let headers = {
+                'Content-Type': 'application/json'
             };
+            
+            if (hasFiles) {
+                // Si hay archivos, usar FormData
+                const formDataToSend = new FormData();
+                formDataToSend.append('type', section);
+                formDataToSend.append('edit_id', this.getItemId(ADMIN_CONFIG.EDITING_ITEM));
+                
+                // Añadir todos los datos al FormData
+                Object.entries(formData).forEach(([key, value]) => {
+                    if (value instanceof File) {
+                        formDataToSend.append(key, value);
+                    } else {
+                        formDataToSend.append(key, value);
+                    }
+                });
+                
+                payload = formDataToSend;
+                headers = {}; // FormData maneja el Content-Type automáticamente
+                console.log('Enviando con FormData (archivos incluidos)');
+            } else {
+                // Si no hay archivos, usar JSON normal
+                payload = {
+                    type: section,
+                    data: formData,
+                    edit_id: this.getItemId(ADMIN_CONFIG.EDITING_ITEM)
+                };
+                console.log('Enviando con JSON (sin archivos)');
+            }
             
             console.log('Payload de edición:', payload);
             

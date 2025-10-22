@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - Filá Mariscales</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -120,20 +123,72 @@
             text-align: center;
         }
         
+        /* Asegurar que el menú sea visible */
+        .sidebar {
+            display: block !important;
+        }
+        
+        .sidebar .nav {
+            display: block !important;
+        }
+        
+        .sidebar .nav-item {
+            display: block !important;
+        }
+        
+        .sidebar .nav-link {
+            display: block !important;
+        }
+        
+        
+        
         /* Mejorar la responsividad */
         @media (max-width: 768px) {
             .sidebar {
-                position: fixed;
-                top: 0;
-                left: -100%;
-                width: 250px;
-                height: 100vh;
-                transition: left 0.3s ease;
-                z-index: 1000;
+                position: fixed !important;
+                top: 56px !important;
+                left: -100% !important;
+                width: 280px !important;
+                height: calc(100vh - 56px) !important;
+                transition: left 0.3s ease !important;
+                z-index: 1000 !important;
+                background-color: #f8f9fa !important;
+                border-right: 1px solid #dee2e6 !important;
+                overflow-y: auto !important;
+                display: block !important;
             }
             
             .sidebar.show {
-                left: 0;
+                left: 0 !important;
+                display: block !important;
+            }
+            
+            /* Overlay para cerrar el menú */
+            .sidebar-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background-color: rgba(0, 0, 0, 0.5) !important;
+                z-index: 999 !important;
+                display: none !important;
+            }
+            
+            .sidebar-overlay.show {
+                display: block !important;
+            }
+            
+            /* Ajustar el contenido principal en móvil */
+            main {
+                margin-left: 0 !important;
+            }
+            
+            /* Forzar visibilidad del botón toggle */
+            #sidebar-toggle {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
             }
         }
     </style>
@@ -271,8 +326,11 @@
 
     <div class="container-fluid">
         <div class="row">
+            <!-- Overlay para móvil -->
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+            
             <!-- Sidebar -->
-                <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar" id="sidebar">
                     <div class="position-sticky pt-3">
                         <ul class="nav flex-column">
                             <!-- DASHBOARD -->
@@ -282,12 +340,6 @@
                                 </a>
                             </li>
                             
-                            <!-- CONTENIDO -->
-                            <li class="nav-item">
-                                <div class="nav-section-header">
-                                    <i class="fas fa-file-alt me-2"></i>Contenido
-                                </div>
-                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#" data-section="noticias">
                                     <i class="fas fa-newspaper me-2"></i>Noticias
@@ -314,12 +366,6 @@
                                 </a>
                             </li>
                             
-                            <!-- USUARIOS Y SOCIOS -->
-                            <li class="nav-item">
-                                <div class="nav-section-header">
-                                    <i class="fas fa-users me-2"></i>Usuarios
-                                </div>
-                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#" data-section="users">
                                     <i class="fas fa-user-cog me-2"></i>Usuarios
@@ -341,12 +387,6 @@
                                 </a>
                             </li>
                             
-                            <!-- COMUNICACIÓN -->
-                            <li class="nav-item">
-                                <div class="nav-section-header">
-                                    <i class="fas fa-comments me-2"></i>Comunicación
-                                </div>
-                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#" data-section="contactos">
                                     <i class="fas fa-envelope me-2"></i>Contactos
@@ -363,12 +403,6 @@
                                 </a>
                             </li>
                             
-                            <!-- DISEÑO Y APARIENCIA -->
-                            <li class="nav-item">
-                                <div class="nav-section-header">
-                                    <i class="fas fa-paint-brush me-2"></i>Diseño
-                                </div>
-                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#" data-section="carousel">
                                     <i class="fas fa-images me-2"></i>Carrusel
@@ -397,7 +431,7 @@
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                         <div class="d-flex align-items-center">
-                            <button class="btn btn-outline-secondary d-md-none me-3" id="sidebar-toggle">
+                            <button class="btn btn-dark d-md-none me-3" id="sidebar-toggle">
                                 <i class="fas fa-bars"></i>
                             </button>
                             <h1 class="h2" id="section-title">Dashboard</h1>
@@ -888,26 +922,144 @@
     
     <!-- Script para menú móvil -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarToggle = document.getElementById('sidebar-toggle');
-            const sidebar = document.querySelector('.sidebar');
+        // Protección contra scripts externos
+        (function() {
+            'use strict';
             
-            if (sidebarToggle && sidebar) {
-                sidebarToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('show');
-                });
+            // Evitar conflictos con otros scripts
+            if (window.mobileMenuInitialized) {
+                return;
+            }
+            window.mobileMenuInitialized = true;
+        // Función para inicializar el menú móvil de forma segura
+        function initMobileMenu() {
+            try {
+                const sidebarToggle = document.getElementById('sidebar-toggle');
+                const sidebar = document.getElementById('sidebar');
+                const sidebarOverlay = document.getElementById('sidebar-overlay');
                 
-                // Cerrar sidebar al hacer clic fuera en móvil
-                document.addEventListener('click', function(e) {
-                    if (window.innerWidth <= 768) {
-                        if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
-                            sidebar.classList.remove('show');
+                console.log('=== DEBUG MENÚ MÓVIL ===');
+                console.log('sidebarToggle:', sidebarToggle);
+                console.log('sidebar:', sidebar);
+                console.log('sidebarOverlay:', sidebarOverlay);
+                
+                // Verificar que todos los elementos existen
+                if (!sidebarToggle || !sidebar || !sidebarOverlay) {
+                    console.error('❌ Elementos del menú no encontrados');
+                    return;
+                }
+                
+                // Función para abrir el menú
+                function openSidebar() {
+                    try {
+                        console.log('🟢 Abriendo sidebar...');
+                        sidebar.style.left = '0px';
+                        sidebar.style.display = 'block';
+                        sidebar.classList.add('show');
+                        sidebarOverlay.style.display = 'block';
+                        sidebarOverlay.classList.add('show');
+                        document.body.style.overflow = 'hidden';
+                        console.log('✅ Sidebar abierto correctamente');
+                    } catch (error) {
+                        console.error('❌ Error abriendo sidebar:', error);
+                    }
+                }
+                
+                // Función para cerrar el menú
+                function closeSidebar() {
+                    try {
+                        console.log('🔴 Cerrando sidebar...');
+                        sidebar.style.left = '-100%';
+                        sidebar.classList.remove('show');
+                        sidebarOverlay.style.display = 'none';
+                        sidebarOverlay.classList.remove('show');
+                        document.body.style.overflow = '';
+                        console.log('✅ Sidebar cerrado correctamente');
+                    } catch (error) {
+                        console.error('❌ Error cerrando sidebar:', error);
+                    }
+                }
+                
+                // Toggle del botón hamburguesa
+                sidebarToggle.addEventListener('click', function(e) {
+                    try {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🖱️ Botón toggle clickeado');
+                        
+                        if (sidebar.classList.contains('show')) {
+                            closeSidebar();
+                        } else {
+                            openSidebar();
                         }
+                    } catch (error) {
+                        console.error('❌ Error en toggle:', error);
                     }
                 });
+                
+                // Cerrar al hacer clic en el overlay
+                sidebarOverlay.addEventListener('click', function() {
+                    try {
+                        console.log('🖱️ Overlay clickeado');
+                        closeSidebar();
+                    } catch (error) {
+                        console.error('❌ Error en overlay:', error);
+                    }
+                });
+                
+                // Cerrar al hacer clic en un enlace del menú (en móvil)
+                sidebar.addEventListener('click', function(e) {
+                    try {
+                        if (window.innerWidth <= 768) {
+                            const navLink = e.target.closest('.nav-link');
+                            if (navLink) {
+                                console.log('🔗 Enlace del menú clickeado');
+                                setTimeout(closeSidebar, 100);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('❌ Error en enlace del menú:', error);
+                    }
+                });
+                
+                // Cerrar con la tecla ESC
+                document.addEventListener('keydown', function(e) {
+                    try {
+                        if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+                            console.log('⌨️ Tecla ESC presionada');
+                            closeSidebar();
+                        }
+                    } catch (error) {
+                        console.error('❌ Error en tecla ESC:', error);
+                    }
+                });
+                
+                // Manejar redimensionamiento de ventana
+                window.addEventListener('resize', function() {
+                    try {
+                        if (window.innerWidth > 768) {
+                            closeSidebar();
+                        }
+                    } catch (error) {
+                        console.error('❌ Error en resize:', error);
+                    }
+                });
+                
+                console.log('✅ CONFIGURACIÓN COMPLETADA');
+                
+            } catch (error) {
+                console.error('❌ Error inicializando menú móvil:', error);
             }
-        });
+        }
+        
+        // Inicializar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMobileMenu);
+        } else {
+            initMobileMenu();
+        }
+        
+        })(); // Cerrar función de protección
     </script>
 </body>
-</html>
 </html>
