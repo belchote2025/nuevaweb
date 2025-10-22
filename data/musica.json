@@ -17,6 +17,7 @@
             "tipo": "marcha",
             "descripcion": "Marcha tradicional que acompaña a la filá en todos sus desfiles oficiales.",
             "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "favorita": true
         },
         {
@@ -28,6 +29,7 @@
             "tipo": "himno",
             "descripcion": "Himno oficial de la Filá Mariscales, compuesto especialmente para nuestra hermandad.",
             "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "favorita": true
         },
         {
@@ -39,6 +41,7 @@
             "tipo": "marcha",
             "descripcion": "Marcha que celebra los valores de hermandad y amistad entre los miembros de la filá.",
             "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "favorita": false
         },
         {
@@ -50,6 +53,7 @@
             "tipo": "canto",
             "descripcion": "Canto tradicional que se interpreta en las ceremonias más solemnes de la filá.",
             "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "favorita": true
         },
         {
@@ -61,6 +65,7 @@
             "tipo": "marcha",
             "descripcion": "Marcha dedicada a la ciudad de Elche y sus tradiciones moras y cristianas.",
             "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "favorita": false
         },
         {
@@ -72,6 +77,7 @@
             "tipo": "melodia",
             "descripcion": "Melodía moderna que representa los valores de amistad y solidaridad de nuestra filá.",
             "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "favorita": true
         }
     ],

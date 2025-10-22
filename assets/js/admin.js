@@ -582,6 +582,12 @@ class AdminApp {
             'galeria': [
                 { key: 'titulo', title: 'Título', type: 'text' },
                 { key: 'imagen_url', title: 'Imagen', type: 'image' },
+                { 
+                    key: 'youtube_url', 
+                    title: 'YouTube', 
+                    type: 'text',
+                    formatter: (value) => value ? '<a href="' + value + '" target="_blank" class="btn btn-sm btn-danger"><i class="fab fa-youtube"></i> Ver</a>' : ''
+                },
                 { key: 'categoria', title: 'Categoría', type: 'text' },
                 { key: 'fecha_subida', title: 'Fecha', type: 'date' }
             ],
@@ -736,6 +742,12 @@ class AdminApp {
                 { key: 'año', title: 'Año', type: 'number' },
                 { key: 'duracion', title: 'Duración', type: 'text' },
                 { key: 'tipo', title: 'Tipo', type: 'text' },
+                { 
+                    key: 'youtube_url', 
+                    title: 'YouTube', 
+                    type: 'text',
+                    formatter: (value) => value ? '<a href="' + value + '" target="_blank" class="btn btn-sm btn-danger"><i class="fab fa-youtube"></i> Ver</a>' : ''
+                },
                 { 
                     key: 'favorita', 
                     title: 'Favorita', 
@@ -1318,6 +1330,7 @@ class AdminApp {
                 { key: 'titulo', label: 'Título', type: 'text', required: true },
                 { key: 'descripcion', label: 'Descripción', type: 'textarea' },
                 { key: 'imagen_url', label: 'Imagen', type: 'file', accept: 'image/*', uploadType: 'gallery', required: true },
+                { key: 'youtube_url', label: 'URL de YouTube', type: 'url', placeholder: 'https://www.youtube.com/watch?v=...' },
                 { key: 'categoria', label: 'Categoría', type: 'text' },
                 { key: 'fecha_subida', label: 'Fecha de Subida', type: 'date', required: true },
                 { key: 'orden', label: 'Orden', type: 'number' }
@@ -1437,6 +1450,7 @@ class AdminApp {
                 ], required: true },
                 { key: 'descripcion', label: 'Descripción', type: 'textarea', required: true },
                 { key: 'audio_url', label: 'Archivo de Audio', type: 'file', accept: 'audio/*' },
+                { key: 'youtube_url', label: 'URL de YouTube', type: 'url', placeholder: 'https://www.youtube.com/watch?v=...' },
                 { key: 'favorita', label: 'Pieza Favorita', type: 'checkbox' }
             ]
         };

@@ -1,35 +1,62 @@
 [
     {
-        "titulo": "Filá Mariscales en Desfile 2024",
-        "descripcion": "Participación de la Filá Mariscales de Caballeros Templarios en el desfile de Moros y Cristianos de Elche",
-        "imagen_url": "uploads\/images\/gallery\/gallery_68f215130072e.jpg",
-        "thumb_url": "uploads\/images\/gallery\/gallery_68f215130072e.jpg",
+        "id": 1,
+        "titulo": "Desfile de Moros y Cristianos 2024",
+        "descripcion": "Participación de la Filá Mariscales en el desfile principal de las fiestas de Moros y Cristianos de Elche 2024.",
+        "imagen_url": "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         "categoria": "desfiles",
-        "fecha_subida": "2024-10-28",
-        "orden": "1",
-        "id": "68f629785d97e",
-        "updated_at": "2025-10-20 14:22:16"
+        "fecha_subida": "2024-03-15",
+        "orden": 1
     },
     {
-        "titulo": "Cena de Hermandad Templaria",
-        "descripcion": "Momentos de convivencia en la tradicional cena de hermandad de la Filá",
-        "imagen_url": "uploads\/images\/gallery\/gallery_68f21526de3e0.jpg",
-        "thumb_url": "uploads\/images\/gallery\/gallery_68f21526de3e0.jpg",
-        "categoria": "eventos",
-        "fecha_subida": "2024-10-20",
-        "orden": "2",
         "id": 2,
-        "updated_at": "2025-10-17 12:06:32"
+        "titulo": "Ensayo General de la Banda",
+        "descripcion": "Ensayo general de la banda de la Filá Mariscales preparando el repertorio para las fiestas.",
+        "imagen_url": "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "categoria": "ensayos",
+        "fecha_subida": "2024-03-10",
+        "orden": 2
     },
     {
-        "titulo": "Presentación Oficial 2024",
-        "descripcion": "Acto de presentación oficial de la Filá Mariscales para la temporada 2024",
-        "imagen_url": "uploads\/images\/gallery\/gallery_68f2153ee3634.jpg",
-        "thumb_url": "uploads\/images\/gallery\/gallery_68f2153ee3634.jpg",
-        "categoria": "eventos",
-        "fecha_subida": "2024-10-15",
-        "orden": "3",
         "id": 3,
-        "updated_at": "2025-10-17 12:06:56"
+        "titulo": "Ceremonia de Investidura",
+        "descripcion": "Ceremonia solemne de investidura de nuevos miembros de la Filá Mariscales.",
+        "imagen_url": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "categoria": "ceremonias",
+        "fecha_subida": "2024-02-28",
+        "orden": 3
+    },
+    {
+        "id": 4,
+        "titulo": "Cena de Hermandad",
+        "descripcion": "Cena de hermandad anual de la Filá Mariscales con todos los miembros y sus familias.",
+        "imagen_url": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "categoria": "eventos",
+        "fecha_subida": "2024-02-15",
+        "orden": 4
+    },
+    {
+        "id": 5,
+        "titulo": "Jornada Cultural Templaria",
+        "descripcion": "Jornada cultural dedicada a la historia y tradiciones de los Caballeros Templarios.",
+        "imagen_url": "https://images.unsplash.com/photo-1481277542470-605612bd2d61?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "categoria": "cultural",
+        "fecha_subida": "2024-02-10",
+        "orden": 5
+    },
+    {
+        "id": 6,
+        "titulo": "Excursión a Castillos Templarios",
+        "descripcion": "Excursión cultural a castillos templarios de la Comunidad Valenciana.",
+        "imagen_url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "categoria": "excursiones",
+        "fecha_subida": "2024-01-20",
+        "orden": 6
     }
 ]

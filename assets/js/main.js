@@ -582,16 +582,69 @@ class FilaMariscalesApp {
     }
 
     renderGaleria(imagenes, container) {
-        container.innerHTML = imagenes.map(imagen => `
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="gallery-item" onclick="app.showImageModal('${imagen.imagen_url}', '${imagen.titulo}')">
-                    <img src="${imagen.thumb_url}" alt="${imagen.titulo}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;" onerror="this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'">
-                    <div class="gallery-overlay">
-                        <i class="fas fa-search-plus"></i>
-                    </div>
+        // Separar imágenes con y sin videos de YouTube
+        const imagenesConVideo = imagenes.filter(img => img.youtube_url);
+        const imagenesSinVideo = imagenes.filter(img => !img.youtube_url);
+        
+        container.innerHTML = `
+            <!-- Galería de Imágenes -->
+            <div class="col-12 mb-5">
+                <h4 class="mb-4"><i class="fas fa-images me-2"></i>Galería de Imágenes</h4>
+                <div class="row">
+                    ${imagenesSinVideo.map(imagen => `
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card h-100">
+                                <div class="gallery-item position-relative" onclick="app.showImageModal('${imagen.imagen_url}', '${imagen.titulo}')">
+                                    <img src="${imagen.imagen_url}" alt="${imagen.titulo}" class="card-img-top" style="height: 200px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'">
+                                    <div class="gallery-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s;">
+                                        <i class="fas fa-search-plus text-white fa-2x"></i>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title">${imagen.titulo}</h6>
+                                    <p class="card-text text-muted small">${imagen.descripcion}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">${new Date(imagen.fecha_subida).toLocaleDateString('es-ES')}</small>
+                                        <span class="badge bg-primary">${imagen.categoria}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
             </div>
-        `).join('');
+
+            <!-- Videos de YouTube -->
+            ${imagenesConVideo.length > 0 ? `
+                <div class="col-12">
+                    <h4 class="mb-4"><i class="fab fa-youtube me-2 text-danger"></i>Videos de YouTube</h4>
+                    <div class="row">
+                        ${imagenesConVideo.map(imagen => `
+                            <div class="col-lg-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">${imagen.titulo}</h6>
+                                        <p class="card-text text-muted small">${imagen.descripcion}</p>
+                                        <div class="ratio ratio-16x9">
+                                            <iframe src="${this.getYouTubeEmbedUrl(imagen.youtube_url)}" 
+                                                    title="${imagen.titulo}" 
+                                                    frameborder="0" 
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                    allowfullscreen>
+                                            </iframe>
+                                        </div>
+                                        <div class="mt-2 d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">${new Date(imagen.fecha_subida).toLocaleDateString('es-ES')}</small>
+                                            <span class="badge bg-danger">${imagen.categoria}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+        `;
     }
 
     renderGaleriaDefault(container) {
@@ -673,9 +726,16 @@ class FilaMariscalesApp {
                                         </div>
                                     </div>
                                     <div class="mt-2">
-                                        <button class="btn btn-outline-primary btn-sm" onclick="app.playAudio('${pieza.audio_url}', '${pieza.titulo}')">
-                                            <i class="fas fa-play me-1"></i>Reproducir
-                                        </button>
+                                        ${pieza.audio_url ? `
+                                            <button class="btn btn-outline-primary btn-sm me-2" onclick="app.playAudio('${pieza.audio_url}', '${pieza.titulo}')">
+                                                <i class="fas fa-play me-1"></i>Reproducir
+                                            </button>
+                                        ` : ''}
+                                        ${pieza.youtube_url ? `
+                                            <a href="${pieza.youtube_url}" target="_blank" class="btn btn-outline-danger btn-sm">
+                                                <i class="fab fa-youtube me-1"></i>Ver en YouTube
+                                            </a>
+                                        ` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -725,6 +785,31 @@ class FilaMariscalesApp {
                     `).join('')}
                 </div>
             </div>
+
+            <!-- Videos de YouTube -->
+            <div class="col-12 mt-5">
+                <h4 class="mb-4"><i class="fab fa-youtube me-2 text-danger"></i>Videos de YouTube</h4>
+                <div class="row">
+                    ${repertorio.filter(pieza => pieza.youtube_url).map(pieza => `
+                        <div class="col-lg-6 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">${pieza.titulo}</h6>
+                                    <p class="card-text text-muted small">${pieza.descripcion}</p>
+                                    <div class="ratio ratio-16x9">
+                                        <iframe src="${app.getYouTubeEmbedUrl(pieza.youtube_url)}" 
+                                                title="${pieza.titulo}" 
+                                                frameborder="0" 
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                allowfullscreen>
+                                        </iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
         `;
     }
 
@@ -754,6 +839,21 @@ class FilaMariscalesApp {
             console.error('Error creando audio:', error);
             this.showNotification('Error al reproducir el audio', 'error');
         }
+    }
+
+    // Función para convertir URL de YouTube a URL de embed
+    getYouTubeEmbedUrl(youtubeUrl) {
+        if (!youtubeUrl) return '';
+        
+        // Extraer ID del video de diferentes formatos de URL de YouTube
+        const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+        const match = youtubeUrl.match(regex);
+        
+        if (match && match[1]) {
+            return `https://www.youtube.com/embed/${match[1]}`;
+        }
+        
+        return youtubeUrl; // Retornar URL original si no se puede extraer el ID
     }
 
     // ===== CARGA DE LIBRO =====
