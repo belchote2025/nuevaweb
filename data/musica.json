@@ -1,0 +1,142 @@
+{
+    "banda": {
+        "nombre": "Banda de la Filá Mariscales",
+        "director": "Juan Carlos Templario",
+        "fundacion": "1985",
+        "miembros": 25,
+        "descripcion": "Nuestra banda musical está formada por músicos dedicados que mantienen viva la tradición musical de la filá. Interpretamos marchas tradicionales y composiciones propias que han acompañado a los Caballeros Templarios durante décadas.",
+        "imagen": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    },
+    "repertorio": [
+        {
+            "id": 1,
+            "titulo": "Marcha de los Templarios",
+            "compositor": "Anónimo",
+            "año": "1985",
+            "duracion": "3:45",
+            "tipo": "marcha",
+            "descripcion": "Marcha tradicional que acompaña a la filá en todos sus desfiles oficiales.",
+            "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "favorita": true
+        },
+        {
+            "id": 2,
+            "titulo": "Himno de la Filá Mariscales",
+            "compositor": "Carlos Templario",
+            "año": "1990",
+            "duracion": "4:20",
+            "tipo": "himno",
+            "descripcion": "Himno oficial de la Filá Mariscales, compuesto especialmente para nuestra hermandad.",
+            "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "favorita": true
+        },
+        {
+            "id": 3,
+            "titulo": "Marcha de la Hermandad",
+            "compositor": "Miguel Templario",
+            "año": "1995",
+            "duracion": "3:30",
+            "tipo": "marcha",
+            "descripcion": "Marcha que celebra los valores de hermandad y amistad entre los miembros de la filá.",
+            "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "favorita": false
+        },
+        {
+            "id": 4,
+            "titulo": "Canto de los Caballeros",
+            "compositor": "Anónimo",
+            "año": "1980",
+            "duracion": "5:15",
+            "tipo": "canto",
+            "descripcion": "Canto tradicional que se interpreta en las ceremonias más solemnes de la filá.",
+            "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "favorita": true
+        },
+        {
+            "id": 5,
+            "titulo": "Marcha de Elche",
+            "compositor": "José Templario",
+            "año": "2000",
+            "duracion": "4:00",
+            "tipo": "marcha",
+            "descripcion": "Marcha dedicada a la ciudad de Elche y sus tradiciones moras y cristianas.",
+            "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "favorita": false
+        },
+        {
+            "id": 6,
+            "titulo": "Melodía de la Amistad",
+            "compositor": "Ana Templario",
+            "año": "2010",
+            "duracion": "3:55",
+            "tipo": "melodia",
+            "descripcion": "Melodía moderna que representa los valores de amistad y solidaridad de nuestra filá.",
+            "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "favorita": true
+        }
+    ],
+    "actuaciones": [
+        {
+            "id": 1,
+            "titulo": "Desfile de Moros y Cristianos 2025",
+            "fecha": "2025-03-15",
+            "hora": "19:00",
+            "lugar": "Centro histórico de Elche",
+            "tipo": "desfile",
+            "descripcion": "Participación oficial en el desfile principal de las fiestas de Moros y Cristianos.",
+            "repertorio": ["Marcha de los Templarios", "Himno de la Filá Mariscales", "Marcha de Elche"]
+        },
+        {
+            "id": 2,
+            "titulo": "Concierto de Primavera",
+            "fecha": "2025-04-20",
+            "hora": "20:00",
+            "lugar": "Centro Cultural de Elche",
+            "tipo": "concierto",
+            "descripcion": "Concierto especial de primavera con nuestro repertorio completo.",
+            "repertorio": ["Himno de la Filá Mariscales", "Canto de los Caballeros", "Melodía de la Amistad"]
+        },
+        {
+            "id": 3,
+            "titulo": "Actuación en la Sede Social",
+            "fecha": "2025-05-10",
+            "hora": "19:30",
+            "lugar": "Sede Social - Salón de Actos",
+            "tipo": "actuacion",
+            "descripcion": "Actuación especial para los miembros de la filá y sus familias.",
+            "repertorio": ["Marcha de la Hermandad", "Canto de los Caballeros", "Melodía de la Amistad"]
+        }
+    ],
+    "instrumentos": [
+        {
+            "nombre": "Trompeta",
+            "cantidad": 8,
+            "descripcion": "Instrumento principal de la banda, proporciona la melodía principal de las marchas."
+        },
+        {
+            "nombre": "Trombón",
+            "cantidad": 4,
+            "descripcion": "Aporta profundidad y solemnidad a las interpretaciones musicales."
+        },
+        {
+            "nombre": "Bombo",
+            "cantidad": 2,
+            "descripcion": "Marca el ritmo y la cadencia de las marchas tradicionales."
+        },
+        {
+            "nombre": "Platillos",
+            "cantidad": 2,
+            "descripcion": "Añaden brillo y énfasis a los momentos más importantes de las piezas."
+        },
+        {
+            "nombre": "Clarinete",
+            "cantidad": 3,
+            "descripcion": "Proporciona la armonía y complementa las melodías principales."
+        },
+        {
+            "nombre": "Saxofón",
+            "cantidad": 2,
+            "descripcion": "Añade color y modernidad al sonido tradicional de la banda."
+        }
+    ]
+}

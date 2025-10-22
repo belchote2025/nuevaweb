@@ -153,6 +153,30 @@
         </div>
     </section>
 
+    <!-- Reproductor de Audio -->
+    <section class="py-3 bg-dark text-white sticky-top" id="audio-player" style="display: none; z-index: 1000;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-outline-light btn-sm me-3" id="play-pause-btn">
+                            <i class="fas fa-play" id="play-icon"></i>
+                        </button>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold" id="current-track">Ninguna canción seleccionada</div>
+                            <div class="small text-muted" id="current-time">0:00 / 0:00</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <button class="btn btn-outline-light btn-sm" id="close-player">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Nuestra Banda -->
     <section class="py-5 bg-light">
         <div class="container">
@@ -320,8 +344,100 @@
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof app !== 'undefined') {
                 app.loadMusica();
+                initAudioPlayer();
             }
         });
+
+        // Inicializar reproductor de audio
+        function initAudioPlayer() {
+            let currentAudio = null;
+            let isPlaying = false;
+
+            // Función para reproducir audio
+            window.playAudio = function(audioUrl, titulo) {
+                // Detener audio anterior si existe
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio = null;
+                }
+
+                // Crear nuevo audio
+                currentAudio = new Audio(audioUrl);
+                isPlaying = false;
+
+                // Mostrar reproductor
+                const player = document.getElementById('audio-player');
+                const trackName = document.getElementById('current-track');
+                const timeDisplay = document.getElementById('current-time');
+                const playIcon = document.getElementById('play-icon');
+
+                trackName.textContent = titulo;
+                timeDisplay.textContent = '0:00 / 0:00';
+                playIcon.className = 'fas fa-play';
+                player.style.display = 'block';
+
+                // Configurar eventos del audio
+                currentAudio.addEventListener('loadedmetadata', function() {
+                    const duration = formatTime(currentAudio.duration);
+                    timeDisplay.textContent = `0:00 / ${duration}`;
+                });
+
+                currentAudio.addEventListener('timeupdate', function() {
+                    const current = formatTime(currentAudio.currentTime);
+                    const duration = formatTime(currentAudio.duration);
+                    timeDisplay.textContent = `${current} / ${duration}`;
+                });
+
+                currentAudio.addEventListener('ended', function() {
+                    isPlaying = false;
+                    playIcon.className = 'fas fa-play';
+                });
+
+                // Reproducir automáticamente
+                currentAudio.play().then(() => {
+                    isPlaying = true;
+                    playIcon.className = 'fas fa-pause';
+                }).catch(error => {
+                    console.error('Error reproduciendo audio:', error);
+                    app.showNotification('Error al reproducir el audio', 'error');
+                });
+            };
+
+            // Botón play/pause
+            document.getElementById('play-pause-btn').addEventListener('click', function() {
+                if (currentAudio) {
+                    if (isPlaying) {
+                        currentAudio.pause();
+                        isPlaying = false;
+                        document.getElementById('play-icon').className = 'fas fa-play';
+                    } else {
+                        currentAudio.play().then(() => {
+                            isPlaying = true;
+                            document.getElementById('play-icon').className = 'fas fa-pause';
+                        }).catch(error => {
+                            console.error('Error reproduciendo audio:', error);
+                        });
+                    }
+                }
+            });
+
+            // Botón cerrar reproductor
+            document.getElementById('close-player').addEventListener('click', function() {
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio = null;
+                }
+                document.getElementById('audio-player').style.display = 'none';
+            });
+
+            // Función para formatear tiempo
+            function formatTime(seconds) {
+                if (isNaN(seconds)) return '0:00';
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
     </script>
 </body>
 </html>

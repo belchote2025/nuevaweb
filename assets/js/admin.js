@@ -282,6 +282,7 @@ class AdminApp {
             'directiva': 'Directiva',
             'contactos': 'Contactos',
             'users': 'Usuarios',
+            'musica': 'Música',
             'carousel': 'Carrusel',
             'socios': 'Socios',
             'textos': 'Textos',
@@ -728,6 +729,19 @@ class AdminApp {
                 { key: 'tipo', title: 'Tipo', type: 'text' },
                 { key: 'fecha', title: 'Fecha', type: 'date' },
                 { key: 'leida', title: 'Leída', type: 'boolean' }
+            ],
+            'musica': [
+                { key: 'titulo', title: 'Título', type: 'text' },
+                { key: 'compositor', title: 'Compositor', type: 'text' },
+                { key: 'año', title: 'Año', type: 'number' },
+                { key: 'duracion', title: 'Duración', type: 'text' },
+                { key: 'tipo', title: 'Tipo', type: 'text' },
+                { 
+                    key: 'favorita', 
+                    title: 'Favorita', 
+                    type: 'boolean',
+                    formatter: (value) => value === true ? '<span class="badge bg-warning"><i class="fas fa-star"></i> Favorita</span>' : ''
+                }
             ]
         };
         
@@ -1409,6 +1423,21 @@ class AdminApp {
                     { value: 'confirmada', label: 'Confirmada' },
                     { value: 'cancelada', label: 'Cancelada' }
                 ], required: true }
+            ],
+            'musica': [
+                { key: 'titulo', label: 'Título de la Pieza', type: 'text', required: true },
+                { key: 'compositor', label: 'Compositor', type: 'text', required: true },
+                { key: 'año', label: 'Año de Composición', type: 'number', required: true },
+                { key: 'duracion', label: 'Duración (mm:ss)', type: 'text', required: true },
+                { key: 'tipo', label: 'Tipo', type: 'select', options: [
+                    { value: 'marcha', label: 'Marcha' },
+                    { value: 'himno', label: 'Himno' },
+                    { value: 'canto', label: 'Canto' },
+                    { value: 'melodia', label: 'Melodía' }
+                ], required: true },
+                { key: 'descripcion', label: 'Descripción', type: 'textarea', required: true },
+                { key: 'audio_url', label: 'Archivo de Audio', type: 'file', accept: 'audio/*' },
+                { key: 'favorita', label: 'Pieza Favorita', type: 'checkbox' }
             ]
         };
         

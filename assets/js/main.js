@@ -607,34 +607,153 @@ class FilaMariscalesApp {
         const container = document.getElementById('musica-container');
         if (!container) return;
 
-        this.renderMusicaDefault(container);
+        try {
+            const response = await fetch(`${CONFIG.DATA_BASE_URL}musica.json`);
+            if (!response.ok) throw new Error('Error cargando datos musicales');
+            const musicaData = await response.json();
+            this.renderMusica(musicaData, container);
+        } catch (error) {
+            console.error('Error cargando música:', error);
+            this.renderMusicaDefault(container);
+        }
     }
 
-    renderMusicaDefault(container) {
+    renderMusica(data, container) {
+        const { banda, repertorio, actuaciones, instrumentos } = data;
+        
         container.innerHTML = `
-            <div class="col-12">
-                <div class="row">
-                    <div class="col-lg-6 mb-4">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <i class="fas fa-music fa-3x text-primary mb-3"></i>
-                                <h5 class="card-title">Banda de la Filá</h5>
-                                <p class="card-text">Nuestra banda musical interpreta las melodías tradicionales de los Caballeros Templarios.</p>
-                            </div>
+            <!-- Información de la Banda -->
+            <div class="col-12 mb-5">
+                <div class="card">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="${banda.imagen}" class="img-fluid rounded-start h-100" alt="${banda.nombre}" style="object-fit: cover;">
                         </div>
-                    </div>
-                    <div class="col-lg-6 mb-4">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <i class="fas fa-headphones fa-3x text-primary mb-3"></i>
-                                <h5 class="card-title">Repertorio</h5>
-                                <p class="card-text">Disfruta de nuestro repertorio musical en los eventos y desfiles de la Filá.</p>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h4 class="card-title">${banda.nombre}</h4>
+                                <p class="card-text">${banda.descripcion}</p>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Director:</strong> ${banda.director}</p>
+                                        <p><strong>Fundación:</strong> ${banda.fundacion}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Miembros:</strong> ${banda.miembros} músicos</p>
+                                        <p><strong>Instrumentos:</strong> ${instrumentos.length} tipos</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Repertorio Musical -->
+            <div class="col-12 mb-5">
+                <h4 class="mb-4"><i class="fas fa-music me-2"></i>Repertorio Musical</h4>
+                <div class="row">
+                    ${repertorio.map(pieza => `
+                        <div class="col-lg-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="card-title mb-0">${pieza.titulo}</h6>
+                                        ${pieza.favorita ? '<span class="badge bg-warning"><i class="fas fa-star"></i> Favorita</span>' : ''}
+                                    </div>
+                                    <p class="card-text text-muted small">${pieza.descripcion}</p>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small><strong>Compositor:</strong> ${pieza.compositor}</small><br>
+                                            <small><strong>Año:</strong> ${pieza.año}</small>
+                                        </div>
+                                        <div class="col-6">
+                                            <small><strong>Duración:</strong> ${pieza.duracion}</small><br>
+                                            <small><strong>Tipo:</strong> ${pieza.tipo}</small>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <button class="btn btn-outline-primary btn-sm" onclick="app.playAudio('${pieza.audio_url}', '${pieza.titulo}')">
+                                            <i class="fas fa-play me-1"></i>Reproducir
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <!-- Próximas Actuaciones -->
+            <div class="col-12 mb-5">
+                <h4 class="mb-4"><i class="fas fa-calendar-alt me-2"></i>Próximas Actuaciones</h4>
+                <div class="row">
+                    ${actuaciones.map(actuacion => `
+                        <div class="col-lg-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">${actuacion.titulo}</h6>
+                                    <p class="card-text text-muted small">${actuacion.descripcion}</p>
+                                    <div class="mb-2">
+                                        <small><i class="fas fa-calendar me-1"></i> ${new Date(actuacion.fecha).toLocaleDateString('es-ES')}</small><br>
+                                        <small><i class="fas fa-clock me-1"></i> ${actuacion.hora}</small><br>
+                                        <small><i class="fas fa-map-marker-alt me-1"></i> ${actuacion.lugar}</small>
+                                    </div>
+                                    <span class="badge bg-${actuacion.tipo === 'desfile' ? 'primary' : actuacion.tipo === 'concierto' ? 'success' : 'info'}">${actuacion.tipo}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <!-- Instrumentos -->
+            <div class="col-12">
+                <h4 class="mb-4"><i class="fas fa-guitar me-2"></i>Instrumentos de la Banda</h4>
+                <div class="row">
+                    ${instrumentos.map(instrumento => `
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-music fa-2x text-primary mb-2"></i>
+                                    <h6 class="card-title">${instrumento.nombre}</h6>
+                                    <p class="card-text small text-muted">${instrumento.descripcion}</p>
+                                    <span class="badge bg-secondary">${instrumento.cantidad} unidades</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
         `;
+    }
+
+    renderMusicaDefault(container) {
+        container.innerHTML = `
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle fa-2x mb-3"></i>
+                    <h5>Información Musical</h5>
+                    <p>Los datos musicales se cargarán próximamente.</p>
+                </div>
+            </div>
+        `;
+    }
+
+    // Función para reproducir audio
+    playAudio(audioUrl, titulo) {
+        try {
+            const audio = new Audio(audioUrl);
+            audio.play().then(() => {
+                this.showNotification(`Reproduciendo: ${titulo}`, 'success');
+            }).catch(error => {
+                console.error('Error reproduciendo audio:', error);
+                this.showNotification('Error al reproducir el audio', 'error');
+            });
+        } catch (error) {
+            console.error('Error creando audio:', error);
+            this.showNotification('Error al reproducir el audio', 'error');
+        }
     }
 
     // ===== CARGA DE LIBRO =====

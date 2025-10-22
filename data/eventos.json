@@ -1,74 +1,112 @@
 [
     {
-        "titulo": "Presentaci\u00f3n de la Fil\u00e1 2025",
-        "descripcion": "Presentaci\u00f3n oficial de la Fil\u00e1 Mariscales de Caballeros Templarios para la temporada 2025",
-        "fecha": "2025-02-15",
+        "id": 1,
+        "titulo": "Presentación Oficial de la Filá 2025",
+        "descripcion": "Acto de presentación oficial de la Filá Mariscales de Caballeros Templarios para la temporada 2025. Ceremonia de apertura con todos los miembros y simpatizantes.",
+        "fecha": "2025-01-25",
         "hora": "20:00",
-        "lugar": "Sede Social - Calle Templarios, 15",
+        "lugar": "Sede Social - Calle Templarios, 15, Elche",
         "tipo": "presentacion",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-        "id": "68f0e6fe44c8c",
-        "updated_at": "2025-10-16 14:37:18"
+        "imagen_url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "updated_at": "2025-01-15 10:00:00"
     },
     {
         "id": 2,
         "titulo": "Cena de Hermandad Templaria",
-        "descripcion": "Cena de hermandad para todos los miembros de la fil\u00e1. Evento de convivencia y fortalecimiento de lazos templarios.",
-        "fecha": "2025-02-22",
+        "descripcion": "Cena de hermandad para todos los miembros de la filá. Evento de convivencia y fortalecimiento de lazos templarios con menú tradicional.",
+        "fecha": "2025-02-08",
         "hora": "21:00",
-        "lugar": "Restaurante El Castillo Templario",
+        "lugar": "Restaurante El Castillo Templario - Elche",
         "tipo": "cena",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "imagen_url": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "updated_at": "2025-01-15 10:00:00"
     },
     {
         "id": 3,
-        "titulo": "Ensayo General de Desfile",
-        "descripcion": "Ensayo general del desfile de Moros y Cristianos. Preparaci\u00f3n final para la participaci\u00f3n en las fiestas.",
-        "fecha": "2025-03-01",
+        "titulo": "Ensayo de Vestimenta y Protocolo",
+        "descripcion": "Ensayo de vestimenta tradicional templaria y protocolo de desfile. Preparación de trajes y elementos característicos.",
+        "fecha": "2025-02-15",
         "hora": "18:00",
-        "lugar": "Punto de encuentro: Plaza del Ayuntamiento",
+        "lugar": "Sede Social - Salón de Actos",
         "tipo": "ensayo",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "imagen_url": "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "updated_at": "2025-01-15 10:00:00"
     },
     {
         "id": 4,
-        "titulo": "Desfile de Moros y Cristianos 2025",
-        "descripcion": "Participaci\u00f3n oficial en el desfile principal de las fiestas de Moros y Cristianos de Elche",
-        "fecha": "2025-03-08",
-        "hora": "19:00",
-        "lugar": "Recorrido oficial - Centro hist\u00f3rico de Elche",
-        "tipo": "desfile",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "id": 5,
-        "titulo": "Acto de Investidura Templaria",
-        "descripcion": "Ceremonia de investidura para nuevos miembros de la Fil\u00e1 Mariscales",
-        "fecha": "2025-03-15",
-        "hora": "19:30",
-        "lugar": "Sede Social - Sal\u00f3n de Actos",
-        "tipo": "ceremonia",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "id": 6,
         "titulo": "Jornada Cultural Templaria",
-        "descripcion": "Jornada dedicada a la historia y tradiciones de los Caballeros Templarios",
-        "fecha": "2025-03-22",
+        "descripcion": "Jornada dedicada a la historia y tradiciones de los Caballeros Templarios. Conferencias, exposiciones y actividades culturales.",
+        "fecha": "2025-02-22",
         "hora": "10:00",
         "lugar": "Centro Cultural de Elche",
         "tipo": "cultural",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1481277542470-605612bd2d61?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        "imagen_url": "https://images.unsplash.com/photo-1481277542470-605612bd2d61?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "updated_at": "2025-01-15 10:00:00"
     },
     {
-        "titulo": "prueba",
-        "descripcion": "prueba",
-        "fecha": "2025-10-10",
-        "hora": "11:55",
-        "lugar": "elche",
-        "tipo": "cena",
-        "imagen_url": "",
-        "id": "68e8d811b4e92",
-        "updated_at": "2025-10-10 11:55:29"
+        "id": 5,
+        "titulo": "Acto de Investidura de Nuevos Miembros",
+        "descripcion": "Ceremonia solemne de investidura para nuevos miembros de la Filá Mariscales. Rito de iniciación templario.",
+        "fecha": "2025-03-01",
+        "hora": "19:30",
+        "lugar": "Sede Social - Salón de Actos",
+        "tipo": "ceremonia",
+        "imagen_url": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "updated_at": "2025-01-15 10:00:00"
+    },
+    {
+        "id": 6,
+        "titulo": "Ensayo General de Desfile",
+        "descripcion": "Ensayo general del desfile de Moros y Cristianos. Preparación final para la participación en las fiestas de Elche.",
+        "fecha": "2025-03-08",
+        "hora": "18:00",
+        "lugar": "Plaza del Ayuntamiento - Elche",
+        "tipo": "ensayo",
+        "imagen_url": "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "updated_at": "2025-01-15 10:00:00"
+    },
+    {
+        "id": 7,
+        "titulo": "Desfile de Moros y Cristianos 2025",
+        "descripcion": "Participación oficial en el desfile principal de las fiestas de Moros y Cristianos de Elche. Evento principal del año.",
+        "fecha": "2025-03-15",
+        "hora": "19:00",
+        "lugar": "Recorrido oficial - Centro histórico de Elche",
+        "tipo": "desfile",
+        "imagen_url": "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "updated_at": "2025-01-15 10:00:00"
+    },
+    {
+        "id": 8,
+        "titulo": "Fiesta de Clausura de Temporada",
+        "descripcion": "Fiesta de clausura de la temporada 2025. Celebración del éxito de la participación en las fiestas.",
+        "fecha": "2025-03-22",
+        "hora": "21:30",
+        "lugar": "Sede Social - Salón de Actos",
+        "tipo": "fiesta",
+        "imagen_url": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "updated_at": "2025-01-15 10:00:00"
+    },
+    {
+        "id": 9,
+        "titulo": "Asamblea General Anual",
+        "descripcion": "Asamblea general anual de la Filá Mariscales. Revisión de actividades, elección de cargos y planificación del próximo año.",
+        "fecha": "2025-04-05",
+        "hora": "18:00",
+        "lugar": "Sede Social - Salón de Actos",
+        "tipo": "asamblea",
+        "imagen_url": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "updated_at": "2025-01-15 10:00:00"
+    },
+    {
+        "id": 10,
+        "titulo": "Excursión Cultural Templaria",
+        "descripcion": "Excursión cultural a lugares de interés templario en la Comunidad Valenciana. Visita a castillos y monumentos históricos.",
+        "fecha": "2025-04-20",
+        "hora": "08:00",
+        "lugar": "Salida desde Sede Social",
+        "tipo": "excursion",
+        "imagen_url": "https://images.unsplash.com/photo-1481277542470-605612bd2d61?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "updated_at": "2025-01-15 10:00:00"
     }
 ]
