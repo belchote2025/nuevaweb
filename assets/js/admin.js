@@ -338,22 +338,117 @@ class AdminApp {
     // ===== CARGA DE DATOS =====
     async loadDashboardData() {
         try {
-            const [noticias, eventos, productos, contactos] = await Promise.all([
+            const [noticias, eventos, productos, contactos, galeria, socios, musica, reservas] = await Promise.all([
                 this.fetchData('noticias'),
                 this.fetchData('eventos'),
                 this.fetchData('productos'),
-                this.fetchData('contactos')
+                this.fetchData('contactos'),
+                this.fetchData('galeria'),
+                this.fetchData('socios'),
+                this.fetchData('musica'),
+                this.fetchData('reservas')
             ]);
 
+            // Actualizar contadores
             document.getElementById('noticias-count').textContent = noticias.length;
             document.getElementById('eventos-count').textContent = eventos.length;
             document.getElementById('productos-count').textContent = productos.length;
             document.getElementById('contactos-count').textContent = contactos.length;
+            document.getElementById('galeria-count').textContent = galeria.length;
+            document.getElementById('socios-count').textContent = socios.length;
+            document.getElementById('musica-count').textContent = musica.length;
+            document.getElementById('reservas-count').textContent = reservas.length;
 
-            this.showRecentActivity([...noticias, ...eventos, ...productos, ...contactos]);
+            // Crear gráficos
+            this.createActivityChart([noticias, eventos, galeria, musica]);
+            this.createContentChart([noticias, eventos, productos, galeria, musica, socios]);
+
+            // Mostrar actividad reciente
+            this.showRecentActivity([...noticias, ...eventos, ...productos, ...contactos, ...galeria, ...musica]);
         } catch (error) {
             console.error('Error cargando datos del dashboard:', error);
         }
+    }
+
+    // ===== GRÁFICOS DEL DASHBOARD =====
+    createActivityChart(dataArrays) {
+        const ctx = document.getElementById('activityChart');
+        if (!ctx) return;
+
+        const [noticias, eventos, galeria, musica] = dataArrays;
+        const labels = ['Noticias', 'Eventos', 'Galería', 'Música'];
+        const data = [noticias.length, eventos.length, galeria.length, musica.length];
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Cantidad de Elementos',
+                    data: data,
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    createContentChart(dataArrays) {
+        const ctx = document.getElementById('contentChart');
+        if (!ctx) return;
+
+        const [noticias, eventos, productos, galeria, musica, socios] = dataArrays;
+        const data = [
+            { label: 'Noticias', value: noticias.length, color: '#007bff' },
+            { label: 'Eventos', value: eventos.length, color: '#28a745' },
+            { label: 'Productos', value: productos.length, color: '#17a2b8' },
+            { label: 'Galería', value: galeria.length, color: '#ffc107' },
+            { label: 'Música', value: musica.length, color: '#dc3545' },
+            { label: 'Socios', value: socios.length, color: '#6c757d' }
+        ];
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: data.map(item => item.label),
+                datasets: [{
+                    data: data.map(item => item.value),
+                    backgroundColor: data.map(item => item.color),
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
     }
 
     async loadSectionData(section) {
@@ -1730,30 +1825,44 @@ class AdminApp {
                 const dateB = new Date(b.updated_at || b.fecha_publicacion || b.fecha || b.fecha_subida);
                 return dateB - dateA;
             })
-            .slice(0, 10);
+            .slice(0, 8);
         
         if (sortedItems.length === 0) {
-            container.innerHTML = '<p class="text-muted">No hay actividad reciente</p>';
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No hay actividad reciente</p>
+                </div>
+            `;
             return;
         }
         
-        container.innerHTML = sortedItems.map(item => {
-            const title = item.titulo || item.nombre || 'Sin título';
-            const date = new Date(item.updated_at || item.fecha_publicacion || item.fecha || item.fecha_subida);
-            const type = this.getItemType(item);
-            
-            return `
-                <div class="d-flex align-items-center mb-2">
-                    <div class="flex-shrink-0">
-                        <i class="fas fa-${this.getTypeIcon(type)} text-primary"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <div class="fw-bold">${title}</div>
-                        <small class="text-muted">${date.toLocaleDateString('es-ES')} - ${type}</small>
-                    </div>
-                </div>
-            `;
-        }).join('');
+        container.innerHTML = `
+            <div class="timeline">
+                ${sortedItems.map((item, index) => {
+                    const title = item.titulo || item.nombre || 'Sin título';
+                    const date = new Date(item.updated_at || item.fecha_publicacion || item.fecha || item.fecha_subida);
+                    const type = this.getItemType(item);
+                    const icon = this.getTypeIcon(type);
+                    const color = this.getTypeColor(type);
+                    
+                    return `
+                        <div class="timeline-item ${index === 0 ? 'timeline-item-first' : ''}">
+                            <div class="timeline-marker bg-${color}">
+                                <i class="fas fa-${icon}"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">${title}</div>
+                                <div class="timeline-meta">
+                                    <span class="badge bg-${color}">${type}</span>
+                                    <span class="timeline-date">${this.formatRelativeTime(date)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
     }
 
     getItemType(item) {
@@ -1774,9 +1883,38 @@ class AdminApp {
             'Directiva': 'users',
             'Galería': 'images',
             'Contacto': 'envelope',
+            'Música': 'music',
             'Elemento': 'file'
         };
         return icons[type] || 'file';
+    }
+
+    getTypeColor(type) {
+        const colors = {
+            'Noticia': 'primary',
+            'Evento': 'success',
+            'Producto': 'info',
+            'Directiva': 'warning',
+            'Galería': 'secondary',
+            'Contacto': 'dark',
+            'Música': 'danger',
+            'Elemento': 'light'
+        };
+        return colors[type] || 'light';
+    }
+
+    formatRelativeTime(date) {
+        const now = new Date();
+        const diff = now - date;
+        const minutes = Math.floor(diff / 60000);
+        const hours = Math.floor(diff / 3600000);
+        const days = Math.floor(diff / 86400000);
+
+        if (minutes < 1) return 'Ahora mismo';
+        if (minutes < 60) return `Hace ${minutes} min`;
+        if (hours < 24) return `Hace ${hours}h`;
+        if (days < 7) return `Hace ${days} días`;
+        return date.toLocaleDateString('es-ES');
     }
 
     // ===== UTIL: Normalizar ID de item =====

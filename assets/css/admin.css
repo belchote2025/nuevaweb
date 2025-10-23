@@ -681,3 +681,127 @@ main {
     }
 }
 
+/* ===== ESTILOS DEL DASHBOARD MEJORADO ===== */
+
+/* Timeline styles for dashboard */
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #007bff, #28a745, #ffc107, #dc3545);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+.timeline-item-first .timeline-marker {
+    animation: pulse 2s infinite;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -22px;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    border: 3px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.timeline-content {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    border-left: 3px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.timeline-content:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.timeline-title {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.timeline-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.timeline-date {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Dashboard card hover effects */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+}
+
+/* Quick actions buttons */
+.btn-block {
+    transition: all 0.3s ease;
+}
+
+.btn-block:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Chart containers */
+#activityChart, #contentChart {
+    max-height: 300px;
+}
+
+/* Border colors for new dashboard cards */
+.border-left-danger {
+    border-left: 0.25rem solid #dc3545 !important;
+}
+
+.border-left-secondary {
+    border-left: 0.25rem solid #6c757d !important;
+}
+
+.border-left-dark {
+    border-left: 0.25rem solid #343a40 !important;
+}
+
+.border-left-light {
+    border-left: 0.25rem solid #f8f9fa !important;
+}
+

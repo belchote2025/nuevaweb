@@ -14,6 +14,9 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <!-- Custom CSS -->
     <link href="assets/css/admin.css" rel="stylesheet">
     
@@ -489,6 +492,7 @@
                     
                     <!-- Dashboard Content -->
                     <div id="dashboard-content">
+                        <!-- Estadísticas Principales -->
                         <div class="row">
                             <div class="col-xl-3 col-md-6 mb-4">
                                 <div class="card border-left-primary shadow h-100 py-2">
@@ -530,11 +534,11 @@
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                    Productos</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="productos-count">0</div>
+                                                    Galería</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="galeria-count">0</div>
                 </div>
                                             <div class="col-auto">
-                                                <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                                                <i class="fas fa-images fa-2x text-gray-300"></i>
                     </div>
                         </div>
                         </div>
@@ -547,6 +551,60 @@
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                    Socios</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="socios-count">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Segunda fila de estadísticas -->
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-danger shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                    Música</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="musica-count">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-music fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-secondary shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                                    Reservas</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="reservas-count">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-ticket-alt fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-dark shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">
                                                     Contactos</div>
                                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="contactos-count">0</div>
                             </div>
@@ -557,13 +615,97 @@
                 </div>
                             </div>
                         </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-light shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-muted text-uppercase mb-1">
+                                                    Productos</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="productos-count">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                        </div>
                     </div>
+                </div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                        <!-- Acciones Rápidas -->
+                        <div class="row mb-4">
+                            <div class="col-lg-12">
+                                <div class="card shadow">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="fas fa-bolt me-2"></i>Acciones Rápidas
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-primary btn-block w-100" onclick="adminPanel.showSection('noticias')">
+                                                    <i class="fas fa-plus me-2"></i>Nueva Noticia
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-success btn-block w-100" onclick="adminPanel.showSection('eventos')">
+                                                    <i class="fas fa-calendar-plus me-2"></i>Nuevo Evento
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-info btn-block w-100" onclick="adminPanel.showSection('galeria')">
+                                                    <i class="fas fa-image me-2"></i>Subir Imagen
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-warning btn-block w-100" onclick="adminPanel.showSection('musica')">
+                                                    <i class="fas fa-music me-2"></i>Añadir Música
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Gráficos y Análisis -->
+                        <div class="row mb-4">
+                            <div class="col-lg-8">
+                                <div class="card shadow">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="fas fa-chart-line me-2"></i>Actividad del Sitio
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="activityChart" width="400" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="card shadow">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="fas fa-chart-pie me-2"></i>Distribución de Contenido
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="contentChart" width="300" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="card shadow mb-4">
                                     <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">Actividad Reciente</h6>
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="fas fa-clock me-2"></i>Actividad Reciente
+                                        </h6>
                                     </div>
                         <div class="card-body">
                                         <div id="recent-activity">
@@ -940,7 +1082,7 @@
         // Función para inicializar el menú móvil de forma segura
         function initMobileMenu() {
             try {
-                const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
                 const sidebar = document.getElementById('sidebar');
                 const sidebarOverlay = document.getElementById('sidebar-overlay');
                 
@@ -1016,7 +1158,7 @@
                 // Cerrar al hacer clic en un enlace del menú (en móvil)
                 sidebar.addEventListener('click', function(e) {
                     try {
-                        if (window.innerWidth <= 768) {
+                    if (window.innerWidth <= 768) {
                             const navLink = e.target.closest('.nav-link');
                             if (navLink) {
                                 console.log('🔗 Enlace del menú clickeado');
