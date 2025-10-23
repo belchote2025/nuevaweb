@@ -776,11 +776,57 @@ main {
 /* Quick actions buttons */
 .btn-block {
     transition: all 0.3s ease;
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .btn-block:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+/* Efectos específicos para botones de acciones rápidas */
+.btn-primary.btn-block:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-success.btn-block:hover {
+    background-color: #1e7e34;
+    border-color: #1e7e34;
+}
+
+.btn-info.btn-block:hover {
+    background-color: #117a8b;
+    border-color: #117a8b;
+}
+
+.btn-warning.btn-block:hover {
+    background-color: #d39e00;
+    border-color: #d39e00;
+}
+
+.btn-secondary.btn-block:hover {
+    background-color: #545b62;
+    border-color: #545b62;
+}
+
+.btn-dark.btn-block:hover {
+    background-color: #1d2124;
+    border-color: #1d2124;
+}
+
+.btn-danger.btn-block:hover {
+    background-color: #bd2130;
+    border-color: #bd2130;
+}
+
+.btn-outline-primary.btn-block:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
 }
 
 /* Chart containers */

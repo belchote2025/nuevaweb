@@ -256,6 +256,42 @@ class AdminApp {
     }
 
     // ===== NAVEGACIÓN =====
+    quickAction(section) {
+        console.log(`🚀 Acción rápida ejecutada: ${section}`);
+        
+        // Navegar a la sección
+        this.showSection(section);
+        
+        // Mostrar notificación específica para cada acción
+        const messages = {
+            'noticias': 'Creando nueva noticia...',
+            'eventos': 'Creando nuevo evento...',
+            'galeria': 'Subiendo nueva imagen...',
+            'musica': 'Añadiendo nueva música...',
+            'productos': 'Creando nuevo producto...',
+            'contactos': 'Cargando contactos...',
+            'reservas': 'Cargando reservas...',
+            'socios': 'Cargando gestión de socios...'
+        };
+        
+        if (messages[section]) {
+            this.showNotification(messages[section], 'info');
+        }
+        
+        // Secciones que abren modal de añadir
+        const sectionsWithModal = ['noticias', 'eventos', 'galeria', 'musica', 'productos'];
+        
+        // Solo abrir modal para secciones que lo requieren
+        if (sectionsWithModal.includes(section)) {
+            setTimeout(() => {
+                console.log(`📝 Abriendo modal para: ${section}`);
+                this.showAddModal();
+            }, 200);
+        } else {
+            console.log(`📋 Navegando a sección de visualización: ${section}`);
+        }
+    }
+
     showSection(section) {
         // Verificar acceso a secciones restringidas
         if (section === 'socios' && !this.canAccessSocios()) {
@@ -2967,9 +3003,31 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         adminApp = new AdminApp();
         window.adminApp = adminApp;
+        
+        // Hacer la función quickAction disponible globalmente
+        window.quickAction = (section) => {
+            if (adminApp && adminApp.quickAction) {
+                adminApp.quickAction(section);
+            } else {
+                console.error('❌ adminApp no está disponible');
+            }
+        };
+        
+        console.log('✅ AdminApp inicializado y quickAction disponible globalmente');
     });
 } else {
     // If the DOM is already loaded, initialize immediately
     adminApp = new AdminApp();
     window.adminApp = adminApp;
+    
+    // Hacer la función quickAction disponible globalmente
+    window.quickAction = (section) => {
+        if (adminApp && adminApp.quickAction) {
+            adminApp.quickAction(section);
+        } else {
+            console.error('❌ adminApp no está disponible');
+        }
+    };
+    
+    console.log('✅ AdminApp inicializado y quickAction disponible globalmente');
 }

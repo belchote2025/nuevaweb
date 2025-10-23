@@ -646,23 +646,56 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-3 mb-3">
-                                                <button class="btn btn-primary btn-block w-100" onclick="adminPanel.showSection('noticias')">
+                                                <button class="btn btn-primary btn-block w-100" onclick="quickAction('noticias')">
                                                     <i class="fas fa-plus me-2"></i>Nueva Noticia
                                                 </button>
                                             </div>
                                             <div class="col-md-3 mb-3">
-                                                <button class="btn btn-success btn-block w-100" onclick="adminPanel.showSection('eventos')">
+                                                <button class="btn btn-success btn-block w-100" onclick="quickAction('eventos')">
                                                     <i class="fas fa-calendar-plus me-2"></i>Nuevo Evento
                                                 </button>
                                             </div>
                                             <div class="col-md-3 mb-3">
-                                                <button class="btn btn-info btn-block w-100" onclick="adminPanel.showSection('galeria')">
+                                                <button class="btn btn-info btn-block w-100" onclick="quickAction('galeria')">
                                                     <i class="fas fa-image me-2"></i>Subir Imagen
                                                 </button>
                                             </div>
                                             <div class="col-md-3 mb-3">
-                                                <button class="btn btn-warning btn-block w-100" onclick="adminPanel.showSection('musica')">
+                                                <button class="btn btn-warning btn-block w-100" onclick="quickAction('musica')">
                                                     <i class="fas fa-music me-2"></i>Añadir Música
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-secondary btn-block w-100" onclick="quickAction('productos')">
+                                                    <i class="fas fa-shopping-cart me-2"></i>Nuevo Producto
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-dark btn-block w-100" onclick="quickAction('contactos')">
+                                                    <i class="fas fa-envelope me-2"></i>Ver Contactos
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-danger btn-block w-100" onclick="quickAction('reservas')">
+                                                    <i class="fas fa-ticket-alt me-2"></i>Ver Reservas
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-outline-primary btn-block w-100" onclick="quickAction('socios')">
+                                                    <i class="fas fa-user-friends me-2"></i>Gestionar Socios
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- Botón de prueba temporal -->
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <button class="btn btn-outline-secondary btn-sm" onclick="diagnosticarAdmin()">
+                                                    <i class="fas fa-bug me-2"></i>Diagnosticar Panel
+                                                </button>
+                                                <button class="btn btn-outline-info btn-sm ms-2" onclick="quickActionFallback('noticias')">
+                                                    <i class="fas fa-test-tube me-2"></i>Probar Noticia
                                                 </button>
                                             </div>
                                         </div>
@@ -843,6 +876,57 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script de diagnóstico y función de respaldo -->
+    <script>
+        // Función de diagnóstico
+        function diagnosticarAdmin() {
+            console.log('🔍 === DIAGNÓSTICO DEL PANEL DE ADMINISTRACIÓN ===');
+            console.log('AdminApp definido:', typeof AdminApp !== 'undefined');
+            console.log('adminApp disponible:', window.adminApp !== undefined);
+            console.log('quickAction disponible:', typeof window.quickAction === 'function');
+            console.log('DOM cargado:', document.readyState);
+            console.log('===============================================');
+        }
+        
+        // Función de respaldo para asegurar que los botones funcionen
+        function quickActionFallback(section) {
+            console.log('🔄 Usando función de respaldo para:', section);
+            diagnosticarAdmin();
+            
+            // Verificar si adminApp está disponible
+            if (window.adminApp && window.adminApp.quickAction) {
+                window.adminApp.quickAction(section);
+            } else {
+                console.warn('⚠️ adminApp no está disponible, intentando inicializar...');
+                
+                // Intentar inicializar adminApp si no está disponible
+                if (typeof AdminApp !== 'undefined') {
+                    window.adminApp = new AdminApp();
+                    setTimeout(() => {
+                        if (window.adminApp && window.adminApp.quickAction) {
+                            window.adminApp.quickAction(section);
+                        } else {
+                            console.error('❌ No se pudo inicializar adminApp');
+                            alert('Error: No se pudo cargar el panel de administración. Por favor, recarga la página.');
+                        }
+                    }, 500);
+                } else {
+                    console.error('❌ AdminApp no está definido');
+                    alert('Error: El panel de administración no está disponible. Por favor, recarga la página.');
+                }
+            }
+        }
+        
+        // Hacer las funciones disponibles globalmente
+        window.quickActionFallback = quickActionFallback;
+        window.diagnosticarAdmin = diagnosticarAdmin;
+        
+        // Ejecutar diagnóstico cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(diagnosticarAdmin, 1000);
+        });
+    </script>
     
     <script>
         // Back to top button functionality + WhatsApp helper
