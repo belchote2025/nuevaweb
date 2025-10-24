@@ -14,9 +14,18 @@ class NotificationManager {
         }
 
         try {
-            // Registrar service worker
-            this.registration = await navigator.serviceWorker.register('/fila-mariscales-web/sw.js');
-            console.log('Service Worker registrado:', this.registration);
+            // Registrar service worker - intentar primero con .php para tipo MIME correcto
+            let registration;
+            try {
+                registration = await navigator.serviceWorker.register('/fila-mariscales-web/sw.php');
+                console.log('Service Worker registrado con sw.php:', registration);
+            } catch (phpError) {
+                console.warn('Error con sw.php, intentando con sw.js:', phpError);
+                registration = await navigator.serviceWorker.register('/fila-mariscales-web/sw.js');
+                console.log('Service Worker registrado con sw.js:', registration);
+            }
+            
+            this.registration = registration;
 
             // Verificar suscripción existente
             await this.checkSubscription();
@@ -42,11 +51,6 @@ class NotificationManager {
             sendBtn.addEventListener('click', () => this.showSendModal());
         }
 
-        // Botón de prueba de notificación
-        const testBtn = document.getElementById('test-notification-btn');
-        if (testBtn) {
-            testBtn.addEventListener('click', () => this.testNotification());
-        }
     }
 
     async checkSubscription() {

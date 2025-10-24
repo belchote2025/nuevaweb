@@ -19,6 +19,18 @@ RewriteRule ^ index.html [L]
     SetHandler application/x-httpd-php
 </FilesMatch>
 
+# Configuración específica para Service Workers
+<FilesMatch "sw\.js$">
+    Header set Content-Type "application/javascript; charset=utf-8"
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</FilesMatch>
+
+# Configuración de tipos MIME para Service Workers
+AddType application/javascript .js
+AddType application/javascript .sw.js
+
 # Configuración de caché
 <IfModule mod_expires.c>
     ExpiresActive On

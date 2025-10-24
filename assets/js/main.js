@@ -43,14 +43,39 @@ class FilaMariscalesApp {
     }
 
     setupMobileMenu() {
+        console.log('📱 Configurando menú móvil...');
+        
         const navbarToggler = document.querySelector('.navbar-toggler');
         const navbarCollapse = document.querySelector('.navbar-collapse');
+        
+        console.log('🔍 Elementos encontrados:', {
+            toggler: !!navbarToggler,
+            collapse: !!navbarCollapse
+        });
         
         if (navbarToggler && navbarCollapse) {
             // Mejorar el comportamiento del toggler
             navbarToggler.addEventListener('click', (e) => {
                 e.stopPropagation();
-                console.log('Menú hamburguesa clickeado');
+                console.log('🍔 Menú hamburguesa clickeado');
+                
+                // Asegurar que el menú se abra/cierre correctamente
+                setTimeout(() => {
+                    if (navbarCollapse.classList.contains('show')) {
+                        console.log('✅ Menú abierto');
+                        this.setupDropdowns(); // Reconfigurar dropdowns cuando se abre
+                    } else {
+                        console.log('❌ Menú cerrado');
+                        // Cerrar todos los dropdowns cuando se cierra el menú
+                        const openMenus = document.querySelectorAll('.dropdown-menu.show');
+                        openMenus.forEach(menu => {
+                            menu.classList.remove('show');
+                            menu.style.display = 'none';
+                            menu.style.opacity = '0';
+                            menu.style.visibility = 'hidden';
+                        });
+                    }
+                }, 100);
             });
 
             // Cerrar menú al hacer clic fuera con verificación de elementos
@@ -60,6 +85,7 @@ class FilaMariscalesApp {
                         !navbarCollapse.contains(e.target) && 
                         !navbarToggler.contains(e.target)) {
                         if (navbarCollapse.classList.contains('show')) {
+                            console.log('🔄 Cerrando menú por clic fuera');
                             navbarToggler.click();
                         }
                     }
@@ -68,72 +94,138 @@ class FilaMariscalesApp {
                 }
             });
 
-            // Mejorar dropdowns en móvil con verificación
+            // Configurar dropdowns inicialmente
             this.setupDropdowns();
 
-            // Cerrar dropdowns al hacer clic fuera con verificación
+            // Cerrar dropdowns al hacer clic fuera con verificación mejorada
             document.addEventListener('click', (e) => {
                 try {
-                    if (!e.target.closest('.dropdown')) {
+                    // Verificar si el clic fue en un dropdown o su toggle
+                    const clickedDropdown = e.target.closest('.dropdown');
+                    const clickedToggle = e.target.closest('.dropdown-toggle');
+                    
+                    if (!clickedDropdown && !clickedToggle) {
                         const openMenus = document.querySelectorAll('.dropdown-menu.show');
-                        openMenus.forEach(menu => {
-                            if (menu && menu.classList) {
-                                menu.classList.remove('show');
-                            }
-                        });
+                        if (openMenus.length > 0) {
+                            console.log('🔄 Cerrando dropdowns por clic fuera:', openMenus.length);
+                            openMenus.forEach(menu => {
+                                if (menu && menu.classList) {
+                                    menu.classList.remove('show');
+                                    menu.style.display = 'none';
+                                    menu.style.opacity = '0';
+                                    menu.style.visibility = 'hidden';
+                                }
+                            });
+                        }
                     }
                 } catch (error) {
                     console.warn('Error cerrando dropdowns:', error);
                 }
             });
+            
+            console.log('✅ Menú móvil configurado correctamente');
+        } else {
+            console.error('❌ Elementos del menú móvil no encontrados');
         }
     }
 
     setupDropdowns() {
         const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-        dropdownToggles.forEach(toggle => {
+        console.log('🔍 Configurando dropdowns:', dropdownToggles.length);
+        
+        dropdownToggles.forEach((toggle, index) => {
             if (toggle) {
+                console.log(`📱 Configurando dropdown ${index + 1}:`, toggle.textContent.trim());
+                
                 // Remover todos los event listeners existentes
                 const newToggle = toggle.cloneNode(true);
                 toggle.parentNode.replaceChild(newToggle, toggle);
                 
-                // Remover atributos de Bootstrap
+                // Remover atributos de Bootstrap que pueden interferir
                 newToggle.removeAttribute('data-bs-toggle');
                 newToggle.removeAttribute('data-bs-auto-close');
                 newToggle.removeAttribute('aria-expanded');
+                newToggle.removeAttribute('data-toggle');
+                newToggle.removeAttribute('data-target');
+                
+                // Agregar atributos necesarios
+                newToggle.setAttribute('role', 'button');
+                newToggle.setAttribute('tabindex', '0');
                 
                 newToggle.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    console.log('Dropdown clickeado:', newToggle.textContent.trim());
+                    console.log('🖱️ Dropdown clickeado:', newToggle.textContent.trim());
                     
                     const dropdown = newToggle.nextElementSibling;
-                    if (dropdown && dropdown.classList) {
-                        // Cerrar otros dropdowns
+                    if (dropdown && dropdown.classList.contains('dropdown-menu')) {
+                        console.log('📋 Dropdown encontrado:', dropdown);
+                        
+                        // Cerrar otros dropdowns primero
                         const openMenus = document.querySelectorAll('.dropdown-menu.show');
                         openMenus.forEach(menu => {
                             if (menu && menu !== dropdown && menu.classList) {
                                 menu.classList.remove('show');
+                                menu.style.display = 'none';
+                                menu.style.opacity = '0';
+                                menu.style.visibility = 'hidden';
+                                console.log('❌ Cerrando dropdown:', menu);
                             }
                         });
                         
                         // Toggle el dropdown actual
+                        const isOpen = dropdown.classList.contains('show');
                         dropdown.classList.toggle('show');
-                        console.log('Dropdown toggled:', dropdown.classList.contains('show'));
                         
-                        // Forzar visibilidad con timeout
                         if (dropdown.classList.contains('show')) {
+                            console.log('✅ Abriendo dropdown');
+                            dropdown.style.display = 'block';
+                            dropdown.style.opacity = '1';
+                            dropdown.style.visibility = 'visible';
+                            dropdown.style.transform = 'translateY(0)';
+                            
+                            // Forzar reflow para asegurar que se muestre
+                            dropdown.offsetHeight;
+                            
+                            // Asegurar que esté visible
                             setTimeout(() => {
                                 dropdown.style.display = 'block';
                                 dropdown.style.opacity = '1';
                                 dropdown.style.visibility = 'visible';
-                            }, 10);
+                                dropdown.style.transform = 'translateY(0)';
+                                console.log('🎯 Dropdown forzado a visible');
+                            }, 50);
+                        } else {
+                            console.log('❌ Cerrando dropdown');
+                            dropdown.style.display = 'none';
+                            dropdown.style.opacity = '0';
+                            dropdown.style.visibility = 'hidden';
+                            dropdown.style.transform = 'translateY(-10px)';
                         }
+                        
+                        console.log('🔄 Estado final del dropdown:', {
+                            hasShow: dropdown.classList.contains('show'),
+                            display: dropdown.style.display,
+                            opacity: dropdown.style.opacity,
+                            visibility: dropdown.style.visibility
+                        });
+                    } else {
+                        console.error('❌ Dropdown no encontrado para:', newToggle.textContent.trim());
+                    }
+                });
+                
+                // Agregar soporte para teclado
+                newToggle.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        newToggle.click();
                     }
                 });
             }
         });
+        
+        console.log('✅ Dropdowns configurados:', dropdownToggles.length);
     }
 
     // ===== CARGA DE DATOS INICIALES =====
