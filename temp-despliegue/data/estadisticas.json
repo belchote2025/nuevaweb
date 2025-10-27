@@ -1,0 +1,37 @@
+{
+    "visitas": {
+        "total": 15420,
+        "mes_actual": 3240,
+        "semana_actual": 890,
+        "hoy": 156
+    },
+    "usuarios": {
+        "total_registrados": 245,
+        "activos_mes": 189,
+        "nuevos_esta_semana": 23
+    },
+    "contenido": {
+        "noticias_publicadas": 12,
+        "eventos_programados": 8,
+        "imagenes_galeria": 156,
+        "productos_catalogo": 24
+    },
+    "interacciones": {
+        "reservas_totales": 89,
+        "contactos_enviados": 45,
+        "solicitudes_pendientes": 7,
+        "notificaciones_enviadas": 234
+    },
+    "dispositivos": {
+        "movil": 68,
+        "desktop": 28,
+        "tablet": 4
+    },
+    "paises": {
+        "España": 89,
+        "México": 12,
+        "Argentina": 8,
+        "Colombia": 6,
+        "Otros": 15
+    }
+}

@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Filá Mariscales</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <link href="assets/css/admin.css" rel="stylesheet">
+    
+    <!-- Notificaciones CSS -->
+    <style>
+        .notification-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Mejorar el modal de notificaciones */
+        .modal-backdrop {
+            z-index: 1040 !important;
+        }
+        
+        .modal {
+            z-index: 1050 !important;
+        }
+        
+        .modal-dialog {
+            max-width: 600px;
+        }
+        
+        .modal-header.bg-primary {
+            background-color: #0d6efd !important;
+        }
+        
+        .form-text {
+            font-size: 0.875em;
+            color: #6c757d;
+        }
+        
+        /* Asegurar que el modal sea accesible */
+        .modal.show {
+            display: block !important;
+        }
+        
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out;
+            transform: translate(0, -50px);
+        }
+        
+        .modal.show .modal-dialog {
+            transform: none;
+        }
+        
+        /* Estilos para el menú organizado */
+        .nav-section-header {
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #6c757d;
+            background-color: #f8f9fa;
+            border-left: 3px solid #DC143C;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-section-header:first-child {
+            margin-top: 0;
+        }
+        
+        .sidebar {
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+        }
+        
+        .sidebar .nav-link {
+            color: #495057;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            margin: 0.125rem 0;
+            transition: all 0.15s ease-in-out;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: #e9ecef;
+            color: #DC143C;
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: #DC143C;
+            color: white;
+        }
+        
+        .sidebar .nav-link i {
+            width: 16px;
+            text-align: center;
+        }
+        
+        /* Asegurar que el menú sea visible */
+        .sidebar {
+            display: block !important;
+        }
+        
+        .sidebar .nav {
+            display: block !important;
+        }
+        
+        .sidebar .nav-item {
+            display: block !important;
+        }
+        
+        .sidebar .nav-link {
+            display: block !important;
+        }
+        
+        
+        
+        /* Mejorar la responsividad */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed !important;
+                top: 56px !important;
+                left: -100% !important;
+                width: 280px !important;
+                height: calc(100vh - 56px) !important;
+                transition: left 0.3s ease !important;
+                z-index: 1000 !important;
+                background-color: #f8f9fa !important;
+                border-right: 1px solid #dee2e6 !important;
+                overflow-y: auto !important;
+                display: block !important;
+            }
+            
+            .sidebar.show {
+                left: 0 !important;
+                display: block !important;
+            }
+            
+            /* Overlay para cerrar el menú */
+            .sidebar-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background-color: rgba(0, 0, 0, 0.5) !important;
+                z-index: 999 !important;
+                display: none !important;
+            }
+            
+            .sidebar-overlay.show {
+                display: block !important;
+            }
+            
+            /* Ajustar el contenido principal en móvil */
+            main {
+                margin-left: 0 !important;
+            }
+            
+            /* Forzar visibilidad del botón toggle */
+            #sidebar-toggle {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+        }
+    </style>
+    
+    <style>
+        /* Floating Action Buttons */
+        .floating-buttons {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            z-index: 99999; /* Increased z-index to ensure it's above other elements */
+            display: flex !important; /* Force display */
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .floating-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: none;
+            color: white !important;
+            cursor: pointer;
+            text-decoration: none !important;
+            opacity: 0.9;
+            position: relative; /* Added for better positioning */
+        }
+        
+        .floating-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            color: white;
+            opacity: 1;
+        }
+        
+        .btn-whatsapp {
+            background-color: #25D366 !important;
+            display: flex !important;
+        }
+        
+        .btn-back-to-top {
+            background-color: #0d6efd !important;
+            display: none; /* Hidden by default */
+        }
+    </style>
+    
+    <style>
+        /* Floating Action Buttons */
+        .floating-buttons {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .floating-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .floating-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .btn-whatsapp {
+            background-color: #25D366;
+        }
+        
+        .btn-back-to-top {
+            background-color: #0d6efd;
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Admin Dashboard (oculto por defecto) -->
+    <div id="admin-dashboard" class="admin-dashboard" style="display: none;">
+        <!-- Ventajas Popup HTML -->
+        <div id="ventajasPopup" class="ventajas-popup">
+            <div class="ventajas-content">
+                <span class="close-popup">&times;</span>
+                <h3><i class="fas fa-star me-2"></i>Ventajas Exclusivas</h3>
+                <ul class="ventajas-list">
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Descuentos exclusivos en eventos</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Acceso prioritario a entradas</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Contenido exclusivo</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Ofertas especiales</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Invitaciones VIP</li>
+                </ul>
+                <button class="btn btn-primary mt-3">¡Quiero más información!</button>
+            </div>
+        </div>
+        <!-- Navigation -->
+        <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+                <span class="navbar-brand">
+                        <i class="fas fa-shield-alt me-2"></i>
+                    Panel de Administración
+                    </span>
+                <div class="d-flex">
+                    <span class="navbar-text me-3" id="admin-email"></span>
+                    <button class="btn btn-outline-light btn-sm me-2" id="send-notification-btn" title="Enviar Notificación">
+                        <i class="fas fa-bell me-1"></i>Notificaciones
+                    </button>
+                    <button class="btn btn-outline-light btn-sm" id="logout-btn">
+                        <i class="fas fa-sign-out-alt me-1"></i>Salir
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Overlay para móvil -->
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+            
+            <!-- Sidebar -->
+                <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar" id="sidebar">
+                    <div class="position-sticky pt-3">
+                        <ul class="nav flex-column">
+                            <!-- DASHBOARD -->
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#" data-section="dashboard">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="noticias">
+                                    <i class="fas fa-newspaper me-2"></i>Noticias
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="eventos">
+                                    <i class="fas fa-calendar-alt me-2"></i>Eventos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="galeria">
+                                    <i class="fas fa-images me-2"></i>Galería
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="productos">
+                                    <i class="fas fa-shopping-cart me-2"></i>Productos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="textos">
+                                    <i class="fas fa-edit me-2"></i>Textos
+                                </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="users">
+                                    <i class="fas fa-user-cog me-2"></i>Usuarios
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="socios">
+                                    <i class="fas fa-user-friends me-2"></i>Socios
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="solicitudes">
+                                    <i class="fas fa-user-plus me-2"></i>Solicitudes
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="directiva">
+                                    <i class="fas fa-crown me-2"></i>Directiva
+                                </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="contactos">
+                                    <i class="fas fa-envelope me-2"></i>Contactos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="alertas">
+                                    <i class="fas fa-bell me-2"></i>Alertas
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="reservas">
+                                    <i class="fas fa-ticket-alt me-2"></i>Reservas
+                                </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="musica">
+                                    <i class="fas fa-music me-2"></i>Música
+                                </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="carousel">
+                                    <i class="fas fa-images me-2"></i>Carrusel
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="imagenes-sitio">
+                                    <i class="fas fa-photo-video me-2"></i>Imágenes del Sitio
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="fondos">
+                                    <i class="fas fa-palette me-2"></i>Fondos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="temas">
+                                    <i class="fas fa-themeisle me-2"></i>Temas
+                                </a>
+                            </li>
+                        </ul>
+                </div>
+                    </nav>
+
+                <!-- Main content -->
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-dark d-md-none me-3" id="sidebar-toggle">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <h1 class="h2" id="section-title">Dashboard</h1>
+                        </div>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <div class="btn-group me-2" id="table-actions" style="display: none;">
+                                <button class="btn btn-outline-secondary btn-sm" id="export-csv-btn" title="Exportar a CSV">
+                                    <i class="fas fa-file-csv me-1"></i>CSV
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" id="refresh-btn" title="Actualizar">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                            <button class="btn btn-primary" id="add-item-btn" style="display: none;">
+                                <i class="fas fa-plus me-2"></i>Añadir
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Barra de búsqueda y filtros -->
+                    <div id="search-filter-bar" class="mb-3" style="display: none;">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="search-input" placeholder="Buscar...">
+                                    <button class="btn btn-outline-secondary" id="clear-search-btn" type="button">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="filter-select">
+                                    <option value="">Todos</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="items-per-page">
+                                    <option value="10">10 por página</option>
+                                    <option value="25" selected>25 por página</option>
+                                    <option value="50">50 por página</option>
+                                    <option value="100">100 por página</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dashboard Content -->
+                    <div id="dashboard-content">
+                        <!-- Estadísticas Principales -->
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-primary shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                    Noticias</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="noticias-count">0</div>
+                                    </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-newspaper fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                    Eventos</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="eventos-count">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                            </div>
+                                            </div>
+                    </div>
+                    
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-info shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                    Galería</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="galeria-count">0</div>
+                </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-images fa-2x text-gray-300"></i>
+                    </div>
+                        </div>
+                        </div>
+                        </div>
+                    </div>
+                    
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                    Socios</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="socios-count">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Segunda fila de estadísticas -->
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-danger shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                    Música</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="musica-count">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-music fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-secondary shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                                    Reservas</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="reservas-count">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-ticket-alt fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-dark shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">
+                                                    Contactos</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="contactos-count">0</div>
+                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-envelope fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                            </div>
+                        </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-light shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-muted text-uppercase mb-1">
+                                                    Productos</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="productos-count">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                        <!-- Acciones Rápidas -->
+                        <div class="row mb-4">
+                            <div class="col-lg-12">
+                                <div class="card shadow">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="fas fa-bolt me-2"></i>Acciones Rápidas
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-primary btn-block w-100" onclick="quickAction('noticias')">
+                                                    <i class="fas fa-plus me-2"></i>Nueva Noticia
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-success btn-block w-100" onclick="quickAction('eventos')">
+                                                    <i class="fas fa-calendar-plus me-2"></i>Nuevo Evento
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-info btn-block w-100" onclick="quickAction('galeria')">
+                                                    <i class="fas fa-image me-2"></i>Subir Imagen
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-warning btn-block w-100" onclick="quickAction('musica')">
+                                                    <i class="fas fa-music me-2"></i>Añadir Música
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-secondary btn-block w-100" onclick="quickAction('productos')">
+                                                    <i class="fas fa-shopping-cart me-2"></i>Nuevo Producto
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-dark btn-block w-100" onclick="quickAction('contactos')">
+                                                    <i class="fas fa-envelope me-2"></i>Ver Contactos
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-danger btn-block w-100" onclick="quickAction('reservas')">
+                                                    <i class="fas fa-ticket-alt me-2"></i>Ver Reservas
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <button class="btn btn-outline-primary btn-block w-100" onclick="quickAction('socios')">
+                                                    <i class="fas fa-user-friends me-2"></i>Gestionar Socios
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- Botón de prueba temporal -->
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <button class="btn btn-outline-secondary btn-sm" onclick="diagnosticarAdmin()">
+                                                    <i class="fas fa-bug me-2"></i>Diagnosticar Panel
+                                                </button>
+                                                <button class="btn btn-outline-info btn-sm ms-2" onclick="quickActionFallback('noticias')">
+                                                    <i class="fas fa-test-tube me-2"></i>Probar Noticia
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Gráficos y Análisis -->
+                        <div class="row mb-4">
+                            <div class="col-lg-8">
+                                <div class="card shadow">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="fas fa-chart-line me-2"></i>Actividad del Sitio
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="activityChart" width="400" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="card shadow">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="fas fa-chart-pie me-2"></i>Distribución de Contenido
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="contentChart" width="300" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="fas fa-clock me-2"></i>Actividad Reciente
+                                        </h6>
+                                    </div>
+                        <div class="card-body">
+                                        <div id="recent-activity">
+                                            <p class="text-muted">Cargando actividad reciente...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section Content -->
+                    <div id="section-content" style="display: none;">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead id="table-head">
+                                </thead>
+                                <tbody id="table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Paginación y estadísticas -->
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div id="table-info" class="text-muted">
+                                Mostrando 0 de 0 elementos
+                            </div>
+                            <nav id="pagination-container">
+                                <ul class="pagination pagination-sm mb-0" id="pagination">
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- Textos Content -->
+                    <div id="textos-content" style="display: none;">
+                    <div class="row">
+                            <div class="col-md-3">
+                                <div class="btn-group-vertical w-100" role="group">
+                                    <button type="button" class="btn btn-outline-primary btn-text-section" data-text-section="home">Inicio</button>
+                                    <button type="button" class="btn btn-outline-primary btn-text-section" data-text-section="historia">Historia</button>
+                                    <button type="button" class="btn btn-outline-primary btn-text-section" data-text-section="directiva">Directiva</button>
+                                    <button type="button" class="btn btn-outline-primary btn-text-section" data-text-section="socios">Socios</button>
+                                    <button type="button" class="btn btn-outline-primary btn-text-section" data-text-section="eventos">Eventos</button>
+                                    <button type="button" class="btn btn-outline-primary btn-text-section" data-text-section="galeria">Galería</button>
+                                    <button type="button" class="btn btn-outline-primary btn-text-section" data-text-section="noticias">Noticias</button>
+                                    <button type="button" class="btn btn-outline-primary btn-text-section" data-text-section="contacto">Contacto</button>
+                                    <button type="button" class="btn btn-outline-primary btn-text-section" data-text-section="footer">Footer</button>
+                                    <button type="button" class="btn btn-outline-primary btn-text-section" data-text-section="meta">SEO</button>
+                                    </div>
+                                    </div>
+                            <div class="col-md-9">
+                                <div id="textos-form-container">
+                                    <p class="text-muted">Selecciona una sección para editar los textos.</p>
+                            </div>
+                        </div>
+                            <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Rol</th>
+        <th>Contraseña</th>
+        <th>Fecha Ingreso</th>
+        <th>Activo</th>
+        <th>Acciones</th>
+    </tr>
+</thead>
+
+    <!-- Modal para añadir/editar -->
+    <div class="modal fade" id="itemModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">Añadir Elemento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="item-form">
+                        <div id="form-fields">
+                            <!-- Los campos se generarán dinámicamente -->
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-item-btn">Guardar</button>
+    </div>
+
+    <!-- Floating Action Buttons -->
+    <style>
+        .floating-buttons-container {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .floating-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            text-decoration: none;
+            font-size: 24px;
+        }
+        .floating-btn.whatsapp {
+            background-color: #25D366;
+        }
+        .floating-btn.back-to-top {
+            background-color: #0d6efd;
+            display: none;
+        }
+        .floating-btn:hover {
+            transform: scale(1.1);
+            transition: transform 0.2s;
+        }
+    </style>
+    <div class="floating-buttons-container">
+        <button id="backToTop" class="floating-btn back-to-top" title="Volver arriba">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        <a href="https://wa.me/34600000000" target="_blank" class="floating-btn whatsapp" title="Contactar por WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script de diagnóstico y función de respaldo -->
+    <script>
+        // Función de diagnóstico
+        function diagnosticarAdmin() {
+            console.log('🔍 === DIAGNÓSTICO DEL PANEL DE ADMINISTRACIÓN ===');
+            console.log('AdminApp definido:', typeof AdminApp !== 'undefined');
+            console.log('adminApp disponible:', window.adminApp !== undefined);
+            console.log('quickAction disponible:', typeof window.quickAction === 'function');
+            console.log('DOM cargado:', document.readyState);
+            console.log('===============================================');
+        }
+        
+        // Función de respaldo para asegurar que los botones funcionen
+        function quickActionFallback(section) {
+            console.log('🔄 Usando función de respaldo para:', section);
+            diagnosticarAdmin();
+            
+            // Verificar si adminApp está disponible
+            if (window.adminApp && window.adminApp.quickAction) {
+                window.adminApp.quickAction(section);
+            } else {
+                console.warn('⚠️ adminApp no está disponible, intentando inicializar...');
+                
+                // Intentar inicializar adminApp si no está disponible
+                if (typeof AdminApp !== 'undefined') {
+                    window.adminApp = new AdminApp();
+                    setTimeout(() => {
+                        if (window.adminApp && window.adminApp.quickAction) {
+                            window.adminApp.quickAction(section);
+                        } else {
+                            console.error('❌ No se pudo inicializar adminApp');
+                            alert('Error: No se pudo cargar el panel de administración. Por favor, recarga la página.');
+                        }
+                    }, 500);
+                } else {
+                    console.error('❌ AdminApp no está definido');
+                    alert('Error: El panel de administración no está disponible. Por favor, recarga la página.');
+                }
+            }
+        }
+        
+        // Hacer las funciones disponibles globalmente
+        window.quickActionFallback = quickActionFallback;
+        window.diagnosticarAdmin = diagnosticarAdmin;
+        
+        // Ejecutar diagnóstico cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(diagnosticarAdmin, 1000);
+        });
+    </script>
+    
+    <script>
+        // Back to top button functionality + WhatsApp helper
+        document.addEventListener('DOMContentLoaded', function() {
+            const backToTopButton = document.getElementById('backToTop');
+            const whatsappButton = document.querySelector('.floating-btn.whatsapp');
+
+            function updateWhatsAppButton() {
+                if (!whatsappButton) return;
+                const savedNumber = localStorage.getItem('admin_whatsapp_number') || '34600000000';
+                whatsappButton.href = `https://wa.me/${savedNumber}`;
+            }
+
+            // Make sure buttons are properly initialized
+            if (backToTopButton) {
+                // Show/hide the button based on scroll position
+                window.addEventListener('scroll', function() {
+                    backToTopButton.style.display = window.pageYOffset > 300 ? 'flex' : 'none';
+                });
+
+                // Smooth scroll to top when clicked
+                backToTopButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+
+            // Inicializar WhatsApp button
+            updateWhatsAppButton();
+
+            // Expose function to update WhatsApp number from admin settings
+            window.updateWhatsAppNumber = function(number) {
+                localStorage.setItem('admin_whatsapp_number', number);
+                updateWhatsAppButton();
+            };
+
+            // Verificar sesión
+            async function checkSession() {
+                try {
+                    const response = await fetch('api/auth.php?action=check');
+                    const result = await response.json();
+                    
+                    if (!result.success) {
+                        window.location.href = 'login.html';
+                    } else {
+                        // Mostrar el panel
+                        document.getElementById('admin-dashboard').style.display = 'block';
+                        
+                        // Mostrar nombre de usuario si existe el elemento
+                        const adminName = document.getElementById('admin-name');
+                        if (adminName && result.data && result.data.nombre) {
+                            adminName.textContent = result.data.nombre;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error al verificar la sesión:', error);
+                    window.location.href = 'login.html';
+                }
+            }
+
+            // Manejar cierre de sesión
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    try {
+                        await fetch('api/auth.php?action=logout');
+                        window.location.href = 'login.html';
+                    } catch (error) {
+                        console.error('Error al cerrar sesión:', error);
+                        window.location.href = 'login.html';
+                    }
+                });
+            }
+
+            // Ejecutar verificación de sesión
+            checkSession();
+        });
+    </script>
+    
+    <!-- Utils JS -->
+    <script src="assets/js/utils.js"></script>
+    
+    <!-- Admin JS -->
+    <script src="assets/js/admin.js"></script>
+
+    <!-- Ventajas Popup HTML se moverá al final del admin-dashboard -->
+
+    <style>
+        /* Estilos para el popup de ventajas */
+        .ventajas-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ventajas-popup.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .ventajas-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .ventajas-popup.show .ventajas-content {
+            transform: scale(1);
+        }
+
+        .ventajas-content h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .ventajas-list {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+
+        .ventajas-list li {
+            padding: 0.5rem 0;
+            color: #34495e;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .ventajas-list i {
+            margin-right: 0.5rem;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+            transition: color 0.3s;
+        }
+
+        .close-popup:hover {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 576px) {
+            .ventajas-content {
+                padding: 1.5rem;
+                width: 95%;
+            }
+            
+            .ventajas-list li {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const verVentajasBtn = document.getElementById('verVentajasBtn');
+            const ventajasPopup = document.getElementById('ventajasPopup');
+            const closePopup = document.querySelector('.close-popup');
+
+            if (verVentajasBtn) {
+                verVentajasBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    ventajasPopup.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+
+            if (closePopup) {
+                closePopup.addEventListener('click', function() {
+                    ventajasPopup.classList.remove('show');
+                    document.body.style.overflow = '';
+                });
+            }
+
+            // Cerrar al hacer clic fuera del contenido
+            if (ventajasPopup) {
+                ventajasPopup.addEventListener('click', function(e) {
+                    if (e.target === ventajasPopup) {
+                        ventajasPopup.classList.remove('show');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            // Cerrar con la tecla ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && ventajasPopup.classList.contains('show')) {
+                    ventajasPopup.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    </script>
+    
+    <!-- Notificaciones Push -->
+    <script src="assets/js/notifications.js"></script>
+    
+    <!-- Script para menú móvil -->
+    <script>
+        // Protección contra scripts externos
+        (function() {
+            'use strict';
+            
+            // Evitar conflictos con otros scripts
+            if (window.mobileMenuInitialized) {
+                return;
+            }
+            window.mobileMenuInitialized = true;
+        // Función para inicializar el menú móvil de forma segura
+        function initMobileMenu() {
+            try {
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+                const sidebar = document.getElementById('sidebar');
+                const sidebarOverlay = document.getElementById('sidebar-overlay');
+                
+                console.log('=== DEBUG MENÚ MÓVIL ===');
+                console.log('sidebarToggle:', sidebarToggle);
+                console.log('sidebar:', sidebar);
+                console.log('sidebarOverlay:', sidebarOverlay);
+                
+                // Verificar que todos los elementos existen
+                if (!sidebarToggle || !sidebar || !sidebarOverlay) {
+                    console.error('❌ Elementos del menú no encontrados');
+                    return;
+                }
+                
+                // Función para abrir el menú
+                function openSidebar() {
+                    try {
+                        console.log('🟢 Abriendo sidebar...');
+                        sidebar.style.left = '0px';
+                        sidebar.style.display = 'block';
+                        sidebar.classList.add('show');
+                        sidebarOverlay.style.display = 'block';
+                        sidebarOverlay.classList.add('show');
+                        document.body.style.overflow = 'hidden';
+                        console.log('✅ Sidebar abierto correctamente');
+                    } catch (error) {
+                        console.error('❌ Error abriendo sidebar:', error);
+                    }
+                }
+                
+                // Función para cerrar el menú
+                function closeSidebar() {
+                    try {
+                        console.log('🔴 Cerrando sidebar...');
+                        sidebar.style.left = '-100%';
+                        sidebar.classList.remove('show');
+                        sidebarOverlay.style.display = 'none';
+                        sidebarOverlay.classList.remove('show');
+                        document.body.style.overflow = '';
+                        console.log('✅ Sidebar cerrado correctamente');
+                    } catch (error) {
+                        console.error('❌ Error cerrando sidebar:', error);
+                    }
+                }
+                
+                // Toggle del botón hamburguesa
+                sidebarToggle.addEventListener('click', function(e) {
+                    try {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🖱️ Botón toggle clickeado');
+                        
+                        if (sidebar.classList.contains('show')) {
+                            closeSidebar();
+                        } else {
+                            openSidebar();
+                        }
+                    } catch (error) {
+                        console.error('❌ Error en toggle:', error);
+                    }
+                });
+                
+                // Cerrar al hacer clic en el overlay
+                sidebarOverlay.addEventListener('click', function() {
+                    try {
+                        console.log('🖱️ Overlay clickeado');
+                        closeSidebar();
+                    } catch (error) {
+                        console.error('❌ Error en overlay:', error);
+                    }
+                });
+                
+                // Cerrar al hacer clic en un enlace del menú (en móvil)
+                sidebar.addEventListener('click', function(e) {
+                    try {
+                    if (window.innerWidth <= 768) {
+                            const navLink = e.target.closest('.nav-link');
+                            if (navLink) {
+                                console.log('🔗 Enlace del menú clickeado');
+                                setTimeout(closeSidebar, 100);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('❌ Error en enlace del menú:', error);
+                    }
+                });
+                
+                // Cerrar con la tecla ESC
+                document.addEventListener('keydown', function(e) {
+                    try {
+                        if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+                            console.log('⌨️ Tecla ESC presionada');
+                            closeSidebar();
+                        }
+                    } catch (error) {
+                        console.error('❌ Error en tecla ESC:', error);
+                    }
+                });
+                
+                // Manejar redimensionamiento de ventana
+                window.addEventListener('resize', function() {
+                    try {
+                        if (window.innerWidth > 768) {
+                            closeSidebar();
+                        }
+                    } catch (error) {
+                        console.error('❌ Error en resize:', error);
+                    }
+                });
+                
+                console.log('✅ CONFIGURACIÓN COMPLETADA');
+                
+            } catch (error) {
+                console.error('❌ Error inicializando menú móvil:', error);
+            }
+        }
+        
+        // Inicializar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMobileMenu);
+        } else {
+            initMobileMenu();
+        }
+        
+        })(); // Cerrar función de protección
+    </script>
+</body>
+</html>

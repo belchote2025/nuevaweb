@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filá Mariscales de Caballeros Templarios - Elche</title>
+    <title>Noticias - Filá Mariscales de Caballeros Templarios</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,14 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="assets/css/style.css?v=2.0" rel="stylesheet">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#DC143C">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Filá Mariscales">
 </head>
 <body>
     <!-- Navigation -->
@@ -39,7 +31,7 @@
                 <ul class="navbar-nav mx-auto">
                     <!-- Inicio -->
                     <li class="nav-item">
-                        <a class="nav-link active" href="index.html">
+                        <a class="nav-link" href="index.html">
                             <i class="fas fa-home me-1"></i>Inicio
                         </a>
                     </li>
@@ -80,12 +72,15 @@
                             <li><a class="dropdown-item" href="musica.html">
                                 <i class="fas fa-music me-2"></i>Música
                             </a></li>
+                            <li><a class="dropdown-item" href="reservas.html">
+                                <i class="fas fa-ticket-alt me-2"></i>Reservas
+                            </a></li>
                         </ul>
                     </li>
                     
                     <!-- Noticias -->
                     <li class="nav-item">
-                        <a class="nav-link" href="noticias.html">
+                        <a class="nav-link active" href="noticias.html">
                             <i class="fas fa-newspaper me-1"></i>Noticias
                         </a>
                     </li>
@@ -118,13 +113,6 @@
                         </ul>
                     </li>
                     
-                    <!-- Reservas -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="reservas.html">
-                            <i class="fas fa-ticket-alt me-1"></i>Reservas
-                        </a>
-                    </li>
-                    
                     <!-- Contacto -->
                     <li class="nav-item">
                         <a class="nav-link" href="contacto.html">
@@ -145,124 +133,40 @@
         </div>
     </nav>
 
-    <!-- Hero Carousel -->
-    <section id="home" class="hero-section animate-slideInFromTop">
-        <div id="home-carousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators" id="carousel-indicators">
-                <!-- Los indicadores se generarán dinámicamente -->
-            </div>
-            <div class="carousel-inner" id="carousel-inner">
-                <!-- Las slides se cargarán dinámicamente -->
-                <div class="carousel-item active">
-                    <div class="carousel-image-container">
-                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" 
-                             class="carousel-image" alt="Filá Mariscales" 
-                             onerror="this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'">
-                        <div class="carousel-overlay">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-lg-8 mx-auto text-center">
-                                        <h1 class="display-4 fw-bold mb-4">Filá Mariscales</h1>
-                                        <p class="lead mb-4">Caballeros Templarios de Elche</p>
-                                        <a href="lafila.html" class="btn btn-primary btn-lg me-3">
-                                            <i class="fas fa-shield-alt me-2"></i>Conoce la Filá
-                                        </a>
-                                        <a href="actividades.html" class="btn btn-outline-light btn-lg">
-                                            <i class="fas fa-calendar-alt me-2"></i>Actividades
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#home-carousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#home-carousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-    </section>
-
-    <!-- Bienvenida Section -->
-    <section id="bienvenida" class="py-5 scroll-reveal">
+    <!-- Noticias Section -->
+    <section id="noticias" class="py-5" style="margin-top: 80px;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Bienvenidos a la Filá Mariscales</h2>
-                    <p class="section-subtitle">Caballeros Templarios de Elche</p>
-                    <p class="lead">Descubre nuestra historia, tradiciones y actividades. Únete a nuestra hermandad y forma parte de una tradición centenaria.</p>
+                    <h2 class="section-title">Últimas Noticias</h2>
+                    <p class="section-subtitle">Mantente informado de todas las novedades de la Filá</p>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">Nuestra Historia</h5>
-                            <p class="card-text">Conoce los orígenes y tradición de la Filá Mariscales de Caballeros Templarios.</p>
-                            <a href="lafila.html" class="btn btn-primary">Ver Historia</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 mb-4">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">Actividades</h5>
-                            <p class="card-text">Participa en nuestros eventos, galería de fotos y actividades musicales.</p>
-                            <a href="actividades.html" class="btn btn-primary">Ver Actividades</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 mb-4">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-newspaper fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">Noticias</h5>
-                            <p class="card-text">Mantente informado de todas las novedades y noticias de la Filá.</p>
-                            <a href="noticias.html" class="btn btn-primary">Ver Noticias</a>
-                        </div>
+            <div class="row" id="noticias-container">
+                <!-- Las noticias se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando noticias...</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Destacados Section -->
-    <section id="destacados" class="py-5 bg-light scroll-reveal">
+    <!-- Blog Section -->
+    <section id="blog" class="py-5 bg-light">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5">
-                    <h2 class="section-title">Lo Más Destacado</h2>
-                    <p class="section-subtitle">Descubre nuestros recursos y servicios</p>
+                    <h2 class="section-title">Blog</h2>
+                    <p class="section-subtitle">Artículos y publicaciones de la Filá Mariscales</p>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-6 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fas fa-store me-2"></i>Tienda Online
-                            </h5>
-                            <p class="card-text">Artículos oficiales de la Filá Mariscales. Descubre nuestra colección de productos.</p>
-                            <a href="recursos.html#tienda" class="btn btn-outline-primary">Visitar Tienda</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fas fa-book me-2"></i>Libro Digital
-                            </h5>
-                            <p class="card-text">Nuestro libro digital interactivo con toda la historia y tradiciones de la Filá.</p>
-                            <a href="libro.html" class="btn btn-outline-primary">Ver Libro</a>
-                        </div>
+            <div class="row" id="blog-container">
+                <!-- Los artículos del blog se cargarán dinámicamente -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando blog...</span>
                     </div>
                 </div>
             </div>
@@ -298,25 +202,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/utils.js?v=2.0"></script>
     <script src="assets/js/main.js?v=2.0"></script>
-    <script src="assets/js/animations.js?v=2.0"></script>
     <script>
-        // Cargar datos específicos de la página principal
+        // Cargar datos específicos de esta página
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof app !== 'undefined') {
-                app.loadCarousel();
+                app.loadNoticias();
+                app.loadBlog();
             }
         });
     </script>
-    
-    <!-- Notificaciones Push -->
-    <script src="assets/js/notifications.js"></script>
-    
-    <!-- Botón de notificaciones para usuarios -->
-    <div class="notification-toggle">
-        <button class="btn btn-primary btn-lg rounded-circle" id="notification-toggle" title="Activar Notificaciones">
-            <i class="fas fa-bell"></i>
-        </button>
-        <small id="notification-status" class="d-block text-center mt-2 text-white"></small>
-    </div>
 </body>
 </html>

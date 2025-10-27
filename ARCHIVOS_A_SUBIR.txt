@@ -1,0 +1,68 @@
+ARCHIVOS QUE DEBES SUBIR AL HOSTING
+=====================================
+
+ARCHIVOS PRINCIPALES (en la raíz):
+- index.html
+- admin.html
+- login.html
+- manifest.json
+- sw.js
+- sw.php
+- .htaccess
+- robots.txt
+- sitemap.xml
+
+TODAS LAS PÁGINAS HTML:
+- actividades.html
+- calendario.html
+- chat.html
+- contacto.html
+- directiva.html
+- eventos.html
+- galeria.html
+- historia.html
+- lafila.html
+- libro.html
+- musica.html
+- noticias.html
+- recursos.html
+- reservas.html
+- socios-area.html
+- socios.html
+
+CARPETAS COMPLETAS:
+- assets/ (con todo su contenido)
+- api/ (con todo su contenido)
+- data/ (con todo su contenido)
+- uploads/ (con todo su contenido)
+
+ARCHIVOS DE INSTALACIÓN:
+- instalar.php
+- verificar-despliegue.php
+- backup.php
+- health.php
+- deployment-config.php
+- config-prod.php
+- .env
+
+ARCHIVOS DE DOCUMENTACIÓN (opcionales):
+- README_DESPLIEGUE.md
+- INSTRUCCIONES_DESPLIEGUE.md
+
+ARCHIVOS QUE NO DEBES SUBIR:
+- temp-despliegue/
+- *.bat
+- .git/
+- *.save
+- *.old
+- test_*.php
+- generate_hash.php
+- contador_visitas.txt
+- cookie.txt
+
+INSTRUCCIONES:
+1. Selecciona todos los archivos de la lista
+2. Crea un ZIP con ellos
+3. Sube el ZIP a tu hosting
+4. Extrae en public_html
+5. Ejecuta instalar.php una vez

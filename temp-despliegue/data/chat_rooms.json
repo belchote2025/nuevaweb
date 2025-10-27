@@ -1,0 +1,6 @@
+[
+  { "id": "general", "nombre": "General", "descripcion": "Sala pública para todos los socios" },
+  { "id": "directiva", "nombre": "Directiva", "descripcion": "Sala privada para directiva" },
+  { "id": "socios", "nombre": "Socios", "descripcion": "Sala de socios" }
+]
+

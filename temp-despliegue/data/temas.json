@@ -1,0 +1,41 @@
+[
+    {
+        "id": "tema-clasico",
+        "nombre": "Tema Clásico",
+        "descripcion": "Tema tradicional con colores rojo y dorado",
+        "colores": {
+            "primario": "#DC143C",
+            "secundario": "#FFD700",
+            "fondo": "#F8F9FA",
+            "texto": "#333333"
+        },
+        "activo": true,
+        "created_at": "2025-10-21 16:30:00"
+    },
+    {
+        "id": "tema-moderno",
+        "nombre": "Tema Moderno",
+        "descripcion": "Diseño contemporáneo con colores azul y gris",
+        "colores": {
+            "primario": "#007BFF",
+            "secundario": "#6C757D",
+            "fondo": "#FFFFFF",
+            "texto": "#212529"
+        },
+        "activo": false,
+        "created_at": "2025-10-21 16:30:00"
+    },
+    {
+        "id": "tema-elegante",
+        "nombre": "Tema Elegante",
+        "descripcion": "Paleta sofisticada en tonos oscuros",
+        "colores": {
+            "primario": "#2C3E50",
+            "secundario": "#E74C3C",
+            "fondo": "#ECF0F1",
+            "texto": "#2C3E50"
+        },
+        "activo": false,
+        "created_at": "2025-10-21 16:30:00"
+    }
+]

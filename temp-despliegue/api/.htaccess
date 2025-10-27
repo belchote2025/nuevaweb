@@ -1,0 +1,23 @@
+# Habilitar el motor de reescritura
+RewriteEngine On
+
+# Configuración de CORS
+Header set Access-Control-Allow-Origin "http://localhost"
+Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+Header set Access-Control-Allow-Credentials "true"
+Header set Access-Control-Max-Age "86400"
+
+# Manejar solicitudes OPTIONS (preflight)
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# Redirigir todas las solicitudes al controlador frontal
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Configuración para archivos PHP
+<FilesMatch "\.php$">
+    SetHandler application/x-httpd-php
+</FilesMatch>

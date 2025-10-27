@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Filá Mariscales</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.8), rgba(139, 0, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            padding: 3rem;
+            max-width: 450px;
+            width: 100%;
+            margin: 2rem;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-header h1 {
+            font-family: 'Cinzel', serif;
+            color: #DC143C;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-header p {
+            color: #666;
+            margin-bottom: 0;
+        }
+        
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #DC143C;
+            box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25);
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-login:hover {
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        
+        .back-link a {
+            color: #DC143C;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .back-link a:hover {
+            color: #8B0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fas fa-shield-alt fa-3x text-danger mb-3"></i>
+            <h1>Filá Mariscales</h1>
+            <p>Acceso de Administrador</p>
+        </div>
+        
+        <div id="alert-container"></div>
+        
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="email" class="form-label">
+                    <i class="fas fa-envelope me-2"></i>Correo Electrónico
+                </label>
+                <input type="email" class="form-control" id="email" name="email" 
+                       placeholder="admin@mariscales.com" required>
+            </div>
+            
+            <div class="mb-4">
+                <label for="password" class="form-label">
+                    <i class="fas fa-lock me-2"></i>Contraseña
+                </label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="password" name="password" 
+                           placeholder="admin123" required>
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-login text-white">
+                <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+            </button>
+        </form>
+        
+        <div class="back-link">
+            <a href="index.html">
+                <i class="fas fa-arrow-left me-2"></i>Volver al sitio
+            </a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const alertContainer = document.getElementById('alert-container');
+            
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+            
+            // Login form submission
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                try {
+                    const response = await fetch('api/auth.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Login exitoso
+                        showAlert('success', '¡Bienvenido, Administrador!');
+                        
+                        // Redirigir al panel de administración después de 1.5 segundos
+                        setTimeout(() => {
+                            window.location.href = 'admin.html';
+                        }, 1500);
+                        
+                    } else {
+                        // Login fallido
+                        showAlert('danger', result.message || 'Credenciales incorrectas. Verifica tu email y contraseña.');
+                    }
+                } catch (error) {
+                    showAlert('danger', 'Error de conexión. Inténtalo de nuevo.');
+                }
+            });
+            
+            // Función para mostrar alertas
+            function showAlert(type, message) {
+                alertContainer.innerHTML = `
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+            }
+            
+            // Verificar si ya está logueado usando la API
+            checkExistingSession();
+            
+            async function checkExistingSession() {
+                try {
+                    const response = await fetch('api/auth.php?action=check', {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showAlert('info', 'Ya tienes una sesión activa. Redirigiendo...');
+                        setTimeout(() => {
+                            window.location.href = 'admin.html';
+                        }, 1000);
+                    }
+                } catch (error) {
+                    // No hay sesión activa, continuar normalmente
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+[
+    {
+        "nombre": "Fondo Universal",
+        "tipo": "imagen",
+        "imagen_url": "assets\/images\/backgrounds\/fondo.jpg",
+        "color": "",
+        "color_secundario": "",
+        "paginas": "historia,directiva,socios,eventos,galeria,noticias,contacto,calendario,musica,recursos,lafila,libro,actividades,index",
+        "descripcion": "Fondo universal para todas las páginas",
+        "activo": true,
+        "id": "fondo_universal_001",
+        "fecha_creacion": "2025-01-17 12:00:00"
+    }
+]
