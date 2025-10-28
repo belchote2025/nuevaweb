@@ -3,7 +3,9 @@ const CONFIG = {
     DATA_BASE_URL: 'data/',
     API_BASE_URL: 'api/',
     SITE_NAME: 'Filá Mariscales de Caballeros Templarios',
-    VERSION: '2.0.0'
+    VERSION: '2.0.0',
+    // Detectar si estamos en HTTPS o HTTP
+    BASE_URL: window.location.protocol + '//' + window.location.host + window.location.pathname.replace(/\/[^\/]*$/, '/')
 };
 
 // ===== CLASE PRINCIPAL DE LA APLICACIÓN =====
@@ -276,8 +278,17 @@ class FilaMariscalesApp {
                 existingCarousel.remove();
             }
 
-            const response = await fetch(`${CONFIG.DATA_BASE_URL}carousel.json`);
-            if (!response.ok) throw new Error('Failed to load carousel data');
+            const response = await fetch(`${CONFIG.DATA_BASE_URL}carousel.json`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                cache: 'no-cache'
+            });
+            if (!response.ok) {
+                console.warn('Error cargando carousel.json:', response.status, response.statusText);
+                throw new Error(`Failed to load carousel data: ${response.status}`);
+            }
             const data = await response.json();
             
             // Verificar estructura de datos más robusta
@@ -298,6 +309,40 @@ class FilaMariscalesApp {
             console.error('Error loading carousel:', error);
             this.renderCarouselDefault(container);
         }
+    }
+
+    renderCarouselDefault(container) {
+        // Crear carrusel por defecto cuando no se puede cargar el JSON
+        container.innerHTML = `
+            <div id="default-carousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" 
+                             class="d-block w-100 carousel-image" alt="Filá Mariscales">
+                        <div class="carousel-overlay">
+                            <div class="carousel-caption">
+                                <h1 class="carousel-title">Filá Mariscales de Caballeros Templarios</h1>
+                                <p class="carousel-subtitle">Caballeros Templarios de Elche</p>
+                                <a href="lafila.html" class="btn btn-primary btn-lg me-3">
+                                    <i class="fas fa-shield-alt me-2"></i>Conoce la Filá
+                                </a>
+                                <a href="actividades.html" class="btn btn-outline-light btn-lg">
+                                    <i class="fas fa-calendar-alt me-2"></i>Actividades
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#default-carousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#default-carousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        `;
     }
 
     renderCarousel(data, container) {
@@ -1738,7 +1783,19 @@ class FilaMariscalesApp {
     // ===== CARGA DE TEXTOS =====
     async loadTextos() {
         try {
-            const response = await fetch(`${CONFIG.DATA_BASE_URL}textos.json`);
+            const response = await fetch(`${CONFIG.DATA_BASE_URL}textos.json`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                cache: 'no-cache'
+            });
+            
+            if (!response.ok) {
+                console.warn('Error cargando textos.json:', response.status, response.statusText);
+                throw new Error(`Failed to load textos: ${response.status}`);
+            }
+            
             const textos = await response.json();
             
             // Almacenar textos globalmente
@@ -1758,8 +1815,19 @@ class FilaMariscalesApp {
     // ===== FONDOS DE PÁGINA =====
     async loadFondos() {
         try {
-            const response = await fetch(`${CONFIG.DATA_BASE_URL}fondos.json`, { cache: 'no-store' });
-            if (!response.ok) throw new Error('No se pudieron cargar los fondos');
+            const response = await fetch(`${CONFIG.DATA_BASE_URL}fondos.json`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                cache: 'no-cache'
+            });
+            
+            if (!response.ok) {
+                console.warn('Error cargando fondos.json:', response.status, response.statusText);
+                throw new Error(`No se pudieron cargar los fondos: ${response.status}`);
+            }
+            
             const fondos = await response.json();
             
             // Aplicar fondos con un pequeño retraso para asegurar que el DOM esté listo

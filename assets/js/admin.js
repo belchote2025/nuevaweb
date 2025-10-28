@@ -1320,10 +1320,47 @@ class AdminApp {
                 return;
             }
             
+            // Verificar si hay archivos para subir
+            const fileFields = {};
+            const nonFileData = {};
+            
+            Object.entries(formData).forEach(([key, value]) => {
+                if (value instanceof File) {
+                    fileFields[key] = value;
+                } else {
+                    nonFileData[key] = value;
+                }
+            });
+            
+            const hasFiles = Object.keys(fileFields).length > 0;
+            
+            if (hasFiles) {
+                // Si hay archivos, subirlos primero y luego crear con las URLs
+                console.log('Archivos detectados, subiendo primero...');
+                
+                // Subir cada archivo y obtener su URL
+                for (const [fieldKey, file] of Object.entries(fileFields)) {
+                    try {
+                        const uploadResult = await this.uploadFileToServer(file, this.getUploadTypeForField(fieldKey));
+                        if (uploadResult.success) {
+                            nonFileData[fieldKey] = uploadResult.data.path;
+                            console.log(`Archivo ${fieldKey} subido:`, uploadResult.data.path);
+                        } else {
+                            this.showNotification(`Error subiendo archivo ${fieldKey}: ${uploadResult.message}`, 'error');
+                            return;
+                        }
+                    } catch (error) {
+                        console.error(`Error subiendo archivo ${fieldKey}:`, error);
+                        this.showNotification(`Error subiendo archivo ${fieldKey}`, 'error');
+                        return;
+                    }
+                }
+            }
+            
             // Preparar los datos para el envío (solo para creación)
             let payload = {
                 type: section,
-                data: formData
+                data: nonFileData
             };
             
             // Determinar el endpoint correcto
@@ -1390,6 +1427,13 @@ class AdminApp {
         inputs.forEach(input => {
             if (input.type === 'checkbox') {
                 formData[input.id] = input.checked;
+            } else if (input.type === 'file') {
+                // Para inputs de archivo, verificar si hay archivo seleccionado
+                if (input.files && input.files.length > 0) {
+                    formData[input.id] = input.files[0]; // Devolver el archivo
+                } else {
+                    formData[input.id] = input.value; // Devolver la URL existente
+                }
             } else {
                 formData[input.id] = input.value;
             }
@@ -1983,7 +2027,18 @@ class AdminApp {
             console.log('Datos del formulario:', formData);
             
             // Verificar si hay archivos para subir
-            const hasFiles = Object.values(formData).some(value => value instanceof File);
+            const fileFields = {};
+            const nonFileData = {};
+            
+            Object.entries(formData).forEach(([key, value]) => {
+                if (value instanceof File) {
+                    fileFields[key] = value;
+                } else {
+                    nonFileData[key] = value;
+                }
+            });
+            
+            const hasFiles = Object.keys(fileFields).length > 0;
             
             let payload;
             let headers = {
@@ -1991,28 +2046,39 @@ class AdminApp {
             };
             
             if (hasFiles) {
-                // Si hay archivos, usar FormData
-                const formDataToSend = new FormData();
-                formDataToSend.append('type', section);
-                formDataToSend.append('edit_id', this.getItemId(ADMIN_CONFIG.EDITING_ITEM));
+                // Si hay archivos, subirlos primero y luego actualizar con las URLs
+                console.log('Archivos detectados, subiendo primero...');
                 
-                // Añadir todos los datos al FormData
-                Object.entries(formData).forEach(([key, value]) => {
-                    if (value instanceof File) {
-                        formDataToSend.append(key, value);
-                    } else {
-                        formDataToSend.append(key, value);
+                // Subir cada archivo y obtener su URL
+                for (const [fieldKey, file] of Object.entries(fileFields)) {
+                    try {
+                        const uploadResult = await this.uploadFileToServer(file, this.getUploadTypeForField(fieldKey));
+                        if (uploadResult.success) {
+                            nonFileData[fieldKey] = uploadResult.data.path;
+                            console.log(`Archivo ${fieldKey} subido:`, uploadResult.data.path);
+                        } else {
+                            this.showNotification(`Error subiendo archivo ${fieldKey}: ${uploadResult.message}`, 'error');
+                            return;
+                        }
+                    } catch (error) {
+                        console.error(`Error subiendo archivo ${fieldKey}:`, error);
+                        this.showNotification(`Error subiendo archivo ${fieldKey}`, 'error');
+                        return;
                     }
-                });
+                }
                 
-                payload = formDataToSend;
-                headers = {}; // FormData maneja el Content-Type automáticamente
-                console.log('Enviando con FormData (archivos incluidos)');
+                // Ahora enviar con JSON usando las URLs de los archivos subidos
+                payload = {
+                    type: section,
+                    data: nonFileData,
+                    edit_id: this.getItemId(ADMIN_CONFIG.EDITING_ITEM)
+                };
+                console.log('Enviando con JSON (archivos ya subidos)');
             } else {
                 // Si no hay archivos, usar JSON normal
                 payload = {
                     type: section,
-                    data: formData,
+                    data: nonFileData,
                     edit_id: this.getItemId(ADMIN_CONFIG.EDITING_ITEM)
                 };
                 console.log('Enviando con JSON (sin archivos)');
@@ -2126,22 +2192,49 @@ class AdminApp {
             triggerButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Subiendo...';
         }
 
+        // Crear un nuevo input para cada subida para evitar problemas de reutilización
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
+        input.style.display = 'none'; // Ocultar el input
+        
+        // Función para limpiar sin causar errores
+        const safeCleanup = () => {
+            // Rehabilitar botón y restaurar texto
+            if (triggerButton) {
+                const originalText = triggerButton.getAttribute('data-original-text');
+                if (originalText) triggerButton.innerHTML = originalText;
+                triggerButton.disabled = false;
+                triggerButton.removeAttribute('data-original-text');
+            }
+
+            // Remover el input del DOM sin intentar limpiar su valor
+            setTimeout(() => {
+                if (input && input.parentNode) {
+                    input.parentNode.removeChild(input);
+                }
+            }, 100);
+        };
+        
         input.onchange = async (e) => {
             const file = e.target.files[0];
-            if (!file) return;
+            if (!file) {
+                // Si no hay archivo, limpiar y salir
+                safeCleanup();
+                return;
+            }
 
             // Validar tamaño (máximo 5MB)
             if (file.size > 5 * 1024 * 1024) {
                 this.showNotification('La imagen no puede superar los 5MB', 'error');
+                safeCleanup();
                 return;
             }
 
             // Validar tipo
             if (!file.type.startsWith('image/')) {
                 this.showNotification('Solo se permiten archivos de imagen', 'error');
+                safeCleanup();
                 return;
             }
 
@@ -2185,20 +2278,69 @@ class AdminApp {
                 this.showNotification('Error subiendo imagen', 'error');
             }
             finally {
-                // Rehabilitar botón y restaurar texto
-                if (triggerButton) {
-                    const originalText = triggerButton.getAttribute('data-original-text');
-                    if (originalText) triggerButton.innerHTML = originalText;
-                    triggerButton.disabled = false;
-                    triggerButton.removeAttribute('data-original-text');
-                }
-
-                // Limpiar input temporal para evitar reutilización del mismo cambio
-                input.value = '';
+                safeCleanup();
             }
         };
 
+        // Añadir temporalmente al DOM para que funcione correctamente
+        document.body.appendChild(input);
         input.click();
+    }
+
+    // Función auxiliar para limpiar el input de subida
+    cleanupUpload(input, triggerButton) {
+        // Rehabilitar botón y restaurar texto
+        if (triggerButton) {
+            const originalText = triggerButton.getAttribute('data-original-text');
+            if (originalText) triggerButton.innerHTML = originalText;
+            triggerButton.disabled = false;
+            triggerButton.removeAttribute('data-original-text');
+        }
+
+        // NO intentar limpiar el valor del input file - esto causa errores
+        // Los inputs de tipo file no pueden tener su valor establecido programáticamente
+        // excepto a una cadena vacía, y esto puede fallar en algunos navegadores
+
+        // Remover el input del DOM después de un breve retraso
+        setTimeout(() => {
+            if (input && input.parentNode) {
+                input.parentNode.removeChild(input);
+            }
+        }, 100);
+    }
+
+    // Función para subir archivo al servidor
+    async uploadFileToServer(file, uploadType) {
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('type', uploadType);
+
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}upload.php`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('Error subiendo archivo:', error);
+            return { success: false, message: 'Error de conexión' };
+        }
+    }
+
+    // Función para determinar el tipo de subida basado en el campo
+    getUploadTypeForField(fieldKey) {
+        // Mapear campos a tipos de subida
+        const fieldTypeMap = {
+            'imagen_url': 'carousel',
+            'imagen': 'gallery',
+            'fondo': 'backgrounds',
+            'logo': 'imagenes-sitio',
+            'avatar': 'imagenes-sitio'
+        };
+        
+        return fieldTypeMap[fieldKey] || 'gallery';
     }
 
     isAdmin() {
