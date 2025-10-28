@@ -1843,12 +1843,17 @@ class AdminApp {
                 formData[field.key] = element.checked;
                 console.log('  - Valor checkbox:', element.checked);
             } else if (field.type === 'file') {
-                // Manejar archivos
-                if (element.files && element.files.length > 0) {
+                // Manejar archivos - priorizar hidden con URL subida
+                const hidden = document.getElementById(`${field.key}_uploaded_url`);
+                if (hidden && hidden.value) {
+                    formData[field.key] = hidden.value;
+                    console.log('  - URL de archivo subido:', hidden.value);
+                } else if (element.files && element.files.length > 0) {
                     formData[field.key] = element.files[0];
                     console.log('  - Archivo seleccionado:', element.files[0].name);
                 } else {
-                    console.log('  - No hay archivo seleccionado');
+                    formData[field.key] = element.value || '';
+                    console.log('  - Valor del campo file:', element.value);
                 }
             } else if (field.key === 'password' && isEditing && !element.value) {
                 // No incluir la contraseña si estamos editando y el campo está vacío
@@ -2257,22 +2262,24 @@ class AdminApp {
                 const result = await response.json();
 
                 if (result.success) {
-                    // Rellenar el campo con la URL de la imagen
+                    // Siempre crear/actualizar el hidden con la URL subida
+                    let hidden = document.getElementById(`${fieldKey}_uploaded_url`);
+                    if (!hidden) {
+                        hidden = document.createElement('input');
+                        hidden.type = 'hidden';
+                        hidden.id = `${fieldKey}_uploaded_url`;
+                        const container = document.getElementById('newFormFields') || document.body;
+                        container.appendChild(hidden);
+                    }
+                    hidden.value = result.data.path;
+
+                    // Solo intentar escribir en el campo si NO es de tipo file
                     const field = document.getElementById(fieldKey);
-                    if (field) {
-                        if (field.type === 'file') {
-                            // No asignar a inputs de tipo file; almacenar en un hidden auxiliar
-                            let hidden = document.getElementById(`${fieldKey}_uploaded_url`);
-                            if (!hidden) {
-                                hidden = document.createElement('input');
-                                hidden.type = 'hidden';
-                                hidden.id = `${fieldKey}_uploaded_url`;
-                                const container = document.getElementById('newFormFields') || document.body;
-                                container.appendChild(hidden);
-                            }
-                            hidden.value = result.data.path;
-                        } else {
+                    if (field && field.type !== 'file') {
+                        try {
                             field.value = result.data.path;
+                        } catch (error) {
+                            // Ignorar errores de asignación
                         }
                     }
 
