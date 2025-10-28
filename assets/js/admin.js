@@ -1428,11 +1428,15 @@ class AdminApp {
             if (input.type === 'checkbox') {
                 formData[input.id] = input.checked;
             } else if (input.type === 'file') {
-                // Para inputs de archivo, verificar si hay archivo seleccionado
-                if (input.files && input.files.length > 0) {
-                    formData[input.id] = input.files[0]; // Devolver el archivo
+                // Si existe un hidden con la URL subida, usarlo
+                const hidden = document.getElementById(`${input.id}_uploaded_url`);
+                if (hidden && hidden.value) {
+                    formData[input.id] = hidden.value;
+                } else if (input.files && input.files.length > 0) {
+                    // Si aún no está subida, conservar el File para el flujo de subida previa
+                    formData[input.id] = input.files[0];
                 } else {
-                    formData[input.id] = input.value; // Devolver la URL existente
+                    formData[input.id] = input.value;
                 }
             } else {
                 formData[input.id] = input.value;
@@ -2256,7 +2260,20 @@ class AdminApp {
                     // Rellenar el campo con la URL de la imagen
                     const field = document.getElementById(fieldKey);
                     if (field) {
-                        field.value = result.data.path;
+                        if (field.type === 'file') {
+                            // No asignar a inputs de tipo file; almacenar en un hidden auxiliar
+                            let hidden = document.getElementById(`${fieldKey}_uploaded_url`);
+                            if (!hidden) {
+                                hidden = document.createElement('input');
+                                hidden.type = 'hidden';
+                                hidden.id = `${fieldKey}_uploaded_url`;
+                                const container = document.getElementById('newFormFields') || document.body;
+                                container.appendChild(hidden);
+                            }
+                            hidden.value = result.data.path;
+                        } else {
+                            field.value = result.data.path;
+                        }
                     }
 
                     // Mostrar preview
