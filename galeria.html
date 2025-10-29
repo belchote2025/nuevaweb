@@ -156,7 +156,7 @@
                     <p class="section-subtitle">Algunos de los momentos más especiales de nuestra filá</p>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" id="destacados-row">
                 <div class="col-lg-4 mb-4">
                     <div class="card h-100">
                         <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
@@ -273,5 +273,58 @@
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
     <script src="assets/js/gallery.js"></script>
+    <script>
+        // Carga dinámica de "Momentos Destacados" desde Imágenes del Sitio
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Cargando Momentos Destacados...');
+            try {
+                fetch('data/imagenes-sitio.json')
+                    .then(r => r.json())
+                    .then(items => {
+                        console.log('Datos cargados:', items);
+                        if (!Array.isArray(items)) return;
+                        // Filtrar elementos activos para la página "galeria-destacados"
+                        const destacados = items.filter(it => (it.pagina === 'galeria-destacados') && it.activa === true);
+                        console.log('Elementos destacados encontrados:', destacados);
+                        if (!destacados.length) return; // Mantener contenido estático si no hay datos
+
+                        const row = document.getElementById('destacados-row');
+                        if (!row) {
+                            console.log('No se encontró el elemento destacados-row');
+                            return;
+                        }
+
+                        // Renderizar hasta 3 tarjetas
+                        const maxCards = 3;
+                        const cards = destacados.slice(0, maxCards).map(item => {
+                            const src = (item.imagen_local && String(item.imagen_local).trim()) ? item.imagen_local : (item.url || '');
+                            const alt = item.descripcion || item.nombre || '';
+                            const title = item.nombre || 'Destacado';
+                            const text = item.descripcion || '';
+                            const safeSrc = src || 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80';
+                            return `
+                                <div class="col-lg-4 mb-4">
+                                    <div class="card h-100">
+                                        <img src="${safeSrc}" class="card-img-top" alt="${alt}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${title}</h5>
+                                            <p class="card-text">${text}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+
+                        console.log('Reemplazando contenido con:', cards);
+                        row.innerHTML = cards;
+                    })
+                    .catch(err => { 
+                        console.error('Error cargando datos:', err);
+                    });
+            } catch (err) { 
+                console.error('Error en script:', err);
+            }
+        });
+    </script>
 </body>
 </html>

@@ -28,5 +28,35 @@
         "activa": true,
         "created_at": "2025-10-21 16:00:00",
         "updated_at": "2025-10-21 16:00:00"
+    },
+    {
+        "nombre": "Fiestas de Moros y Cristianos",
+        "descripcion": "Participaci\u00f3n en las fiestas m\u00e1s importantes de Elche con nuestros trajes tradicionales.",
+        "url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+        "pagina": "galeria-destacados",
+        "activa": true,
+        "imagen_local": "uploads\/images\/gallery\/gallery_6901f0946f89a.jpg",
+        "id": "6901f09471fb3",
+        "updated_at": "2025-10-29 11:46:44"
+    },
+    {
+        "nombre": "Concierto de la Banda",
+        "descripcion": "Nuestra banda musical en acci\u00f3n durante uno de sus conciertos especiales.",
+        "url": "",
+        "pagina": "galeria-destacados",
+        "activa": true,
+        "imagen_local": "uploads\/images\/gallery\/gallery_6901e878f12c4.jpg",
+        "id": "6901e87910c49",
+        "updated_at": "2025-10-29 11:12:09"
+    },
+    {
+        "nombre": "Cena de Hermandad",
+        "descripcion": "Momentos de hermandad durante nuestras celebraciones y encuentros sociales.",
+        "url": "",
+        "pagina": "galeria-destacados",
+        "activa": true,
+        "imagen_local": "uploads\/images\/gallery\/gallery_6901f0d704cd5.jpg",
+        "id": "6901f0d708906",
+        "updated_at": "2025-10-29 11:47:51"
     }
 ]

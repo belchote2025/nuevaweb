@@ -1602,6 +1602,7 @@ class AdminApp {
                 { key: 'pagina', label: 'Página', type: 'select', options: [
                     { value: 'historia', label: 'Historia' },
                     { value: 'galeria', label: 'Galería' },
+                    { value: 'galeria-destacados', label: 'Galería - Momentos Destacados' },
                     { value: 'eventos', label: 'Eventos' },
                     { value: 'musica', label: 'Música' },
                     { value: 'general', label: 'General' }
