@@ -128,7 +128,7 @@ self.addEventListener('notificationclose', (event) => {
     console.log('Notificación cerrada:', event);
     
     if (event.notification.data && event.notification.data.analytics) {
-        fetch('/api/analytics.php', {
+        fetch('api/analytics.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

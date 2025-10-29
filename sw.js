@@ -122,7 +122,7 @@ self.addEventListener('notificationclose', (event) => {
     // Opcional: Enviar analytics de notificación cerrada
     if (event.notification.data && event.notification.data.analytics) {
         // Enviar evento de analytics
-        fetch('/api/analytics.php', {
+        fetch('api/analytics.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

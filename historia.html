@@ -318,6 +318,30 @@
                     card.style.transform = 'translateY(0)';
                 }, index * 100);
             });
+
+            // Cargar imagen dinámica de la sección "Imágenes del sitio" para Historia
+            try {
+                fetch('data/imagenes-sitio.json')
+                    .then(r => r.json())
+                    .then(items => {
+                        if (!Array.isArray(items)) return;
+                        const historiaItem = items.find(it => (it.pagina === 'historia') && (it.activa === true));
+                        if (!historiaItem) return;
+                        const img = document.querySelector('#historia .historia-image img');
+                        if (!img) return;
+                        // Priorizar imagen_local subida; si no, usar url remota
+                        const newSrc = historiaItem.imagen_local && String(historiaItem.imagen_local).trim() ? historiaItem.imagen_local : (historiaItem.url || '');
+                        if (newSrc) {
+                            img.src = newSrc;
+                        }
+                        if (historiaItem.descripcion) {
+                            img.alt = historiaItem.descripcion;
+                        } else if (historiaItem.nombre) {
+                            img.alt = historiaItem.nombre;
+                        }
+                    })
+                    .catch(() => {/* silencioso */});
+            } catch(_) { /* silencioso */ }
         });
     </script>
 </body>

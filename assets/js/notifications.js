@@ -14,15 +14,40 @@ class NotificationManager {
         }
 
         try {
+            // Verificar si estamos en un entorno válido para Service Workers
+            if (!this.canRegisterServiceWorker()) {
+                console.warn('Service Worker no disponible en este entorno (requiere HTTPS o localhost)');
+                return;
+            }
+
+            // Obtener la ruta base del proyecto
+            const swPath = this.getServiceWorkerPath();
+            
             // Registrar service worker - intentar primero con .php para tipo MIME correcto
             let registration;
             try {
-                registration = await navigator.serviceWorker.register('/fila-mariscales-web/sw.php');
+                registration = await navigator.serviceWorker.register(swPath + 'sw.php', {
+                    scope: './'
+                });
                 console.log('Service Worker registrado con sw.php:', registration);
             } catch (phpError) {
-                console.warn('Error con sw.php, intentando con sw.js:', phpError);
-                registration = await navigator.serviceWorker.register('/fila-mariscales-web/sw.js');
-                console.log('Service Worker registrado con sw.js:', registration);
+                // Solo loggear si no es un error de SSL conocido
+                if (!this.isSSLError(phpError)) {
+                    console.warn('Error con sw.php, intentando con sw.js:', phpError);
+                }
+                try {
+                    registration = await navigator.serviceWorker.register(swPath + 'sw.js', {
+                        scope: './'
+                    });
+                    console.log('Service Worker registrado con sw.js:', registration);
+                } catch (jsError) {
+                    // Si ambos fallan por SSL, solo loggear silenciosamente
+                    if (this.isSSLError(jsError)) {
+                        console.warn('Service Worker no disponible: certificado SSL inválido en desarrollo local');
+                        return; // Salir silenciosamente si es error de SSL
+                    }
+                    throw jsError; // Re-lanzar otros errores
+                }
             }
             
             this.registration = registration;
@@ -34,8 +59,48 @@ class NotificationManager {
             this.setupEventListeners();
             
         } catch (error) {
-            console.error('Error inicializando notificaciones:', error);
+            // Solo loggear errores que no sean de SSL
+            if (!this.isSSLError(error)) {
+                console.error('Error inicializando notificaciones:', error);
+            }
         }
+    }
+
+    // Verificar si podemos registrar un Service Worker
+    canRegisterServiceWorker() {
+        const isLocalhost = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1' ||
+                           window.location.hostname === '';
+        const isHTTPS = window.location.protocol === 'https:';
+        
+        // Service Workers funcionan en HTTPS o en localhost con HTTP
+        return isHTTPS || isLocalhost;
+    }
+
+    // Detectar errores de SSL
+    isSSLError(error) {
+        if (!error || !error.message) return false;
+        const errorMsg = error.message.toLowerCase();
+        return errorMsg.includes('ssl') || 
+               errorMsg.includes('certificate') ||
+               errorMsg.includes('securityerror');
+    }
+
+    // Obtener la ruta base para el Service Worker
+    getServiceWorkerPath() {
+        // Obtener el path base del proyecto
+        const pathname = window.location.pathname;
+        const pathParts = pathname.split('/').filter(p => p);
+        
+        // Si estamos en la raíz, usar ruta relativa
+        if (pathParts.length === 0 || pathParts[pathParts.length - 1].endsWith('.html')) {
+            // Estamos en un archivo HTML dentro del proyecto
+            // Usar ruta relativa al directorio raíz
+            return './';
+        }
+        
+        // Construir ruta relativa al directorio raíz
+        return './';
     }
 
     setupEventListeners() {
@@ -55,6 +120,11 @@ class NotificationManager {
 
     async checkSubscription() {
         try {
+            // Verificar si tenemos un registro válido
+            if (!this.registration) {
+                return;
+            }
+            
             const registration = await navigator.serviceWorker.ready;
             this.subscription = await registration.pushManager.getSubscription();
             
@@ -62,7 +132,10 @@ class NotificationManager {
             this.updateNotificationUI();
             
         } catch (error) {
-            console.error('Error verificando suscripción:', error);
+            // Solo loggear si no es un error esperado (como cuando no hay SW)
+            if (!this.isSSLError(error)) {
+                console.error('Error verificando suscripción:', error);
+            }
         }
     }
 
@@ -86,6 +159,12 @@ class NotificationManager {
 
     async subscribe() {
         try {
+            // Verificar que tengamos un registro válido
+            if (!this.registration) {
+                this.showMessage('Service Worker no disponible. Las notificaciones requieren HTTPS válido o localhost.', 'error');
+                return;
+            }
+            
             // Solicitar permisos
             const permission = await Notification.requestPermission();
             if (permission !== 'granted') {
@@ -94,7 +173,7 @@ class NotificationManager {
             }
 
             // Obtener clave pública VAPID
-            const response = await fetch('/fila-mariscales-web/api/notifications.php?action=vapid-key');
+            const response = await fetch('api/notifications.php?action=vapid-key');
             const data = await response.json();
             
             if (!data.success) {
@@ -110,7 +189,7 @@ class NotificationManager {
 
             // Enviar suscripción al servidor
             const userInfo = this.getUserInfo();
-            const subscribeResponse = await fetch('/fila-mariscales-web/api/notifications.php', {
+            const subscribeResponse = await fetch('api/notifications.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -141,11 +220,18 @@ class NotificationManager {
         try {
             if (!this.subscription) return;
 
+            // Verificar que tengamos un registro válido
+            if (!this.registration) {
+                this.subscription = null;
+                this.updateNotificationUI();
+                return;
+            }
+
             // Desuscribir del navegador
             await this.subscription.unsubscribe();
 
             // Notificar al servidor
-            const response = await fetch('/fila-mariscales-web/api/notifications.php', {
+            const response = await fetch('api/notifications.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -215,7 +301,7 @@ class NotificationManager {
     // Método para enviar notificación (solo admin)
     async sendNotification(title, body, type = 'general', url = '', targetUsers = 'all') {
         try {
-            const response = await fetch('/fila-mariscales-web/api/notifications.php', {
+            const response = await fetch('api/notifications.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

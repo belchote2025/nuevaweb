@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Validate target type
 $type = $_POST['type'] ?? 'gallery';
-$allowedTypes = ['carousel', 'gallery', 'products', 'backgrounds', 'news', 'events', 'directiva'];
+$allowedTypes = ['carousel', 'gallery', 'products', 'backgrounds', 'news', 'events', 'directiva', 'imagenes-sitio'];
 if (!in_array($type, $allowedTypes, true)) {
     respond(false, 'Tipo no válido');
 }
@@ -76,9 +76,9 @@ if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
 // Build public relative URL (frontend will use it as src)
 $publicPath = 'uploads/images/' . $type . '/' . $filename;
 
-// Generar miniatura si es una imagen de galería
+// Generar miniatura si es una imagen de galería (solo si GD está disponible)
 $thumbPath = null;
-if ($type === 'gallery') {
+if ($type === 'gallery' && extension_loaded('gd')) {
     $thumbPath = generateThumbnail($targetPath, $targetDir, $filename);
 }
 
@@ -90,6 +90,10 @@ respond(true, 'Subida correcta', [
 ]);
 
 function generateThumbnail($sourcePath, $targetDir, $filename) {
+    // Verificar que las funciones de GD estén disponibles
+    if (!extension_loaded('gd')) {
+        return null;
+    }
     // Crear directorio de miniaturas si no existe
     $thumbDir = $targetDir . DIRECTORY_SEPARATOR . 'thumbs';
     if (!is_dir($thumbDir)) {
@@ -114,12 +118,15 @@ function generateThumbnail($sourcePath, $targetDir, $filename) {
     $sourceImage = null;
     switch ($mime) {
         case 'image/jpeg':
+            if (!function_exists('imagecreatefromjpeg')) return null;
             $sourceImage = imagecreatefromjpeg($sourcePath);
             break;
         case 'image/png':
+            if (!function_exists('imagecreatefrompng')) return null;
             $sourceImage = imagecreatefrompng($sourcePath);
             break;
         case 'image/webp':
+            if (!function_exists('imagecreatefromwebp')) return null;
             $sourceImage = imagecreatefromwebp($sourcePath);
             break;
         default:
@@ -151,12 +158,15 @@ function generateThumbnail($sourcePath, $targetDir, $filename) {
     $success = false;
     switch ($mime) {
         case 'image/jpeg':
+            if (!function_exists('imagejpeg')) return null;
             $success = imagejpeg($thumbImage, $thumbPath, 85);
             break;
         case 'image/png':
+            if (!function_exists('imagepng')) return null;
             $success = imagepng($thumbImage, $thumbPath, 8);
             break;
         case 'image/webp':
+            if (!function_exists('imagewebp')) return null;
             $success = imagewebp($thumbImage, $thumbPath, 85);
             break;
     }

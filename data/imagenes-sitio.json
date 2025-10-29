@@ -1,19 +1,19 @@
 [
     {
-        "id": "img-historia-001",
         "nombre": "Imagen Principal Historia",
-        "descripcion": "Imagen principal de la sección de historia",
-        "url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "descripcion": "Imagen principal de la secci\u00f3n de historia",
+        "url": "",
         "pagina": "historia",
         "activa": true,
-        "created_at": "2025-10-21 16:00:00",
-        "updated_at": "2025-10-21 16:00:00"
+        "imagen_local": "uploads\/images\/gallery\/gallery_6901df44c4c58.jpg",
+        "id": "6901df44c759b",
+        "updated_at": "2025-10-29 10:32:52"
     },
     {
         "id": "img-galeria-001",
-        "nombre": "Imagen Principal Galería",
-        "descripcion": "Imagen principal de la sección de galería",
-        "url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+        "nombre": "Imagen Principal Galer\u00eda",
+        "descripcion": "Imagen principal de la secci\u00f3n de galer\u00eda",
+        "url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
         "pagina": "galeria",
         "activa": true,
         "created_at": "2025-10-21 16:00:00",
@@ -22,8 +22,8 @@
     {
         "id": "img-eventos-001",
         "nombre": "Imagen Principal Eventos",
-        "descripcion": "Imagen principal de la sección de eventos",
-        "url": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+        "descripcion": "Imagen principal de la secci\u00f3n de eventos",
+        "url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
         "pagina": "eventos",
         "activa": true,
         "created_at": "2025-10-21 16:00:00",
