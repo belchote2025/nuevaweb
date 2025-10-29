@@ -3589,14 +3589,17 @@ class AdminApp {
     async replyToContact(id, nombre, email, asunto) {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
+        modal.setAttribute('tabindex', '-1');
+        modal.setAttribute('aria-labelledby', 'replyContactModalLabel');
+        modal.setAttribute('aria-modal', 'true');
         modal.innerHTML = `
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">
+                        <h5 class="modal-title" id="replyContactModalLabel">
                             <i class="fas fa-reply me-2"></i>Responder a ${nombre}
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body">
                         <div class="alert alert-info">
@@ -3636,6 +3639,20 @@ class AdminApp {
         
         document.body.appendChild(modal);
         const bsModal = new bootstrap.Modal(modal);
+        
+        // Manejar eventos de accesibilidad
+        modal.addEventListener('shown.bs.modal', () => {
+            modal.removeAttribute('aria-hidden');
+            const replySubject = modal.querySelector('#replySubject');
+            if (replySubject) {
+                replySubject.focus();
+            }
+        });
+        
+        modal.addEventListener('hide.bs.modal', () => {
+            modal.setAttribute('aria-hidden', 'true');
+        });
+        
         bsModal.show();
         
         // Event listener para enviar
@@ -3695,14 +3712,17 @@ class AdminApp {
     viewContactMessage(id, nombre, mensaje) {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
+        modal.setAttribute('tabindex', '-1');
+        modal.setAttribute('aria-labelledby', 'viewMessageModalLabel');
+        modal.setAttribute('aria-modal', 'true');
         modal.innerHTML = `
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">
+                        <h5 class="modal-title" id="viewMessageModalLabel">
                             <i class="fas fa-envelope me-2"></i>Mensaje de ${nombre}
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body">
                         <div class="message-content" style="white-space: pre-wrap; line-height: 1.6; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #DC143C;">
@@ -3721,6 +3741,20 @@ class AdminApp {
         
         document.body.appendChild(modal);
         const bsModal = new bootstrap.Modal(modal);
+        
+        // Manejar eventos de accesibilidad
+        modal.addEventListener('shown.bs.modal', () => {
+            modal.removeAttribute('aria-hidden');
+            const closeBtn = modal.querySelector('.btn-secondary');
+            if (closeBtn) {
+                closeBtn.focus();
+            }
+        });
+        
+        modal.addEventListener('hide.bs.modal', () => {
+            modal.setAttribute('aria-hidden', 'true');
+        });
+        
         bsModal.show();
         
         // Limpiar modal cuando se cierre
@@ -3732,14 +3766,17 @@ class AdminApp {
     changeContactStatus(id, currentStatus) {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
+        modal.setAttribute('tabindex', '-1');
+        modal.setAttribute('aria-labelledby', 'changeStatusModalLabel');
+        modal.setAttribute('aria-modal', 'true');
         modal.innerHTML = `
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">
+                        <h5 class="modal-title" id="changeStatusModalLabel">
                             <i class="fas fa-flag me-2"></i>Cambiar Estado
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body">
                         <p>Selecciona el nuevo estado para este contacto:</p>
@@ -3767,6 +3804,23 @@ class AdminApp {
         
         document.body.appendChild(modal);
         const bsModal = new bootstrap.Modal(modal);
+        
+        // Manejar eventos de accesibilidad
+        modal.addEventListener('shown.bs.modal', () => {
+            // Remover aria-hidden cuando el modal esté visible
+            modal.removeAttribute('aria-hidden');
+            // Establecer foco en el primer botón de estado
+            const firstStatusBtn = modal.querySelector('.status-btn');
+            if (firstStatusBtn) {
+                firstStatusBtn.focus();
+            }
+        });
+        
+        modal.addEventListener('hide.bs.modal', () => {
+            // Restaurar aria-hidden cuando el modal se cierre
+            modal.setAttribute('aria-hidden', 'true');
+        });
+        
         bsModal.show();
         
         // Marcar estado actual

@@ -270,6 +270,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Actualizar datos (PUT)
+if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$input || !isset($input['type']) || !isset($input['id'])) {
+        response(false, 'Tipo e ID requeridos');
+    }
+    
+    $type = $input['type'];
+    $id = $input['id'];
+    
+    $data = loadData($type);
+    $found = false;
+    
+    foreach ($data as $key => $item) {
+        if ($item['id'] == $id) {
+            // Actualizar campos específicos según el tipo
+            if ($type === 'contactos') {
+                // Actualizar estado si se proporciona
+                if (isset($input['estado'])) {
+                    $data[$key]['estado'] = $input['estado'];
+                }
+                // Actualizar prioridad si se proporciona
+                if (isset($input['prioridad'])) {
+                    $data[$key]['prioridad'] = $input['prioridad'];
+                }
+            } else {
+                // Para otros tipos, actualizar todos los campos proporcionados
+                foreach ($input as $field => $value) {
+                    if ($field !== 'type' && $field !== 'id') {
+                        $data[$key][$field] = $value;
+                    }
+                }
+            }
+            
+            // Actualizar timestamp
+            if (isset($data[$key])) {
+                $data[$key]['updated_at'] = date('Y-m-d H:i:s');
+            }
+            
+            $found = true;
+            break;
+        }
+    }
+    
+    if (!$found) {
+        response(false, 'Elemento no encontrado');
+    }
+    
+    if (saveData($type, $data)) {
+        response(true, 'Actualizado correctamente', $data[$key] ?? null);
+    } else {
+        response(false, 'Error al guardar');
+    }
+}
+
 // Eliminar datos
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     $input = json_decode(file_get_contents('php://input'), true);
