@@ -637,14 +637,37 @@ class AdminApp {
                     </td>`;
                 }
                 
-                // Información especial para socios (estado de contraseña)
-                if (ADMIN_CONFIG.CURRENT_SECTION === 'socios' && col.key === 'password_status') {
-                    const badgeClass = value === 'Asignada' ? 'bg-success' : 'bg-danger';
-                    const icon = value === 'Asignada' ? 'fa-check-circle' : 'fa-exclamation-circle';
+                // Formatear contraseñas para socios
+                if (ADMIN_CONFIG.CURRENT_SECTION === 'socios' && col.key === 'password') {
+                    if (!value) {
+                        return `<td>
+                            <span class="badge bg-danger">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Sin contraseña
+                            </span>
+                        </td>`;
+                    }
+                    
+                    // Mostrar información útil sobre la contraseña
+                    const passwordLength = value.length;
+                    const isHashed = value.startsWith('$2y$');
+                    const strength = passwordLength > 50 ? 'Fuerte' : passwordLength > 30 ? 'Media' : 'Débil';
+                    const strengthClass = passwordLength > 50 ? 'bg-success' : passwordLength > 30 ? 'bg-warning' : 'bg-danger';
+                    
                     return `<td>
-                        <span class="badge ${badgeClass}">
-                            <i class="fas ${icon} me-1"></i>${value}
-                        </span>
+                        <div class="password-info">
+                            <div class="d-flex align-items-center">
+                                <span class="badge ${strengthClass} me-2">
+                                    <i class="fas fa-shield-alt me-1"></i>${strength}
+                                </span>
+                                <small class="text-muted">${isHashed ? 'Hash encriptado' : 'Texto plano'}</small>
+                            </div>
+                            <div class="mt-1">
+                                <button class="btn btn-sm btn-outline-info toggle-password" 
+                                        data-id="${item.id}" data-hash="${value}" title="Ver hash completo">
+                                    <i class="fas fa-eye me-1"></i>Ver Hash
+                                </button>
+                            </div>
+                        </div>
                     </td>`;
                 }
                 
@@ -684,6 +707,64 @@ class AdminApp {
                 </td>
             </tr>
         `).join('');
+        
+        // Event listeners para botones de mostrar/ocultar contraseña
+        if (section === 'socios') {
+            // Usar setTimeout para asegurar que el DOM esté completamente renderizado
+            setTimeout(() => {
+                tableBody.querySelectorAll('.toggle-password').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const hash = btn.dataset.hash;
+                        const icon = btn.querySelector('i');
+                        
+                        if (btn.textContent.includes('Ver Hash')) {
+                            // Mostrar hash completo
+                            btn.innerHTML = '<i class="fas fa-eye-slash me-1"></i>Ocultar Hash';
+                            btn.title = 'Ocultar hash completo';
+                            
+                            // Crear modal temporal para mostrar el hash
+                            const modal = document.createElement('div');
+                            modal.className = 'modal fade';
+                            modal.innerHTML = `
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Hash de Contraseña</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="text-muted mb-3">Este es el hash encriptado de la contraseña. No se puede convertir de vuelta a texto plano por seguridad.</p>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" value="${hash}" readonly id="hashInput">
+                                                <button class="btn btn-outline-secondary" type="button" onclick="navigator.clipboard.writeText('${hash}')">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            document.body.appendChild(modal);
+                            const bsModal = new bootstrap.Modal(modal);
+                            bsModal.show();
+                            
+                            // Limpiar modal cuando se cierre
+                            modal.addEventListener('hidden.bs.modal', () => {
+                                document.body.removeChild(modal);
+                            });
+                        } else {
+                            // Volver al estado original
+                            btn.innerHTML = '<i class="fas fa-eye me-1"></i>Ver Hash';
+                            btn.title = 'Ver hash completo';
+                        }
+                    });
+                });
+            }, 100);
+        }
     }
 
     getColumnsConfig(section) {
@@ -811,7 +892,7 @@ class AdminApp {
                 { key: 'direccion', title: 'Dirección', type: 'text' },
                 { key: 'fecha_ingreso', title: 'Fecha de Ingreso', type: 'date' },
                 { key: 'numero_socio', title: 'Número Socio', type: 'text' },
-                { key: 'password_status', title: 'Contraseña', type: 'text' },
+                { key: 'password', title: 'Contraseña', type: 'password' },
                 { key: 'activo', title: 'Activo', type: 'boolean' }
             ],
             'textos': [
@@ -3098,10 +3179,68 @@ class AdminApp {
 
     // ===== SOCIOS - RESETEAR CONTRASEÑA =====
     async resetSocioPassword(id, nombre, email) {
-        if (!confirm(`¿Estás seguro de que quieres resetear la contraseña de ${nombre}?`)) {
-            return;
-        }
+        // Mostrar modal de opciones
+        this.showResetPasswordOptions(id, nombre, email);
+    }
 
+    showResetPasswordOptions(id, nombre, email) {
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.innerHTML = `
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">🔐 Resetear Contraseña</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Cómo quieres enviar la nueva contraseña a <strong>${nombre}</strong>?</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" id="resetAndShow">
+                                <i class="fas fa-eye me-2"></i>Mostrar en pantalla
+                            </button>
+                            <button class="btn btn-success" id="resetAndEmail">
+                                <i class="fas fa-envelope me-2"></i>Enviar por email
+                            </button>
+                            <button class="btn btn-info" id="resetBoth">
+                                <i class="fas fa-eye me-2"></i>Mostrar Y enviar por email
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+        
+        // Event listeners
+        modal.querySelector('#resetAndShow').addEventListener('click', () => {
+            bsModal.hide();
+            this.performPasswordReset(id, nombre, email, 'show');
+        });
+        
+        modal.querySelector('#resetAndEmail').addEventListener('click', () => {
+            bsModal.hide();
+            this.performPasswordReset(id, nombre, email, 'email');
+        });
+        
+        modal.querySelector('#resetBoth').addEventListener('click', () => {
+            bsModal.hide();
+            this.performPasswordReset(id, nombre, email, 'both');
+        });
+        
+        // Limpiar modal cuando se cierre
+        modal.addEventListener('hidden.bs.modal', () => {
+            document.body.removeChild(modal);
+        });
+    }
+
+    async performPasswordReset(id, nombre, email, method) {
         try {
             // Generar nueva contraseña
             const nuevaPassword = this.generatePassword(8);
@@ -3112,6 +3251,7 @@ class AdminApp {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     id: id,
                     password: nuevaPassword
@@ -3121,12 +3261,46 @@ class AdminApp {
             const result = await response.json();
 
             if (response.ok && result.success) {
-                // Mostrar modal con la nueva contraseña
-                this.showPasswordModal(nombre, email, nuevaPassword);
+                let emailSent = false;
+                
+                // Enviar por email si se solicita
+                if (method === 'email' || method === 'both') {
+                    try {
+                        const emailResponse = await fetch(`${ADMIN_CONFIG.API_BASE_URL}send-email.php`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            credentials: 'include',
+                            body: JSON.stringify({
+                                email: email,
+                                nombre: nombre,
+                                password: nuevaPassword
+                            })
+                        });
+                        
+                        const emailResult = await emailResponse.json();
+                        emailSent = emailResponse.ok && emailResult.success;
+                    } catch (emailError) {
+                        console.error('Error enviando email:', emailError);
+                    }
+                }
+                
+                // Mostrar modal si se solicita
+                if (method === 'show' || method === 'both') {
+                    this.showPasswordModal(nombre, email, nuevaPassword, emailSent);
+                } else if (method === 'email') {
+                    if (emailSent) {
+                        this.showNotification('Contraseña reseteada y enviada por email exitosamente', 'success');
+                    } else {
+                        this.showNotification('Contraseña reseteada pero error al enviar email', 'warning');
+                        this.showPasswordModal(nombre, email, nuevaPassword, false);
+                    }
+                }
                 
                 // Recargar datos
                 await this.loadSectionData('socios');
-                this.showNotification('Contraseña reseteada exitosamente', 'success');
+                
             } else {
                 this.showNotification(result.message || 'Error al resetear la contraseña', 'error');
             }
@@ -3145,7 +3319,7 @@ class AdminApp {
         return password;
     }
 
-    showPasswordModal(nombre, email, password) {
+    showPasswordModal(nombre, email, password, emailSent = null) {
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.innerHTML = `
@@ -3163,6 +3337,12 @@ class AdminApp {
                             <p><strong>Email:</strong> ${email}</p>
                             <p><strong>Contraseña:</strong> <span class="badge bg-warning text-dark fs-6">${password}</span></p>
                         </div>
+                        ${emailSent !== null ? `
+                            <div class="alert ${emailSent ? 'alert-success' : 'alert-danger'}">
+                                <i class="fas ${emailSent ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
+                                <strong>Email:</strong> ${emailSent ? 'Enviado exitosamente' : 'Error al enviar'}
+                            </div>
+                        ` : ''}
                         <div class="alert alert-warning">
                             <i class="fas fa-exclamation-triangle me-2"></i>
                             <strong>Importante:</strong> Comunica estas credenciales al socio de forma segura.

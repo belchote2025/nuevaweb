@@ -18,8 +18,8 @@
         "numero_socio": "11",
         "activo": true,
         "id": "68efe722d489c",
-        "updated_at": "2025-10-21 14:53:50",
-        "password": "$2y$10$JrQ8WQv3oJLFZCe6548NvOtgHOT3WRJTfoLM5HtHbByMVdjYejxEm"
+        "updated_at": "2025-10-29 14:05:39",
+        "password": "$2y$10$DxrDQ05FD0z0sMGpaNmi9eiv4bolYtjgFGbuKLg2ynmiYmLR9N4b6"
     },
     {
         "id": "68efeb4fafcf39.90307024",
@@ -52,12 +52,12 @@
         "email": "edu300572@gmail.com",
         "telefono": "688704737",
         "direccion": "capita antoni mena 69 9 1",
-        "password": "$2y$10$dfOT4lZQ3NU.q3sQEc0ZKOzQpVk3QseUa8Qm4ZukcbuWxsbYZIWWi",
+        "password": "$2y$10$W7IQPvL2UfPx1P4Y7aRpSOV9AB7oaNrIB6Nec.pBq0FUD8U6u4zda",
         "rol": "socio",
         "activo": true,
         "numero_socio": "SOC-FB6969EE",
         "fecha_ingreso": "2025-10-29",
         "fecha_creacion": "2025-10-29 12:51:18",
-        "updated_at": "2025-10-29 12:51:18"
+        "updated_at": "2025-10-29 14:20:12"
     }
 ]
