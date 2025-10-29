@@ -45,19 +45,5 @@
         "id": "68f780581f4cd",
         "updated_at": "2025-10-21 14:53:50",
         "password": "$2y$10$Fb8ZvM6WJICjzq6Sx3PxdubjkvxeDQOBbb5iRrM.60MeIFhSjoyrO"
-    },
-    {
-        "id": "socio-6901ffb6969ee",
-        "nombre": "pepe",
-        "email": "edu300572@gmail.com",
-        "telefono": "688704737",
-        "direccion": "capita antoni mena 69 9 1",
-        "password": "$2y$10$dfOT4lZQ3NU.q3sQEc0ZKOzQpVk3QseUa8Qm4ZukcbuWxsbYZIWWi",
-        "rol": "socio",
-        "activo": true,
-        "numero_socio": "SOC-FB6969EE",
-        "fecha_ingreso": "2025-10-29",
-        "fecha_creacion": "2025-10-29 12:51:18",
-        "updated_at": "2025-10-29 12:51:18"
     }
 ]

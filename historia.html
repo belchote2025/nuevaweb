@@ -188,10 +188,22 @@
                 
                 <!-- Login -->
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.html">
-                            <i class="fas fa-user me-1"></i>Admin
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>Acceso
                         </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="login-socios.html">
+                                <i class="fas fa-user-friends me-2"></i>Área de Socios
+                            </a></li>
+                            <li><a class="dropdown-item" href="registro.html">
+                                <i class="fas fa-user-plus me-2"></i>Registrarse
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="login.html">
+                                <i class="fas fa-cog me-2"></i>Panel Admin
+                            </a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>

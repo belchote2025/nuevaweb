@@ -4,36 +4,59 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Credentials: true');
 
-// Verificar autenticación (temporalmente deshabilitado para pruebas)
-// TODO: Restaurar autenticación cuando esté configurada
-/*
+// Verificar autenticación
 if (!isset($_SESSION['socio_logged_in']) || $_SESSION['socio_logged_in'] !== true) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'No autorizado. Por favor inicie sesión.']);
     exit();
 }
-*/
 
-// Verificar si el usuario es administrador (temporalmente deshabilitado)
-// TODO: Restaurar verificación de administrador cuando esté configurada
-/*
-$socios = json_decode(file_get_contents(__DIR__ . '/../data/socios.json'), true);
-$usuario_actual = null;
+// Verificar si el usuario tiene permisos de administración
+$user_role = $_SESSION['admin_role'] ?? 'socio';
 
-foreach ($socios as $socio) {
-    if (isset($socio['email']) && $socio['email'] === $_SESSION['socio_email']) {
-        $usuario_actual = $socio;
-        break;
+// Si no hay rol en sesión, intentar obtenerlo de los archivos
+if ($user_role === 'socio' || empty($user_role)) {
+    // Buscar en socios.json
+    $socios_file = __DIR__ . '/../data/socios.json';
+    if (file_exists($socios_file)) {
+        $socios = json_decode(file_get_contents($socios_file), true);
+        foreach ($socios as $s) {
+            if (isset($s['email']) && $s['email'] === $_SESSION['socio_email']) {
+                $user_role = $s['rol'] ?? 'socio';
+                $_SESSION['admin_role'] = $user_role;
+                break;
+            }
+        }
+    }
+    
+    // Si aún no se encuentra, buscar en users.json
+    if ($user_role === 'socio' || empty($user_role)) {
+        $users_file = __DIR__ . '/../data/users.json';
+        if (file_exists($users_file)) {
+            $users = json_decode(file_get_contents($users_file), true);
+            foreach ($users as $u) {
+                if (isset($u['email']) && $u['email'] === $_SESSION['socio_email']) {
+                    $user_role = $u['role'] ?? 'socio';
+                    $_SESSION['admin_role'] = $user_role;
+                    break;
+                }
+            }
+        }
     }
 }
 
-if (!isset($usuario_actual['rol']) || $usuario_actual['rol'] !== 'admin') {
+$allowed_roles = ['admin', 'editor', 'moderator'];
+
+if (!in_array($user_role, $allowed_roles)) {
     http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Acceso denegado. Se requieren privilegios de administrador.']);
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Acceso denegado. Se requieren privilegios de administración.'
+    ]);
     exit();
 }
-*/
 
 // Manejar preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

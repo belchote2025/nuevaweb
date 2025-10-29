@@ -45,8 +45,8 @@ class AdminApp {
         this.authCheckPromise = (async () => {
             try {
                 const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}auth.php?action=check`, {
-                    method: 'GET',
                     credentials: 'include',
+                    method: 'GET',
                     headers: {
                         'Cache-Control': 'no-cache',
                         'Pragma': 'no-cache'
@@ -88,7 +88,9 @@ class AdminApp {
 
     async logout() {
         try {
-            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}auth.php?action=logout`);
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}auth.php?action=logout`, {
+                credentials: 'include'
+            });
             const result = await response.json();
             
             if (result.success) {
@@ -374,6 +376,9 @@ class AdminApp {
     // ===== CARGA DE DATOS =====
     async loadDashboardData() {
         try {
+            // Esperar a que se complete la autenticación
+            await this.checkAuth();
+            
             const [noticias, eventos, productos, contactos, galeria, socios, musica, reservas] = await Promise.all([
                 this.fetchData('noticias'),
                 this.fetchData('eventos'),
@@ -411,11 +416,16 @@ class AdminApp {
         const ctx = document.getElementById('activityChart');
         if (!ctx) return;
 
+        // Destruir el gráfico anterior si existe
+        if (this.activityChart) {
+            this.activityChart.destroy();
+        }
+
         const [noticias, eventos, galeria, musica] = dataArrays;
         const labels = ['Noticias', 'Eventos', 'Galería', 'Música'];
         const data = [noticias.length, eventos.length, galeria.length, musica.length];
 
-        new Chart(ctx, {
+        this.activityChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
@@ -451,6 +461,11 @@ class AdminApp {
         const ctx = document.getElementById('contentChart');
         if (!ctx) return;
 
+        // Destruir el gráfico anterior si existe
+        if (this.contentChart) {
+            this.contentChart.destroy();
+        }
+
         const [noticias, eventos, productos, galeria, musica, socios] = dataArrays;
         const data = [
             { label: 'Noticias', value: noticias.length, color: '#007bff' },
@@ -461,7 +476,7 @@ class AdminApp {
             { label: 'Socios', value: socios.length, color: '#6c757d' }
         ];
 
-        new Chart(ctx, {
+        this.contentChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: data.map(item => item.label),
@@ -489,6 +504,9 @@ class AdminApp {
 
     async loadSectionData(section) {
         try {
+            // Esperar a que se complete la autenticación
+            await this.checkAuth();
+            
             console.log('Cargando datos de la sección:', section);
             let data;
             
@@ -531,7 +549,9 @@ class AdminApp {
             endpoint = 'admin.php';
         }
         
-        const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}${type === 'fondos' ? '' : `?type=${type}`}`);
+        const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}${type === 'fondos' ? '' : `?type=${type}`}`, {
+            credentials: 'include'
+        });
         const result = await response.json();
         
         // El endpoint de reservas devuelve un array plano (sin { success, data })
@@ -2422,7 +2442,9 @@ class AdminApp {
         }
 
         try {
-            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php?type=textos`);
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php?type=textos`, {
+                credentials: 'include'
+            });
             const result = await response.json();
             
             if (result.success) {
@@ -2533,6 +2555,7 @@ class AdminApp {
             });
 
             const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php`, {
+                credentials: 'include',
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
