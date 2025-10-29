@@ -196,13 +196,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Añadir timestamp
     $item['updated_at'] = date('Y-m-d H:i:s');
     
-    // Generar miniatura si se actualiza una imagen de galería
-    if ($type === 'galeria' && isset($item['imagen_url']) && !isset($item['thumb_url'])) {
-        $thumbPath = generateThumbnailFromUrl($item['imagen_url']);
-        if ($thumbPath) {
-            $item['thumb_url'] = $thumbPath;
-        }
-    }
+    // Generar miniatura si se actualiza una imagen de galería (deshabilitado temporalmente)
+    // if ($type === 'galeria' && isset($item['imagen_url']) && !isset($item['thumb_url'])) {
+    //     $thumbPath = generateThumbnailFromUrl($item['imagen_url']);
+    //     if ($thumbPath) {
+    //         $item['thumb_url'] = $thumbPath;
+    //     }
+    // }
     
     // Debug: Log de entrada
     error_log("API Admin - Input recibido: " . json_encode($input));
@@ -291,6 +291,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
 response(false, 'Método no permitido');
 
+/*
 function generateThumbnailFromUrl($imageUrl) {
     // Si es una URL externa, no generar miniatura
     if (strpos($imageUrl, 'http') === 0) {
@@ -389,5 +390,6 @@ function generateThumbnailFromUrl($imageUrl) {
     
     return null;
 }
+*/
 ?>
 

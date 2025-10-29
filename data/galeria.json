@@ -13,14 +13,15 @@
         "updated_at": "2025-10-29 09:48:57"
     },
     {
-        "id": 2,
         "titulo": "Ensayo General de la Banda",
         "descripcion": "Ensayo general de la banda de la Fil\u00e1 Mariscales preparando el repertorio para las fiestas.",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-        "youtube_url": "https:\/\/www.youtube.com\/watch?v=dQw4w9WgXcQ",
+        "youtube_url": "",
         "categoria": "ensayos",
         "fecha_subida": "2024-03-10",
-        "orden": 2
+        "orden": "2",
+        "imagen_url": "uploads\/images\/carousel\/carousel_6901e627e51dc.jpg",
+        "id": "6901e627ed499",
+        "updated_at": "2025-10-29 11:02:15"
     },
     {
         "id": 3,
@@ -33,14 +34,15 @@
         "orden": 3
     },
     {
-        "id": 4,
         "titulo": "Cena de Hermandad",
         "descripcion": "Cena de hermandad anual de la Fil\u00e1 Mariscales con todos los miembros y sus familias.",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         "youtube_url": "https:\/\/www.youtube.com\/watch?v=dQw4w9WgXcQ",
         "categoria": "eventos",
         "fecha_subida": "2024-02-15",
-        "orden": 4
+        "orden": "4",
+        "imagen_url": "uploads\/images\/carousel\/carousel_6901e6411bbcd.jpg",
+        "id": "6901e6411ea88",
+        "updated_at": "2025-10-29 11:02:41"
     },
     {
         "id": 5,
@@ -53,13 +55,14 @@
         "orden": 5
     },
     {
-        "id": 6,
         "titulo": "Excursi\u00f3n a Castillos Templarios",
         "descripcion": "Excursi\u00f3n cultural a castillos templarios de la Comunidad Valenciana.",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         "youtube_url": "https:\/\/www.youtube.com\/watch?v=dQw4w9WgXcQ",
         "categoria": "excursiones",
         "fecha_subida": "2024-01-20",
-        "orden": 6
+        "orden": "6",
+        "imagen_url": "uploads\/images\/carousel\/carousel_6901e653d9ee1.jpg",
+        "id": "6901e653dd2fe",
+        "updated_at": "2025-10-29 11:02:59"
     }
 ]
