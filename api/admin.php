@@ -196,6 +196,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Añadir timestamp
     $item['updated_at'] = date('Y-m-d H:i:s');
     
+    // Generar miniatura si se actualiza una imagen de galería
+    if ($type === 'galeria' && isset($item['imagen_url']) && !isset($item['thumb_url'])) {
+        $thumbPath = generateThumbnailFromUrl($item['imagen_url']);
+        if ($thumbPath) {
+            $item['thumb_url'] = $thumbPath;
+        }
+    }
+    
     // Debug: Log de entrada
     error_log("API Admin - Input recibido: " . json_encode($input));
     error_log("API Admin - Edit ID presente: " . (isset($input['edit_id']) ? 'SÍ' : 'NO'));
@@ -282,5 +290,104 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 }
 
 response(false, 'Método no permitido');
+
+function generateThumbnailFromUrl($imageUrl) {
+    // Si es una URL externa, no generar miniatura
+    if (strpos($imageUrl, 'http') === 0) {
+        return null;
+    }
+    
+    // Construir ruta completa del archivo
+    $baseDir = realpath(__DIR__ . '/..');
+    $fullPath = $baseDir . DIRECTORY_SEPARATOR . $imageUrl;
+    
+    if (!file_exists($fullPath)) {
+        return null;
+    }
+    
+    // Obtener información de la imagen
+    $imageInfo = getimagesize($fullPath);
+    if (!$imageInfo) {
+        return null;
+    }
+    
+    $width = $imageInfo[0];
+    $height = $imageInfo[1];
+    $mime = $imageInfo['mime'];
+    
+    // Calcular dimensiones de la miniatura (máximo 300px de ancho)
+    $thumbWidth = 300;
+    $thumbHeight = intval(($height * $thumbWidth) / $width);
+    
+    // Crear imagen desde el archivo original
+    $sourceImage = null;
+    switch ($mime) {
+        case 'image/jpeg':
+            $sourceImage = imagecreatefromjpeg($fullPath);
+            break;
+        case 'image/png':
+            $sourceImage = imagecreatefrompng($fullPath);
+            break;
+        case 'image/webp':
+            $sourceImage = imagecreatefromwebp($fullPath);
+            break;
+        default:
+            return null;
+    }
+    
+    if (!$sourceImage) {
+        return null;
+    }
+    
+    // Crear directorio de miniaturas
+    $thumbDir = dirname($fullPath) . DIRECTORY_SEPARATOR . 'thumbs';
+    if (!is_dir($thumbDir)) {
+        @mkdir($thumbDir, 0775, true);
+    }
+    
+    // Crear imagen de miniatura
+    $thumbImage = imagecreatetruecolor($thumbWidth, $thumbHeight);
+    
+    // Preservar transparencia para PNG
+    if ($mime === 'image/png') {
+        imagealphablending($thumbImage, false);
+        imagesavealpha($thumbImage, true);
+        $transparent = imagecolorallocatealpha($thumbImage, 255, 255, 255, 127);
+        imagefilledrectangle($thumbImage, 0, 0, $thumbWidth, $thumbHeight, $transparent);
+    }
+    
+    // Redimensionar
+    imagecopyresampled($thumbImage, $sourceImage, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $width, $height);
+    
+    // Guardar miniatura
+    $filename = basename($imageUrl);
+    $thumbFilename = 'thumb_' . $filename;
+    $thumbPath = $thumbDir . DIRECTORY_SEPARATOR . $thumbFilename;
+    
+    $success = false;
+    switch ($mime) {
+        case 'image/jpeg':
+            $success = imagejpeg($thumbImage, $thumbPath, 85);
+            break;
+        case 'image/png':
+            $success = imagepng($thumbImage, $thumbPath, 8);
+            break;
+        case 'image/webp':
+            $success = imagewebp($thumbImage, $thumbPath, 85);
+            break;
+    }
+    
+    // Limpiar memoria
+    imagedestroy($sourceImage);
+    imagedestroy($thumbImage);
+    
+    if ($success) {
+        // Retornar ruta relativa para la miniatura
+        $relativePath = dirname($imageUrl) . '/thumbs/' . $thumbFilename;
+        return $relativePath;
+    }
+    
+    return null;
+}
 ?>
 

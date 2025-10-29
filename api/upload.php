@@ -76,11 +76,101 @@ if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
 // Build public relative URL (frontend will use it as src)
 $publicPath = 'uploads/images/' . $type . '/' . $filename;
 
+// Generar miniatura si es una imagen de galería
+$thumbPath = null;
+if ($type === 'gallery') {
+    $thumbPath = generateThumbnail($targetPath, $targetDir, $filename);
+}
+
 respond(true, 'Subida correcta', [
     'path' => $publicPath,
+    'thumb_path' => $thumbPath,
     'mime' => $mime,
     'size' => filesize($targetPath)
 ]);
+
+function generateThumbnail($sourcePath, $targetDir, $filename) {
+    // Crear directorio de miniaturas si no existe
+    $thumbDir = $targetDir . DIRECTORY_SEPARATOR . 'thumbs';
+    if (!is_dir($thumbDir)) {
+        @mkdir($thumbDir, 0775, true);
+    }
+    
+    // Obtener información de la imagen
+    $imageInfo = getimagesize($sourcePath);
+    if (!$imageInfo) {
+        return null;
+    }
+    
+    $width = $imageInfo[0];
+    $height = $imageInfo[1];
+    $mime = $imageInfo['mime'];
+    
+    // Calcular dimensiones de la miniatura (máximo 300px de ancho)
+    $thumbWidth = 300;
+    $thumbHeight = intval(($height * $thumbWidth) / $width);
+    
+    // Crear imagen desde el archivo original
+    $sourceImage = null;
+    switch ($mime) {
+        case 'image/jpeg':
+            $sourceImage = imagecreatefromjpeg($sourcePath);
+            break;
+        case 'image/png':
+            $sourceImage = imagecreatefrompng($sourcePath);
+            break;
+        case 'image/webp':
+            $sourceImage = imagecreatefromwebp($sourcePath);
+            break;
+        default:
+            return null;
+    }
+    
+    if (!$sourceImage) {
+        return null;
+    }
+    
+    // Crear imagen de miniatura
+    $thumbImage = imagecreatetruecolor($thumbWidth, $thumbHeight);
+    
+    // Preservar transparencia para PNG
+    if ($mime === 'image/png') {
+        imagealphablending($thumbImage, false);
+        imagesavealpha($thumbImage, true);
+        $transparent = imagecolorallocatealpha($thumbImage, 255, 255, 255, 127);
+        imagefilledrectangle($thumbImage, 0, 0, $thumbWidth, $thumbHeight, $transparent);
+    }
+    
+    // Redimensionar
+    imagecopyresampled($thumbImage, $sourceImage, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $width, $height);
+    
+    // Guardar miniatura
+    $thumbFilename = 'thumb_' . $filename;
+    $thumbPath = $thumbDir . DIRECTORY_SEPARATOR . $thumbFilename;
+    
+    $success = false;
+    switch ($mime) {
+        case 'image/jpeg':
+            $success = imagejpeg($thumbImage, $thumbPath, 85);
+            break;
+        case 'image/png':
+            $success = imagepng($thumbImage, $thumbPath, 8);
+            break;
+        case 'image/webp':
+            $success = imagewebp($thumbImage, $thumbPath, 85);
+            break;
+    }
+    
+    // Limpiar memoria
+    imagedestroy($sourceImage);
+    imagedestroy($thumbImage);
+    
+    if ($success) {
+        return 'uploads/images/gallery/thumbs/' . $thumbFilename;
+    }
+    
+    return null;
+}
 ?>
 
 

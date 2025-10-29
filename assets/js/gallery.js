@@ -228,7 +228,7 @@ class AdvancedGallery {
                 <div class="gallery-item" data-gallery-id="${item.id}">
                     <div class="gallery-card">
                         <div class="gallery-image-container">
-                            <img src="${item.thumb_url}" 
+                            <img src="${item.thumb_url || item.imagen_url}" 
                                  alt="${item.titulo}" 
                                 class="gallery-image"
                                  style="width:100%;height:150px;object-fit:cover;display:block;"
@@ -271,7 +271,7 @@ class AdvancedGallery {
                     <div class="masonry-item" data-gallery-id="${item.id}">
                         <div class="gallery-card">
                             <div class="gallery-image-container">
-                                <img src="${item.thumb_url}" 
+                                <img src="${item.thumb_url || item.imagen_url}" 
                                      alt="${item.titulo}" 
                                      class="gallery-image"
                                      style="width:100%;height:auto;display:block;"
@@ -314,7 +314,7 @@ class AdvancedGallery {
                     <div class="card">
                         <div class="row g-0">
                             <div class="col-md-3">
-                                <img src="${item.thumb_url}" 
+                                <img src="${item.thumb_url || item.imagen_url}" 
                                      alt="${item.titulo}" 
                                      class="img-fluid rounded-start gallery-image"
                                      style="height: 150px; object-fit: cover;"
