@@ -154,6 +154,9 @@ class AdminApp {
                 const estadoSolicitudBtn = e.target.closest('button[data-action="estado-solicitud"]');
                 const approveSolicitudBtn = e.target.closest('.btn-approve-solicitud');
                 const rejectSolicitudBtn = e.target.closest('.btn-reject-solicitud');
+                const replyContactBtn = e.target.closest('.btn-reply-contact');
+                const viewMessageBtn = e.target.closest('.btn-view-message');
+                const changeStatusBtn = e.target.closest('.btn-change-status');
                 
                 if (editBtn) {
                     e.preventDefault();
@@ -191,6 +194,24 @@ class AdminApp {
                     const nombre = rejectSolicitudBtn.dataset.nombre;
                     const email = rejectSolicitudBtn.dataset.email;
                     this.rejectSolicitud(id, nombre, email);
+                } else if (replyContactBtn) {
+                    e.preventDefault();
+                    const id = replyContactBtn.dataset.id;
+                    const nombre = replyContactBtn.dataset.nombre;
+                    const email = replyContactBtn.dataset.email;
+                    const asunto = replyContactBtn.dataset.asunto;
+                    this.replyToContact(id, nombre, email, asunto);
+                } else if (viewMessageBtn) {
+                    e.preventDefault();
+                    const id = viewMessageBtn.dataset.id;
+                    const nombre = viewMessageBtn.dataset.nombre;
+                    const mensaje = viewMessageBtn.dataset.mensaje;
+                    this.viewContactMessage(id, nombre, mensaje);
+                } else if (changeStatusBtn) {
+                    e.preventDefault();
+                    const id = changeStatusBtn.dataset.id;
+                    const estado = changeStatusBtn.dataset.estado;
+                    this.changeContactStatus(id, estado);
                 }
             });
         }
@@ -218,6 +239,35 @@ class AdminApp {
             clearSearchBtn.addEventListener('click', () => {
                 document.getElementById('search-input').value = '';
                 this.filterAndRenderTable();
+            });
+        }
+
+        // Filtros específicos de contactos
+        const estadoFilter = document.getElementById('estado-filter');
+        if (estadoFilter) {
+            estadoFilter.addEventListener('change', () => {
+                this.applyContactFilters();
+            });
+        }
+
+        const prioridadFilter = document.getElementById('prioridad-filter');
+        if (prioridadFilter) {
+            prioridadFilter.addEventListener('change', () => {
+                this.applyContactFilters();
+            });
+        }
+
+        const fechaFilter = document.getElementById('fecha-filter');
+        if (fechaFilter) {
+            fechaFilter.addEventListener('change', () => {
+                this.applyContactFilters();
+            });
+        }
+
+        const clearContactFilters = document.getElementById('clear-contact-filters');
+        if (clearContactFilters) {
+            clearContactFilters.addEventListener('click', () => {
+                this.clearContactFilters();
             });
         }
 
@@ -524,6 +574,9 @@ class AdminApp {
                 // Configurar filtros según la sección
                 this.setupFilters(section);
                 
+                // Mostrar/ocultar filtros específicos
+                this.toggleSectionFilters(section);
+                
                 // Limpiar búsqueda
                 const searchInput = document.getElementById('search-input');
                 if (searchInput) searchInput.value = '';
@@ -535,6 +588,86 @@ class AdminApp {
             console.error(`Error cargando datos de ${section}:`, error);
             this.showNotification('Error cargando datos', 'error');
         }
+    }
+
+    toggleSectionFilters(section) {
+        // Ocultar todos los filtros específicos
+        const contactosFilters = document.getElementById('contactos-filters');
+        const contactosPriorityFilter = document.getElementById('contactos-priority-filter');
+        const contactosDateFilter = document.getElementById('contactos-date-filter');
+        const contactosClearFilters = document.getElementById('contactos-clear-filters');
+        
+        if (contactosFilters) contactosFilters.style.display = 'none';
+        if (contactosPriorityFilter) contactosPriorityFilter.style.display = 'none';
+        if (contactosDateFilter) contactosDateFilter.style.display = 'none';
+        if (contactosClearFilters) contactosClearFilters.style.display = 'none';
+        
+        // Mostrar filtros específicos según la sección
+        if (section === 'contactos') {
+            if (contactosFilters) contactosFilters.style.display = 'block';
+            if (contactosPriorityFilter) contactosPriorityFilter.style.display = 'block';
+            if (contactosDateFilter) contactosDateFilter.style.display = 'block';
+            if (contactosClearFilters) contactosClearFilters.style.display = 'block';
+        }
+    }
+
+    applyContactFilters() {
+        if (ADMIN_CONFIG.CURRENT_SECTION !== 'contactos') return;
+
+        const estadoFilter = document.getElementById('estado-filter');
+        const prioridadFilter = document.getElementById('prioridad-filter');
+        const fechaFilter = document.getElementById('fecha-filter');
+        
+        const estadoValue = estadoFilter ? estadoFilter.value : '';
+        const prioridadValue = prioridadFilter ? prioridadFilter.value : '';
+        const fechaValue = fechaFilter ? fechaFilter.value : '';
+
+        let filteredData = ADMIN_CONFIG.CURRENT_DATA.filter(item => {
+            // Filtro por estado
+            if (estadoValue && item.estado !== estadoValue) {
+                return false;
+            }
+            
+            // Filtro por prioridad
+            if (prioridadValue && item.prioridad !== prioridadValue) {
+                return false;
+            }
+            
+            // Filtro por fecha
+            if (fechaValue && item.fecha) {
+                const itemDate = new Date(item.fecha).toISOString().split('T')[0];
+                if (itemDate !== fechaValue) {
+                    return false;
+                }
+            }
+            
+            return true;
+        });
+
+        ADMIN_CONFIG.FILTERED_DATA = filteredData;
+        ADMIN_CONFIG.CURRENT_PAGE = 1;
+        
+        console.log(`Filtros aplicados: Estado=${estadoValue}, Prioridad=${prioridadValue}, Fecha=${fechaValue}`);
+        console.log(`Resultados: ${filteredData.length} de ${ADMIN_CONFIG.CURRENT_DATA.length}`);
+        
+        this.filterAndRenderTable();
+    }
+
+    clearContactFilters() {
+        const estadoFilter = document.getElementById('estado-filter');
+        const prioridadFilter = document.getElementById('prioridad-filter');
+        const fechaFilter = document.getElementById('fecha-filter');
+        
+        if (estadoFilter) estadoFilter.value = '';
+        if (prioridadFilter) prioridadFilter.value = '';
+        if (fechaFilter) fechaFilter.value = '';
+        
+        // Restaurar todos los datos
+        ADMIN_CONFIG.FILTERED_DATA = ADMIN_CONFIG.CURRENT_DATA;
+        ADMIN_CONFIG.CURRENT_PAGE = 1;
+        
+        console.log('Filtros de contactos limpiados');
+        this.filterAndRenderTable();
     }
 
     async fetchData(type) {
@@ -699,6 +832,17 @@ class AdminApp {
                         </button>
                         <button class="btn btn-sm btn-outline-danger me-1 btn-reject-solicitud" data-id="${item.id}" data-nombre="${item.nombre}" data-email="${item.email}">
                             <i class="fas fa-times"></i>
+                        </button>
+                    ` : ''}
+                    ${ADMIN_CONFIG.CURRENT_SECTION === 'contactos' ? `
+                        <button class="btn btn-sm btn-outline-success me-1 btn-reply-contact" data-id="${item.id}" data-nombre="${item.nombre}" data-email="${item.email}" data-asunto="${item.asunto}">
+                            <i class="fas fa-reply"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info me-1 btn-view-message" data-id="${item.id}" data-nombre="${item.nombre}" data-mensaje="${item.mensaje}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning me-1 btn-change-status" data-id="${item.id}" data-estado="${item.estado}">
+                            <i class="fas fa-flag"></i>
                         </button>
                     ` : ''}
                     <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${item.id ?? item.imagen_id ?? item._id}">
@@ -2955,35 +3099,25 @@ class AdminApp {
     exportToCSV() {
         const section = ADMIN_CONFIG.CURRENT_SECTION;
         const data = ADMIN_CONFIG.FILTERED_DATA;
-        const columns = this.getColumnsConfig(section);
         
         if (data.length === 0) {
             this.showNotification('No hay datos para exportar', 'warning');
             return;
         }
         
-        // Crear encabezados
-        const headers = columns.map(col => col.title).join(',');
+        let csv;
+        let filename;
         
-        // Crear filas
-        const rows = data.map(item => {
-            return columns.map(col => {
-                let value = item[col.key] || '';
-                
-                // Limpiar valores para CSV
-                if (typeof value === 'string') {
-                    value = value.replace(/"/g, '""'); // Escapar comillas
-                    if (value.includes(',') || value.includes('\n')) {
-                        value = `"${value}"`;
-                    }
-                }
-                
-                return value;
-            }).join(',');
-        }).join('\n');
-        
-        // Combinar
-        const csv = headers + '\n' + rows;
+        if (section === 'contactos') {
+            // Exportación específica para contactos con información adicional
+            csv = this.exportContactosCSV(data);
+            filename = `contactos_${new Date().toISOString().split('T')[0]}.csv`;
+        } else {
+            // Exportación genérica para otras secciones
+            const columns = this.getColumnsConfig(section);
+            csv = this.exportGenericCSV(data, columns);
+            filename = `${section}_${new Date().toISOString().split('T')[0]}.csv`;
+        }
         
         // Descargar
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -2991,14 +3125,97 @@ class AdminApp {
         const url = URL.createObjectURL(blob);
         
         link.setAttribute('href', url);
-        link.setAttribute('download', `${section}_${new Date().toISOString().split('T')[0]}.csv`);
+        link.setAttribute('download', filename);
         link.style.visibility = 'hidden';
         
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         
-        this.showNotification('Datos exportados correctamente', 'success');
+        this.showNotification(`Datos exportados correctamente (${data.length} registros)`, 'success');
+    }
+
+    exportContactosCSV(data) {
+        // Encabezados específicos para contactos
+        const headers = [
+            'Nombre',
+            'Email', 
+            'Teléfono',
+            'Asunto',
+            'Mensaje',
+            'Fecha',
+            'Estado',
+            'Prioridad',
+            'ID'
+        ].join(',');
+        
+        // Crear filas con datos específicos
+        const rows = data.map(item => {
+            const row = [
+                this.escapeCSV(item.nombre || ''),
+                this.escapeCSV(item.email || ''),
+                this.escapeCSV(item.telefono || ''),
+                this.escapeCSV(item.asunto || ''),
+                this.escapeCSV(item.mensaje || ''),
+                this.escapeCSV(item.fecha || ''),
+                this.escapeCSV(item.estado || ''),
+                this.escapeCSV(item.prioridad || ''),
+                this.escapeCSV(item.id || '')
+            ];
+            return row.join(',');
+        }).join('\n');
+        
+        // Añadir información de exportación
+        const exportInfo = [
+            `# Exportación de Contactos - Filá Mariscales`,
+            `# Fecha de exportación: ${new Date().toLocaleString('es-ES')}`,
+            `# Total de registros: ${data.length}`,
+            `# Filtros aplicados: ${this.getActiveFilters()}`,
+            `#`,
+            ``
+        ].join('\n');
+        
+        return exportInfo + headers + '\n' + rows;
+    }
+
+    exportGenericCSV(data, columns) {
+        // Crear encabezados
+        const headers = columns.map(col => col.title).join(',');
+        
+        // Crear filas
+        const rows = data.map(item => {
+            return columns.map(col => {
+                let value = item[col.key] || '';
+                return this.escapeCSV(value);
+            }).join(',');
+        }).join('\n');
+        
+        return headers + '\n' + rows;
+    }
+
+    escapeCSV(value) {
+        if (typeof value === 'string') {
+            value = value.replace(/"/g, '""'); // Escapar comillas
+            if (value.includes(',') || value.includes('\n') || value.includes('"')) {
+                value = `"${value}"`;
+            }
+        }
+        return value;
+    }
+
+    getActiveFilters() {
+        if (ADMIN_CONFIG.CURRENT_SECTION !== 'contactos') return 'Ninguno';
+        
+        const estadoFilter = document.getElementById('estado-filter');
+        const prioridadFilter = document.getElementById('prioridad-filter');
+        const fechaFilter = document.getElementById('fecha-filter');
+        
+        const filters = [];
+        if (estadoFilter && estadoFilter.value) filters.push(`Estado: ${estadoFilter.value}`);
+        if (prioridadFilter && prioridadFilter.value) filters.push(`Prioridad: ${prioridadFilter.value}`);
+        if (fechaFilter && fechaFilter.value) filters.push(`Fecha: ${fechaFilter.value}`);
+        
+        return filters.length > 0 ? filters.join(', ') : 'Ninguno';
     }
 
     // ===== ORDENAMIENTO =====
@@ -3367,6 +3584,238 @@ class AdminApp {
             document.body.removeChild(modal);
         });
     }
+
+    // ===== CONTACTOS - FUNCIONES ESPECÍFICAS =====
+    async replyToContact(id, nombre, email, asunto) {
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.innerHTML = `
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-reply me-2"></i>Responder a ${nombre}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <strong>Contacto:</strong> ${nombre} (${email})<br>
+                            <strong>Asunto original:</strong> ${asunto}
+                        </div>
+                        <form id="replyForm">
+                            <div class="mb-3">
+                                <label for="replySubject" class="form-label">Asunto *</label>
+                                <input type="text" class="form-control" id="replySubject" 
+                                       value="Re: ${asunto}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="replyMessage" class="form-label">Mensaje *</label>
+                                <textarea class="form-control" id="replyMessage" rows="8" 
+                                          placeholder="Escribe tu respuesta aquí..." required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="markAsReplied" checked>
+                                    <label class="form-check-label" for="markAsReplied">
+                                        Marcar como respondido
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="sendReply">
+                            <i class="fas fa-paper-plane me-2"></i>Enviar Respuesta
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+        
+        // Event listener para enviar
+        modal.querySelector('#sendReply').addEventListener('click', async () => {
+            const subject = modal.querySelector('#replySubject').value;
+            const message = modal.querySelector('#replyMessage').value;
+            const markAsReplied = modal.querySelector('#markAsReplied').checked;
+            
+            if (!subject || !message) {
+                this.showNotification('Por favor completa todos los campos', 'error');
+                return;
+            }
+            
+            try {
+                // Enviar email
+                const emailResponse = await fetch(`${ADMIN_CONFIG.API_BASE_URL}send-email.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        email: email,
+                        nombre: nombre,
+                        subject: subject,
+                        message: message,
+                        type: 'reply'
+                    })
+                });
+                
+                const emailResult = await emailResponse.json();
+                
+                // Actualizar estado si se solicita
+                if (markAsReplied) {
+                    await this.updateContactStatus(id, 'respondido');
+                }
+                
+                if (emailResponse.ok && emailResult.success) {
+                    this.showNotification('Respuesta enviada exitosamente', 'success');
+                    bsModal.hide();
+                    await this.loadSectionData('contactos');
+                } else {
+                    this.showNotification('Error al enviar la respuesta: ' + (emailResult.message || 'Error desconocido'), 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.showNotification('Error de conexión al enviar respuesta', 'error');
+            }
+        });
+        
+        // Limpiar modal cuando se cierre
+        modal.addEventListener('hidden.bs.modal', () => {
+            document.body.removeChild(modal);
+        });
+    }
+
+    viewContactMessage(id, nombre, mensaje) {
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.innerHTML = `
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-envelope me-2"></i>Mensaje de ${nombre}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="message-content" style="white-space: pre-wrap; line-height: 1.6; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #DC143C;">
+                            ${mensaje}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" onclick="navigator.clipboard.writeText('${mensaje.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-copy me-2"></i>Copiar Mensaje
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+        
+        // Limpiar modal cuando se cierre
+        modal.addEventListener('hidden.bs.modal', () => {
+            document.body.removeChild(modal);
+        });
+    }
+
+    changeContactStatus(id, currentStatus) {
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.innerHTML = `
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-flag me-2"></i>Cambiar Estado
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Selecciona el nuevo estado para este contacto:</p>
+                        <div class="btn-group-vertical w-100" role="group">
+                            <button type="button" class="btn btn-outline-primary status-btn" data-status="nuevo">
+                                <i class="fas fa-circle me-2"></i>Nuevo
+                            </button>
+                            <button type="button" class="btn btn-outline-info status-btn" data-status="leido">
+                                <i class="fas fa-eye me-2"></i>Leído
+                            </button>
+                            <button type="button" class="btn btn-outline-success status-btn" data-status="respondido">
+                                <i class="fas fa-reply me-2"></i>Respondido
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary status-btn" data-status="cerrado">
+                                <i class="fas fa-times me-2"></i>Cerrado
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+        
+        // Marcar estado actual
+        modal.querySelectorAll('.status-btn').forEach(btn => {
+            if (btn.dataset.status === currentStatus) {
+                btn.classList.add('active');
+            }
+            
+            btn.addEventListener('click', async () => {
+                const newStatus = btn.dataset.status;
+                await this.updateContactStatus(id, newStatus);
+                bsModal.hide();
+            });
+        });
+        
+        // Limpiar modal cuando se cierre
+        modal.addEventListener('hidden.bs.modal', () => {
+            document.body.removeChild(modal);
+        });
+    }
+
+    async updateContactStatus(id, newStatus) {
+        try {
+            const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    type: 'contactos',
+                    id: id,
+                    estado: newStatus
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok && result.success) {
+                this.showNotification(`Estado cambiado a: ${newStatus}`, 'success');
+                await this.loadSectionData('contactos');
+            } else {
+                this.showNotification(result.message || 'Error al actualizar estado', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.showNotification('Error de conexión al actualizar estado', 'error');
+        }
+    }
 }
 
 // ===== MÉTODO DE EMERGENCIA PARA LIMPIAR BACKDROP =====
@@ -3393,6 +3842,7 @@ function clearAllBackdrops() {
 
 // Hacer el método disponible globalmente
 window.clearAllBackdrops = clearAllBackdrops;
+
 
 // ===== INICIALIZACIÓN =====
 let adminApp;

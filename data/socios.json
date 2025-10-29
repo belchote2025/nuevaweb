@@ -3,7 +3,7 @@
         "id": "admin_001",
         "nombre": "Administrador",
         "email": "admin@mariscales.com",
-        "password": "$2y$10$uKCh3ys1\/EWTY50m0js5a.ReNEWUktepzsdmDVDubLqBsI28T37za",
+        "password": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
         "rol": "admin",
         "activo": true,
         "fecha_creacion": "2025-10-15",

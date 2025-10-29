@@ -471,10 +471,36 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <select class="form-select" id="filter-select">
                                     <option value="">Todos</option>
                                 </select>
+                            </div>
+                            <div class="col-md-2" id="contactos-filters" style="display: none;">
+                                <select class="form-select" id="estado-filter">
+                                    <option value="">Todos los estados</option>
+                                    <option value="nuevo">Nuevo</option>
+                                    <option value="leido">Leído</option>
+                                    <option value="respondido">Respondido</option>
+                                    <option value="cerrado">Cerrado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2" id="contactos-priority-filter" style="display: none;">
+                                <select class="form-select" id="prioridad-filter">
+                                    <option value="">Todas las prioridades</option>
+                                    <option value="baja">Baja</option>
+                                    <option value="media">Media</option>
+                                    <option value="alta">Alta</option>
+                                    <option value="urgente">Urgente</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2" id="contactos-date-filter" style="display: none;">
+                                <input type="date" class="form-control" id="fecha-filter" placeholder="Filtrar por fecha">
+                            </div>
+                            <div class="col-md-1" id="contactos-clear-filters" style="display: none;">
+                                <button class="btn btn-outline-secondary" id="clear-contact-filters" title="Limpiar filtros">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </div>
                             <div class="col-md-3">
                                 <select class="form-select" id="items-per-page">

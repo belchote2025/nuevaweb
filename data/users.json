@@ -4,7 +4,7 @@
         "name": "Administrador",
         "email": "admin@filamariscales.com",
         "role": "admin",
-        "password_hash": "$2y$10$11w1M7M3wR1EWbvxsqZMZOsrBBPBPAZkmUgufV6gl\/LolEUvs99Mq",
+        "password_hash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
         "created_at": "2025-01-01 00:00:00",
         "updated_at": "2025-01-01 00:00:00",
         "active": true
