@@ -1,0 +1,51 @@
+{
+    "config": {
+        "auto_slide": true,
+        "interval": 3000,
+        "pause_on_hover": true,
+        "show_indicators": true,
+        "show_controls": true,
+        "animation": "slide"
+    },
+    "slides": [
+        {
+            "titulo": "Fil\u00e1 Mariscales de Caballeros Templarios",
+            "subtitulo": "Tradici\u00f3n, Honor y Amistad desde 1985",
+            "imagen_url": "uploads\/images\/carousel\/carousel_68ecf1a3c2f92.jpg",
+            "enlace": "historia.html",
+            "texto_boton": "Conoce nuestra historia",
+            "activo": true,
+            "id": 1,
+            "updated_at": "2025-10-13 14:33:42"
+        },
+        {
+            "titulo": "Desfile de Moros y Cristianos",
+            "subtitulo": "Orgullo templario en las calles de Elche",
+            "imagen_url": "uploads\/images\/carousel\/carousel_68ecf88b7ce53.jpg",
+            "enlace": "galeria.html",
+            "texto_boton": "Ver galer\u00eda",
+            "activo": false,
+            "id": 2,
+            "updated_at": "2025-10-13 15:03:09"
+        },
+        {
+            "titulo": "Hermandad Templaria",
+            "subtitulo": "Una familia unida por los valores templarios",
+            "imagen_url": "uploads\/images\/carousel\/carousel_68ecf262dea4d.jpg",
+            "enlace": "socios.html",
+            "texto_boton": "\u00danete a nosotros",
+            "activo": false,
+            "id": 3,
+            "updated_at": "2025-10-13 14:36:52"
+        },
+        {
+            "titulo": "coco",
+            "subtitulo": "coco",
+            "enlace": "",
+            "activo": true,
+            "imagen_url": "uploads\/images\/carousel\/carousel_6900cb87ec3a3.jpg",
+            "id": "6900cb87efcd9",
+            "updated_at": "2025-10-28 14:56:23"
+        }
+    ]
+}

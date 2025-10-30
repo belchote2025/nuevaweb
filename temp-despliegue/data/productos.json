@@ -1,0 +1,90 @@
+[
+    {
+        "id": 1,
+        "nombre": "Camiseta Oficial Filá Mariscales",
+        "descripcion": "Camiseta oficial de la Filá Mariscales de Caballeros Templarios con el escudo bordado",
+        "precio": 25.00,
+        "precio_oferta": 0,
+        "imagen_url": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "categoria": "ropa",
+        "stock": 50,
+        "destacado": true
+    },
+    {
+        "id": 2,
+        "nombre": "Gorra Templaria",
+        "descripcion": "Gorra con el escudo de los Caballeros Templarios bordado en hilo dorado",
+        "precio": 18.00,
+        "precio_oferta": 0,
+        "imagen_url": "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "categoria": "accesorios",
+        "stock": 30,
+        "destacado": false
+    },
+    {
+        "id": 3,
+        "nombre": "Bandera Oficial de la Filá",
+        "descripcion": "Bandera oficial de la Filá Mariscales para desfiles y ceremonias",
+        "precio": 35.00,
+        "precio_oferta": 0,
+        "imagen_url": "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "categoria": "banderas",
+        "stock": 20,
+        "destacado": true
+    },
+    {
+        "id": 4,
+        "nombre": "Insignia Dorada Templaria",
+        "descripcion": "Insignia dorada de los Caballeros Templarios para uniformes",
+        "precio": 12.00,
+        "precio_oferta": 0,
+        "imagen_url": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "categoria": "accesorios",
+        "stock": 100,
+        "destacado": false
+    },
+    {
+        "id": 5,
+        "nombre": "Pañuelo Oficial Templario",
+        "descripcion": "Pañuelo con los colores y símbolos oficiales de la Filá Mariscales",
+        "precio": 15.00,
+        "precio_oferta": 12.00,
+        "imagen_url": "https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "categoria": "accesorios",
+        "stock": 75,
+        "destacado": false
+    },
+    {
+        "id": 6,
+        "nombre": "Libro Conmemorativo de la Filá",
+        "descripcion": "Libro conmemorativo con la historia y tradiciones de la Filá Mariscales de Caballeros Templarios",
+        "precio": 45.00,
+        "precio_oferta": 0,
+        "imagen_url": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "categoria": "libros",
+        "stock": 25,
+        "destacado": true
+    },
+    {
+        "id": 7,
+        "nombre": "Chaleco Templario",
+        "descripcion": "Chaleco oficial de la Filá Mariscales con bordados templarios",
+        "precio": 55.00,
+        "precio_oferta": 0,
+        "imagen_url": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "categoria": "ropa",
+        "stock": 15,
+        "destacado": true
+    },
+    {
+        "id": 8,
+        "nombre": "Medalla Conmemorativa",
+        "descripcion": "Medalla conmemorativa de la Filá Mariscales con grabado templario",
+        "precio": 28.00,
+        "precio_oferta": 0,
+        "imagen_url": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "categoria": "accesorios",
+        "stock": 40,
+        "destacado": false
+    }
+]

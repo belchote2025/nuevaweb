@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directiva - Filá Mariscales de Caballeros Templarios</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css?v=2.0" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="fas fa-shield-alt me-2"></i>
+                Filá Mariscales
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <!-- Inicio -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i>Inicio
+                        </a>
+                    </li>
+                    
+                    <!-- La Filá -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-shield-alt me-1"></i>La Filá
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="historia.html">
+                                <i class="fas fa-history me-2"></i>Historia
+                            </a></li>
+                            <li><a class="dropdown-item" href="directiva.html">
+                                <i class="fas fa-users me-2"></i>Directiva
+                            </a></li>
+                            <li><a class="dropdown-item" href="socios.html">
+                                <i class="fas fa-user-friends me-2"></i>Socios
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Actividades -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-calendar-alt me-1"></i>Actividades
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="calendario.html">
+                                <i class="fas fa-calendar me-2"></i>Calendario
+                            </a></li>
+                            <li><a class="dropdown-item" href="eventos.html">
+                                <i class="fas fa-calendar-check me-2"></i>Eventos
+                            </a></li>
+                            <li><a class="dropdown-item" href="galeria.html">
+                                <i class="fas fa-images me-2"></i>Galería
+                            </a></li>
+                            <li><a class="dropdown-item" href="musica.html">
+                                <i class="fas fa-music me-2"></i>Música
+                            </a></li>
+                            <li><a class="dropdown-item" href="reservas.html">
+                                <i class="fas fa-ticket-alt me-2"></i>Reservas
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Noticias -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper me-1"></i>Noticias
+                        </a>
+                    </li>
+                    
+                    <!-- Recursos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-toolbox me-1"></i>Recursos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="recursos.html#tienda">
+                                <i class="fas fa-store me-2"></i>Tienda
+                            </a></li>
+                            <li><a class="dropdown-item" href="libro.html">
+                                <i class="fas fa-book me-2"></i>Libro
+                            </a></li>
+                            <li><a class="dropdown-item" href="recursos.html#descargas">
+                                <i class="fas fa-download me-2"></i>Descargas
+                            </a></li>
+                            <li><a class="dropdown-item" href="recursos.html#blog">
+                                <i class="fas fa-blog me-2"></i>Blog
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="recursos.html#patrocinadores">
+                                <i class="fas fa-star me-2"></i>Patrocinadores
+                            </a></li>
+                            <li><a class="dropdown-item" href="recursos.html#hermanamientos">
+                                <i class="fas fa-heart me-2"></i>Hermanamientos
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Contacto -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="contacto.html">
+                            <i class="fas fa-envelope me-1"></i>Contacto
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Login -->
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>Acceso
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="login-socios.html">
+                                <i class="fas fa-user-friends me-2"></i>Área de Socios
+                            </a></li>
+                            <li><a class="dropdown-item" href="registro.html">
+                                <i class="fas fa-user-plus me-2"></i>Registrarse
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="login.html">
+                                <i class="fas fa-cog me-2"></i>Panel Admin
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Directiva Section -->
+    <section id="directiva" class="py-5" style="margin-top: 80px; background: white; color: black;">
+        <div class="container" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 style="color: black; font-weight: bold;">Directiva</h2>
+                    <p style="color: black;">Conoce a los miembros de nuestra directiva</p>
+                </div>
+            </div>
+            <div class="row" id="directiva-container">
+                <!-- Miembros de la directiva -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="card-img-top" alt="José Antonio Mariscal" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">José Antonio Mariscal</h5>
+                            <h6 class="card-subtitle mb-2" style="color: #DC143C; font-weight: bold;">Presidente</h6>
+                            <p class="card-text" style="color: black;">Presidente de la Filá Mariscales de Caballeros Templarios desde 2020. Líder comprometido con la tradición y valores templarios.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="card-img-top" alt="María del Carmen Templario" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">María del Carmen Templario</h5>
+                            <h6 class="card-subtitle mb-2" style="color: #DC143C; font-weight: bold;">Vicepresidenta</h6>
+                            <p class="card-text" style="color: black;">Vicepresidenta y responsable de organización de eventos y ceremonias templarias.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="card-img-top" alt="Francisco Javier Cruz" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Francisco Javier Cruz</h5>
+                            <h6 class="card-subtitle mb-2" style="color: #DC143C; font-weight: bold;">Secretario</h6>
+                            <p class="card-text" style="color: black;">Secretario general y coordinador de actividades culturales y sociales.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="card-img-top" alt="Isabel Templaria" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Isabel Templaria</h5>
+                            <h6 class="card-subtitle mb-2" style="color: #DC143C; font-weight: bold;">Tesorera</h6>
+                            <p class="card-text" style="color: black;">Tesorera y responsable de la gestión económica de la Filá.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="card-img-top" alt="Antonio Mariscal" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Antonio Mariscal</h5>
+                            <h6 class="card-subtitle mb-2" style="color: #DC143C; font-weight: bold;">Vocal de Actos</h6>
+                            <p class="card-text" style="color: black;">Vocal responsable de la organización de actos y ceremonias oficiales.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="card-img-top" alt="Carmen Templario" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div class="card-body" style="background: white; color: black;">
+                            <h5 class="card-title" style="color: black;">Carmen Templario</h5>
+                            <h6 class="card-subtitle mb-2" style="color: #DC143C; font-weight: bold;">Vocal de Cultura</h6>
+                            <p class="card-text" style="color: black;">Vocal de cultura y tradiciones, encargada de preservar la historia templaria.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Estructura Organizativa -->
+    <section class="py-5" style="background: #f8f9fa; color: black;">
+        <div class="container" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h3 style="color: black; font-weight: bold;">Estructura Organizativa</h3>
+                    <p style="color: black;">Cómo está organizada nuestra filá</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card-body" style="background: white; color: black;">
+                            <i class="fas fa-crown fa-3x mb-3" style="color: #DC143C;"></i>
+                            <h5 class="card-title" style="color: black;">Presidencia</h5>
+                            <p class="card-text" style="color: black;">Máxima autoridad de la filá, responsable de la dirección general y representación oficial.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card-body" style="background: white; color: black;">
+                            <i class="fas fa-user-tie fa-3x mb-3" style="color: #DC143C;"></i>
+                            <h5 class="card-title" style="color: black;">Vicepresidencia</h5>
+                            <p class="card-text" style="color: black;">Apoyo directo a la presidencia y suplencia en caso de ausencia del presidente.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 text-center" style="background: white; border: 2px solid #DC143C; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card-body" style="background: white; color: black;">
+                            <i class="fas fa-clipboard-list fa-3x mb-3" style="color: #DC143C;"></i>
+                            <h5 class="card-title" style="color: black;">Secretaría</h5>
+                            <p class="card-text" style="color: black;">Gestión administrativa, documentación y comunicación oficial de la filá.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Información de la Filá -->
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <div class="footer-brand mb-3">
+                        <h4 class="text-white mb-3">
+                            <i class="fas fa-shield-alt me-2 text-danger"></i>
+                            Filá Mariscales
+                        </h4>
+                        <p class="text-muted mb-3">Caballeros Templarios de Elche</p>
+                        <p class="text-muted small">Manteniendo viva la tradición templaria y fomentando la hermandad entre nuestros miembros desde nuestros inicios.</p>
+                    </div>
+                    <!-- Redes Sociales -->
+                    <div class="social-links mt-4">
+                        <a href="#" class="social-link me-3" title="Facebook" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link me-3" title="Instagram" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link me-3" title="Twitter" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link me-3" title="YouTube" aria-label="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="social-link" title="WhatsApp" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Enlaces Rápidos -->
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">La Filá</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="historia.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Historia</a></li>
+                        <li><a href="directiva.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Directiva</a></li>
+                        <li><a href="socios.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Socios</a></li>
+                        <li><a href="contacto.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Actividades -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">Actividades</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="calendario.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Calendario</a></li>
+                        <li><a href="eventos.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Eventos</a></li>
+                        <li><a href="galeria.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Galería</a></li>
+                        <li><a href="musica.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Música</a></li>
+                        <li><a href="reservas.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Reservas</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Información de Contacto -->
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-3">Contacto</h5>
+                    <ul class="list-unstyled footer-contact">
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2 text-danger"></i>
+                            <span class="text-muted small">Elche, Comunidad Valenciana</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2 text-danger"></i>
+                            <a href="mailto:info@filamariscales.com" class="text-muted text-decoration-none small">info@filamariscales.com</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2 text-danger"></i>
+                            <a href="tel:+34600000000" class="text-muted text-decoration-none small">+34 600 000 000</a>
+                        </li>
+                        <li class="mt-3">
+                            <a href="contacto.html" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-paper-plane me-2"></i>Envíanos un mensaje
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Línea divisoria -->
+            <hr class="my-4 border-secondary">
+            
+            <!-- Copyright y Créditos -->
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <p class="mb-0 text-muted small">
+                        &copy; <span id="current-year">2025</span> Filá Mariscales de Caballeros Templarios. Todos los derechos reservados.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 text-muted small">
+                        Realizado por: <a href="#" class="text-danger text-decoration-none">Eduardo Santa Cruz</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Botón de scroll hacia arriba -->
+        <button id="scrollTopBtn" class="btn btn-danger rounded-circle position-fixed bottom-0 end-0 m-4" style="display: none; width: 50px; height: 50px; z-index: 1000;" title="Volver arriba">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </footer>
+    
+    <style>
+        /* Estilos del footer mejorado */
+        footer .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        footer .footer-links a {
+            transition: all 0.3s ease;
+        }
+        
+        footer .footer-links a:hover {
+            color: #DC143C !important;
+            padding-left: 5px;
+        }
+        
+        footer .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+        
+        footer .social-link:hover {
+            background: #DC143C;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+        }
+        
+        footer .footer-contact a {
+            transition: all 0.3s ease;
+        }
+        
+        footer .footer-contact a:hover {
+            color: #DC143C !important;
+        }
+        
+        #scrollTopBtn {
+            transition: all 0.3s ease;
+        }
+        
+        #scrollTopBtn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            footer .text-md-end {
+                text-align: center !important;
+            }
+            
+            footer .text-md-start {
+                text-align: center !important;
+            }
+        }
+    </style>
+    
+    <script>
+        // Actualizar año automáticamente
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearElement = document.getElementById('current-year');
+            if (yearElement) {
+                yearElement.textContent = new Date().getFullYear();
+            }
+            
+            // Botón de scroll hacia arriba
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            if (scrollTopBtn) {
+                window.addEventListener('scroll', function() {
+                    if (window.pageYOffset > 300) {
+                        scrollTopBtn.style.display = 'block';
+                    } else {
+                        scrollTopBtn.style.display = 'none';
+                    }
+                });
+                
+                scrollTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Utils JS -->
+    <script src="assets/js/utils.js"></script>
+    <!-- Main JS -->
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Script simplificado para la página de directiva
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Página de directiva cargada correctamente');
+            
+            // Añadir animaciones simples
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

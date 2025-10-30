@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historia - Filá Mariscales de Caballeros Templarios</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css?v=2.0" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('assets/images/backgrounds/fondo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: -1;
+        }
+        
+        /* Hacer las secciones más transparentes para mostrar el fondo */
+        section {
+            background: rgba(255, 255, 255, 0.6) !important;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.5) !important;
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
+        }
+        
+        .historia-content, .historia-image {
+            background: rgba(255, 255, 255, 0.65) !important;
+            backdrop-filter: blur(0.5px);
+            -webkit-backdrop-filter: blur(0.5px);
+        }
+        
+        /* Timeline con fondo más transparente */
+        .timeline {
+            background: rgba(255, 255, 255, 0.4) !important;
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+        
+        .timeline-item {
+            background: rgba(255, 255, 255, 0.5) !important;
+            backdrop-filter: blur(0.5px);
+            -webkit-backdrop-filter: blur(0.5px);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border: 1px solid rgba(220, 20, 60, 0.3);
+        }
+        
+        .timeline-marker {
+            background: #DC143C !important;
+            border: 2px solid white;
+            box-shadow: 0 0 10px rgba(220, 20, 60, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="fas fa-shield-alt me-2"></i>
+                Filá Mariscales
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <!-- Inicio -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i>Inicio
+                        </a>
+                    </li>
+                    
+                    <!-- La Filá -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-shield-alt me-1"></i>La Filá
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="historia.html">
+                                <i class="fas fa-history me-2"></i>Historia
+                            </a></li>
+                            <li><a class="dropdown-item" href="directiva.html">
+                                <i class="fas fa-users me-2"></i>Directiva
+                            </a></li>
+                            <li><a class="dropdown-item" href="socios.html">
+                                <i class="fas fa-user-friends me-2"></i>Socios
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Actividades -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-calendar-alt me-1"></i>Actividades
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="calendario.html">
+                                <i class="fas fa-calendar me-2"></i>Calendario
+                            </a></li>
+                            <li><a class="dropdown-item" href="eventos.html">
+                                <i class="fas fa-calendar-check me-2"></i>Eventos
+                            </a></li>
+                            <li><a class="dropdown-item" href="galeria.html">
+                                <i class="fas fa-images me-2"></i>Galería
+                            </a></li>
+                            <li><a class="dropdown-item" href="musica.html">
+                                <i class="fas fa-music me-2"></i>Música
+                            </a></li>
+                            <li><a class="dropdown-item" href="reservas.html">
+                                <i class="fas fa-ticket-alt me-2"></i>Reservas
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Noticias -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper me-1"></i>Noticias
+                        </a>
+                    </li>
+                    
+                    <!-- Recursos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-toolbox me-1"></i>Recursos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="recursos.html#tienda">
+                                <i class="fas fa-store me-2"></i>Tienda
+                            </a></li>
+                            <li><a class="dropdown-item" href="libro.html">
+                                <i class="fas fa-book me-2"></i>Libro
+                            </a></li>
+                            <li><a class="dropdown-item" href="recursos.html#descargas">
+                                <i class="fas fa-download me-2"></i>Descargas
+                            </a></li>
+                            <li><a class="dropdown-item" href="recursos.html#blog">
+                                <i class="fas fa-blog me-2"></i>Blog
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="recursos.html#patrocinadores">
+                                <i class="fas fa-star me-2"></i>Patrocinadores
+                            </a></li>
+                            <li><a class="dropdown-item" href="recursos.html#hermanamientos">
+                                <i class="fas fa-heart me-2"></i>Hermanamientos
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Contacto -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="contacto.html">
+                            <i class="fas fa-envelope me-1"></i>Contacto
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Login -->
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>Acceso
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="login-socios.html">
+                                <i class="fas fa-user-friends me-2"></i>Área de Socios
+                            </a></li>
+                            <li><a class="dropdown-item" href="registro.html">
+                                <i class="fas fa-user-plus me-2"></i>Registrarse
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="login.html">
+                                <i class="fas fa-cog me-2"></i>Panel Admin
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Historia Section -->
+    <section id="historia" class="py-5" style="margin-top: 80px; color: black;">
+        <div class="container" style="padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 style="color: black; font-weight: bold;">Nuestra Historia</h2>
+                    <p style="color: black;">Conoce los orígenes y tradición de la Filá Mariscales</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="historia-content" style="padding: 1.5rem; border-radius: 8px; border: 1px solid #DC143C;">
+                        <h3 style="color: black;">Orígenes de la Filá</h3>
+                        <p style="color: black;">La Filá Mariscales de Caballeros Templarios de Elche tiene sus raíces en la rica tradición de las fiestas de Moros y Cristianos de nuestra ciudad. Fundada con el propósito de mantener viva la tradición templaria y fomentar la hermandad entre sus miembros.</p>
+                        <p style="color: black;">Desde nuestros inicios, hemos trabajado incansablemente para preservar las costumbres y valores que nos caracterizan como filá, siempre con el respeto y la dignidad que merece nuestra tradición.</p>
+                        
+                        <h4 class="mt-4" style="color: black;">Nuestros Valores</h4>
+                        <ul class="list-unstyled" style="color: black;">
+                            <li><i class="fas fa-shield-alt me-2" style="color: #DC143C;"></i>Honor y Lealtad</li>
+                            <li><i class="fas fa-handshake me-2" style="color: #DC143C;"></i>Hermandad y Fraternidad</li>
+                            <li><i class="fas fa-book me-2" style="color: #DC143C;"></i>Preservación de la Tradición</li>
+                            <li><i class="fas fa-heart me-2" style="color: #DC143C;"></i>Respeto y Dignidad</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="historia-image" style="padding: 1rem; border-radius: 8px; border: 1px solid #DC143C;">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             alt="Historia de la Filá" class="img-fluid rounded" style="width: 100%; height: 300px; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timeline -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h3 class="text-center mb-4">Cronología de la Filá</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h5>Fundación</h5>
+                                <p>La Filá Mariscales fue fundada con el objetivo de mantener viva la tradición templaria en Elche.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h5>Primeros Años</h5>
+                                <p>Consolidación de la hermandad y establecimiento de las primeras tradiciones.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h5>Expansión</h5>
+                                <p>Crecimiento de la filá y participación activa en las fiestas de Moros y Cristianos.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h5>Actualidad</h5>
+                                <p>Continuamos preservando nuestras tradiciones y valores en la actualidad.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Información de la Filá -->
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <div class="footer-brand mb-3">
+                        <h4 class="text-white mb-3">
+                            <i class="fas fa-shield-alt me-2 text-danger"></i>
+                            Filá Mariscales
+                        </h4>
+                        <p class="text-muted mb-3">Caballeros Templarios de Elche</p>
+                        <p class="text-muted small">Manteniendo viva la tradición templaria y fomentando la hermandad entre nuestros miembros desde nuestros inicios.</p>
+                    </div>
+                    <!-- Redes Sociales -->
+                    <div class="social-links mt-4">
+                        <a href="#" class="social-link me-3" title="Facebook" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link me-3" title="Instagram" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link me-3" title="Twitter" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link me-3" title="YouTube" aria-label="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="social-link" title="WhatsApp" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Enlaces Rápidos -->
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">La Filá</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="historia.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Historia</a></li>
+                        <li><a href="directiva.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Directiva</a></li>
+                        <li><a href="socios.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Socios</a></li>
+                        <li><a href="contacto.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Actividades -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">Actividades</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="calendario.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Calendario</a></li>
+                        <li><a href="eventos.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Eventos</a></li>
+                        <li><a href="galeria.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Galería</a></li>
+                        <li><a href="musica.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Música</a></li>
+                        <li><a href="reservas.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Reservas</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Información de Contacto -->
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-3">Contacto</h5>
+                    <ul class="list-unstyled footer-contact">
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2 text-danger"></i>
+                            <span class="text-muted small">Elche, Comunidad Valenciana</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2 text-danger"></i>
+                            <a href="mailto:info@filamariscales.com" class="text-muted text-decoration-none small">info@filamariscales.com</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2 text-danger"></i>
+                            <a href="tel:+34600000000" class="text-muted text-decoration-none small">+34 600 000 000</a>
+                        </li>
+                        <li class="mt-3">
+                            <a href="contacto.html" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-paper-plane me-2"></i>Envíanos un mensaje
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Línea divisoria -->
+            <hr class="my-4 border-secondary">
+            
+            <!-- Copyright y Créditos -->
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <p class="mb-0 text-muted small">
+                        &copy; <span id="current-year">2025</span> Filá Mariscales de Caballeros Templarios. Todos los derechos reservados.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 text-muted small">
+                        Realizado por: <a href="#" class="text-danger text-decoration-none">Eduardo Santa Cruz</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Botón de scroll hacia arriba -->
+        <button id="scrollTopBtn" class="btn btn-danger rounded-circle position-fixed bottom-0 end-0 m-4" style="display: none; width: 50px; height: 50px; z-index: 1000;" title="Volver arriba">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </footer>
+    
+    <style>
+        /* Estilos del footer mejorado */
+        footer .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        footer .footer-links a {
+            transition: all 0.3s ease;
+        }
+        
+        footer .footer-links a:hover {
+            color: #DC143C !important;
+            padding-left: 5px;
+        }
+        
+        footer .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+        
+        footer .social-link:hover {
+            background: #DC143C;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+        }
+        
+        footer .footer-contact a {
+            transition: all 0.3s ease;
+        }
+        
+        footer .footer-contact a:hover {
+            color: #DC143C !important;
+        }
+        
+        #scrollTopBtn {
+            transition: all 0.3s ease;
+        }
+        
+        #scrollTopBtn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            footer .text-md-end {
+                text-align: center !important;
+            }
+            
+            footer .text-md-start {
+                text-align: center !important;
+            }
+        }
+    </style>
+    
+    <script>
+        // Actualizar año automáticamente
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearElement = document.getElementById('current-year');
+            if (yearElement) {
+                yearElement.textContent = new Date().getFullYear();
+            }
+            
+            // Botón de scroll hacia arriba
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            if (scrollTopBtn) {
+                window.addEventListener('scroll', function() {
+                    if (window.pageYOffset > 300) {
+                        scrollTopBtn.style.display = 'block';
+                    } else {
+                        scrollTopBtn.style.display = 'none';
+                    }
+                });
+                
+                scrollTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Utils JS -->
+    <script src="assets/js/utils.js"></script>
+    <!-- Main JS -->
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Script simplificado para la página de historia
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Página de historia cargada correctamente');
+            
+            // Añadir animaciones simples
+            const cards = document.querySelectorAll('.card, .historia-content, .historia-image');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Cargar imagen dinámica de la sección "Imágenes del sitio" para Historia
+            try {
+                fetch('data/imagenes-sitio.json')
+                    .then(r => r.json())
+                    .then(items => {
+                        if (!Array.isArray(items)) return;
+                        const historiaItem = items.find(it => (it.pagina === 'historia') && (it.activa === true));
+                        if (!historiaItem) return;
+                        const img = document.querySelector('#historia .historia-image img');
+                        if (!img) return;
+                        // Priorizar imagen_local subida; si no, usar url remota
+                        const newSrc = historiaItem.imagen_local && String(historiaItem.imagen_local).trim() ? historiaItem.imagen_local : (historiaItem.url || '');
+                        if (newSrc) {
+                            img.src = newSrc;
+                        }
+                        if (historiaItem.descripcion) {
+                            img.alt = historiaItem.descripcion;
+                        } else if (historiaItem.nombre) {
+                            img.alt = historiaItem.nombre;
+                        }
+                    })
+                    .catch(() => {/* silencioso */});
+            } catch(_) { /* silencioso */ }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Permitir acceso a archivos JSON
+<Files "*.json">
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+# Configuración de CORS para archivos JSON
+<FilesMatch "\.(json)$">
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type"
+</FilesMatch>
+
+# Configuración de tipos MIME
+AddType application/json .json
+
+# Deshabilitar cache para archivos de desarrollo
+<FilesMatch "\.(js|css|json)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</FilesMatch>

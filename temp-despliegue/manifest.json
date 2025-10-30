@@ -1,0 +1,23 @@
+{
+    "name": "Filá Mariscales de Caballeros Templarios",
+    "short_name": "Filá Mariscales",
+    "description": "Aplicación web de la Filá Mariscales de Caballeros Templarios",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#DC143C",
+    "theme_color": "#DC143C",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "assets/images/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["lifestyle", "entertainment", "social"],
+    "lang": "es",
+    "dir": "ltr",
+    "scope": "/",
+    "prefer_related_applications": false
+}
