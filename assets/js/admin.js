@@ -747,6 +747,11 @@ class AdminApp {
                 ${columns.map(col => {
                     let value = item[col.key] || '';
                     
+                    // Si hay un formatter personalizado, usarlo primero
+                    if (col.formatter && typeof col.formatter === 'function') {
+                        return `<td>${col.formatter(value, item)}</td>`;
+                    }
+                    
                     // Formatear valores especiales
                     if (col.type === 'image' && value) {
                         value = `<img src="${value}" style="width: 50px; height: 50px; object-fit: cover;" class="rounded">`;
@@ -1108,9 +1113,32 @@ class AdminApp {
             'alertas': [
                 { key: 'titulo', title: 'Título', type: 'text' },
                 { key: 'mensaje', title: 'Mensaje', type: 'text' },
-                { key: 'tipo', title: 'Tipo', type: 'text' },
+                { key: 'tipo', title: 'Tipo', type: 'text', formatter: (value) => {
+                    const badges = {
+                        'info': '<span class="badge bg-info"><i class="fas fa-info-circle me-1"></i>Info</span>',
+                        'warning': '<span class="badge bg-warning text-dark"><i class="fas fa-exclamation-triangle me-1"></i>Warning</span>',
+                        'success': '<span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Success</span>',
+                        'error': '<span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i>Error</span>'
+                    };
+                    return badges[value] || `<span class="badge bg-secondary">${value || 'N/A'}</span>`;
+                }},
                 { key: 'fecha', title: 'Fecha', type: 'date' },
-                { key: 'leida', title: 'Leída', type: 'boolean' }
+                { key: 'leida', title: 'Leída', type: 'boolean', formatter: (value) => {
+                    return value === true || value === 'true' 
+                        ? '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Leída</span>'
+                        : '<span class="badge bg-warning text-dark"><i class="fas fa-envelope me-1"></i>No leída</span>';
+                }},
+                { key: 'accion_requerida', title: 'Acción Requerida', type: 'boolean', formatter: (value) => {
+                    return value === true || value === 'true'
+                        ? '<span class="badge bg-danger"><i class="fas fa-exclamation-circle me-1"></i>Sí</span>'
+                        : '<span class="badge bg-secondary"><i class="fas fa-check me-1"></i>No</span>';
+                }},
+                { key: 'enlace', title: 'Enlace', type: 'text', formatter: (value) => {
+                    if (!value) return '<span class="text-muted">-</span>';
+                    return `<a href="${value}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-external-link-alt me-1"></i>Ver
+                    </a>`;
+                }}
             ],
             'musica': [
                 { key: 'titulo', title: 'Título', type: 'text' },
@@ -1205,6 +1233,18 @@ class AdminApp {
         const formFields = document.getElementById('form-fields');
         formFields.innerHTML = fields.map(field => {
             let value = data ? (data[field.key] || '') : '';
+            
+            // Auto-completar fecha actual para alertas nuevas
+            if (!data && field.key === 'fecha' && ADMIN_CONFIG.CURRENT_SECTION === 'alertas') {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            }
+            
             let inputHtml = '';
             
             switch (field.type) {
@@ -1222,6 +1262,14 @@ class AdminApp {
                     break;
                 case 'date':
                     inputHtml = `<input type="date" class="form-control" id="${field.key}" value="${value}" ${field.required ? 'required' : ''}>`;
+                    break;
+                case 'datetime-local':
+                    // Convertir formato de fecha Y-m-d H:i:s a datetime-local si viene del JSON
+                    let datetimeValue = value;
+                    if (value && value.includes(' ') && !value.includes('T')) {
+                        datetimeValue = value.replace(' ', 'T').substring(0, 16);
+                    }
+                    inputHtml = `<input type="datetime-local" class="form-control" id="${field.key}" value="${datetimeValue}" ${field.required ? 'required' : ''}>`;
                     break;
                 case 'time':
                     inputHtml = `<input type="time" class="form-control" id="${field.key}" value="${value}" ${field.required ? 'required' : ''}>`;
@@ -1718,6 +1766,20 @@ class AdminApp {
 
     getFormFields(section) {
         const fields = {
+            'alertas': [
+                { key: 'titulo', label: 'Título', type: 'text', required: true },
+                { key: 'mensaje', label: 'Mensaje', type: 'textarea', required: true },
+                { key: 'tipo', label: 'Tipo', type: 'select', options: [
+                    { value: 'info', label: 'Info' },
+                    { value: 'warning', label: 'Warning' },
+                    { value: 'success', label: 'Success' },
+                    { value: 'error', label: 'Error' }
+                ], required: true },
+                { key: 'fecha', label: 'Fecha', type: 'datetime-local' },
+                { key: 'leida', label: 'Leída', type: 'checkbox' },
+                { key: 'accion_requerida', label: 'Acción requerida', type: 'checkbox' },
+                { key: 'enlace', label: 'Enlace', type: 'url' }
+            ],
             'users': [
                 { key: 'name', label: 'Nombre', type: 'text', required: true },
                 { key: 'email', label: 'Email', type: 'email', required: true },
@@ -2105,6 +2167,22 @@ class AdminApp {
                 // No incluir la contraseña si estamos editando y el campo está vacío
                 console.log('  - Password vacío en edición, no se incluye');
                 return;
+            } else if (field.type === 'datetime-local' && ADMIN_CONFIG.CURRENT_SECTION === 'alertas' && field.key === 'fecha') {
+                // Convertir datetime-local a formato Y-m-d H:i:s para alertas
+                const value = element.value.trim();
+                if (value) {
+                    const date = new Date(value);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    formData[field.key] = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                    console.log('  - Fecha convertida:', formData[field.key]);
+                } else {
+                    formData[field.key] = value;
+                }
             } else {
                 const value = element.value.trim();
                 formData[field.key] = value;
