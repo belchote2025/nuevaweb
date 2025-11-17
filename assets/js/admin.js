@@ -1740,16 +1740,39 @@ class AdminApp {
     }
     
     hideCustomModal() {
-        const modalElement = document.getElementById('itemModal');
+        // Siempre intentar cerrar también el modal personalizado nuevo si estuviera abierto
+        try {
+            this.hideNewModal();
+        } catch (e) {
+            console.warn('No se pudo cerrar el nuevo modal (puede no existir):', e?.message);
+        }
         
-        // Ocultar modal
+        const modalElement = document.getElementById('itemModal');
+        if (!modalElement) {
+            console.warn('hideCustomModal: modal principal no encontrado');
+            document.querySelectorAll('.modal-backdrop, .custom-modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('paddingRight');
+            return;
+        }
+        
+        // Si Bootstrap ya tiene una instancia del modal, usar su API oficial
+        const bootstrapInstance = window.bootstrap ? window.bootstrap.Modal.getInstance(modalElement) : null;
+        if (bootstrapInstance) {
+            bootstrapInstance.hide();
+        }
+        
+        // Fallback manual por si la instancia no existe
         modalElement.style.display = 'none';
         modalElement.classList.remove('show');
         modalElement.removeAttribute('style');
+        modalElement.setAttribute('aria-hidden', 'true');
         
         // Restaurar scroll del body
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('paddingRight');
         
         // Limpiar formulario
         const formFields = document.getElementById('form-fields');
@@ -1757,11 +1780,10 @@ class AdminApp {
             formFields.innerHTML = '';
         }
         
-        // Limpiar cualquier backdrop personalizado
-        const backdrops = document.querySelectorAll('.custom-modal-backdrop');
-        backdrops.forEach(backdrop => backdrop.remove());
+        // Limpiar cualquier backdrop que haya quedado (bootstrap o personalizado)
+        document.querySelectorAll('.modal-backdrop, .custom-modal-backdrop').forEach(backdrop => backdrop.remove());
         
-        console.log('Modal personalizado ocultado');
+        console.log('Modal personalizado ocultado correctamente');
     }
 
     getFormFields(section) {
@@ -2825,6 +2847,7 @@ class AdminApp {
             'titulo': 'Título',
             'subtitulo': 'Subtítulo',
             'descripcion': 'Descripción',
+            'descripcion_detallada': 'Descripción Detallada',
             'texto_bienvenida': 'Texto de Bienvenida',
             'fecha_fundacion': 'Fecha de Fundación',
             'fundadores': 'Fundadores',

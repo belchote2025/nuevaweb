@@ -5,12 +5,28 @@
         "descripcion_hero": "Desde 1985 manteniendo viva la tradici\u00f3n templaria en las calles de Elche",
         "texto_bienvenida": "Bienvenidos a la p\u00e1gina oficial de la Fil\u00e1 Mariscales de Caballeros Templarios de Elche. Una hermandad unida por la tradici\u00f3n, el honor y la amistad."
     },
+    "lafila": {
+        "titulo": "La Fil\u00e1 Mariscales",
+        "subtitulo": "Pasi\u00f3n templaria en Elche",
+        "descripcion": "La Fil\u00e1 Mariscales de Caballeros Templarios de Elche mantiene viva la tradici\u00f3n templaria en las fiestas de Moros y Cristianos. Nuestra hermandad fomenta la amistad, el respeto y la preservaci\u00f3n de los valores templarios desde sus or\u00edgenes."
+    },
     "historia": {
         "titulo": "Nuestra Historia",
         "subtitulo": "Una tradici\u00f3n que perdura",
         "descripcion": "La Fil\u00e1 Mariscales fue fundada en 1985 con el objetivo de mantener viva la tradici\u00f3n de los Caballeros Templarios en Elche. Desde entonces, hemos participado activamente en las fiestas de Moros y Cristianos, llevando el orgullo templario por las calles de nuestra ciudad.",
+        "descripcion_detallada": "Desde nuestros inicios, hemos trabajado incansablemente para preservar las costumbres y valores que nos caracterizan como fil\u00e1, siempre con el respeto y la dignidad que merece nuestra tradici\u00f3n.",
         "fecha_fundacion": "1985",
         "fundadores": "Grupo de amigos apasionados por la historia templaria"
+    },
+    "calendario": {
+        "titulo": "Calendario anual",
+        "subtitulo": "Planifica tus actos templarios",
+        "descripcion": "Consulta todas las fechas de ensayos, desfiles, convivencias y reuniones de la Fil\u00e1. Actualizamos el calendario para que no te pierdas ninguna cita."
+    },
+    "actividades": {
+        "titulo": "Actividades destacadas",
+        "subtitulo": "Eventos, galer\u00eda y m\u00fasica en un mismo lugar",
+        "descripcion": "Explora nuestras propuestas culturales, actos solidarios y experiencias participativas. Cada socio puede conocer aqu\u00ed las novedades y sumarse f\u00e1cilmente."
     },
     "directiva": {
         "titulo": "Directiva",
@@ -38,10 +54,30 @@
         "subtitulo": "Momentos inolvidables",
         "descripcion": "Revive los mejores momentos de la Fil\u00e1 Mariscales a trav\u00e9s de nuestra galer\u00eda de im\u00e1genes."
     },
+    "musica": {
+        "titulo": "M\u00fasica templaria",
+        "subtitulo": "La banda sonora de la Fil\u00e1",
+        "descripcion": "Escucha marchas, himnos y piezas emblem\u00e1ticas que nos acompa\u00f1an en cada desfile y acto oficial."
+    },
     "noticias": {
         "titulo": "Noticias1",
         "subtitulo": "\u00daltimas novedades1",
         "descripcion": "Mantente informado de todas las novedades y actividades de la Fil\u00e1 Mariscales.1"
+    },
+    "recursos": {
+        "titulo": "Recursos y herramientas",
+        "subtitulo": "Tienda, descargas y blog oficial",
+        "descripcion": "Accede a materiales exclusivos, publicaciones digitales, descargas \u00fatiles y al merchandising de la Fil\u00e1."
+    },
+    "libro": {
+        "titulo": "Libro digital",
+        "subtitulo": "Nuestra historia interactiva",
+        "descripcion": "Descubre el libro digital con cr\u00f3nicas, fotograf\u00edas y testimonios que resumen las d\u00e9cadas de trabajo de la Fil\u00e1 Mariscales."
+    },
+    "reservas": {
+        "titulo": "Reservas",
+        "subtitulo": "Confirma tu asistencia",
+        "descripcion": "Completa tu reserva para cenas, desfiles, viajes y actividades especiales de la Fil\u00e1. Te confirmaremos la plaza por correo."
     },
     "contacto": {
         "titulo": "Contacto",

@@ -31,5 +31,16 @@
         "destacada": true,
         "id": "68f214914915d",
         "updated_at": "2025-10-17 12:04:01"
+    },
+    {
+        "titulo": "b",
+        "resumen": "a",
+        "contenido": "a",
+        "imagen_url": "",
+        "fecha_publicacion": "2025-11-17",
+        "autor": "a",
+        "destacada": true,
+        "id": "691b1f2909a4b",
+        "updated_at": "2025-11-17 14:12:09"
     }
 ]

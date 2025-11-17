@@ -1,16 +1,14 @@
 [
     {
-        "titulo": "Desfile de Moros y Cristianos 2024",
+        "titulo": "Desfile de Moros y Cristianos 20240",
         "descripcion": "Participaci\u00f3n de la Fil\u00e1 Mariscales en el desfile principal de las fiestas de Moros y Cristianos de Elche 2024.",
-        "imagen_url": "uploads\/images\/gallery\/gallery_6901d4f373e76.jpg",
-        "thumb_url": "uploads\/images\/gallery\/gallery_6901d4f373e76.jpg",
         "youtube_url": "https:\/\/www.youtube.com\/watch?v=dQw4w9WgXcQ",
         "categoria": "desfiles",
         "fecha_subida": "2024-03-15",
         "orden": "1",
-        "imagen_url_uploaded_url": "uploads\/images\/gallery\/gallery_6901d4f373e76.jpg",
-        "id": "6901d4f9ab55e",
-        "updated_at": "2025-10-29 09:48:57"
+        "imagen_url": "uploads\/images\/carousel\/carousel_691b1f7154ebc.png",
+        "id": "691b1f71576dc",
+        "updated_at": "2025-11-17 14:13:21"
     },
     {
         "titulo": "Ensayo General de la Banda",
@@ -64,5 +62,38 @@
         "imagen_url": "uploads\/images\/carousel\/carousel_6901e653d9ee1.jpg",
         "id": "6901e653dd2fe",
         "updated_at": "2025-10-29 11:02:59"
+    },
+    {
+        "titulo": "prueba",
+        "descripcion": "",
+        "youtube_url": "",
+        "categoria": "",
+        "fecha_subida": "2025-11-04",
+        "orden": "",
+        "imagen_url": "uploads\/images\/carousel\/carousel_690a0725cc44e.jpg",
+        "id": "690a0725cfcc5",
+        "updated_at": "2025-11-04 15:01:09"
+    },
+    {
+        "titulo": "prueba",
+        "descripcion": "",
+        "youtube_url": "",
+        "categoria": "",
+        "fecha_subida": "2025-11-04",
+        "orden": "",
+        "imagen_url": "uploads\/images\/carousel\/carousel_690a07564d599.jpg",
+        "id": "690a075650190",
+        "updated_at": "2025-11-04 15:01:58"
+    },
+    {
+        "titulo": "a",
+        "descripcion": "a",
+        "youtube_url": "",
+        "categoria": "",
+        "fecha_subida": "2025-11-18",
+        "orden": "",
+        "imagen_url": "uploads\/images\/carousel\/carousel_691b1f94bfd7a.png",
+        "id": "691b1f94c24b1",
+        "updated_at": "2025-11-17 14:13:56"
     }
 ]

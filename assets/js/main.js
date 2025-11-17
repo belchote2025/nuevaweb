@@ -2051,6 +2051,14 @@ class FilaMariscalesApp {
             this.updateElementText('hero-subtitle', textos.home.subtitulo_principal);
             this.updateElementText('hero-description', textos.home.descripcion_hero);
             this.updateElementText('welcome-text', textos.home.texto_bienvenida);
+            this.updateElementText('home-title', textos.home.titulo_principal);
+            this.updateElementText('home-subtitle', textos.home.subtitulo_principal);
+        }
+        
+        if (textos.lafila) {
+            this.updateElementText('lafila-title', textos.lafila.titulo);
+            this.updateElementText('lafila-subtitle', textos.lafila.subtitulo);
+            this.updateElementText('lafila-description', textos.lafila.descripcion);
         }
         
         // Aplicar textos de historia
@@ -2060,6 +2068,7 @@ class FilaMariscalesApp {
             this.updateElementText('historia-description', textos.historia.descripcion);
             this.updateElementText('fecha-fundacion', textos.historia.fecha_fundacion);
             this.updateElementText('fundadores', textos.historia.fundadores);
+            this.updateElementText('historia-detalle', textos.historia.descripcion_detallada);
         }
         
         // Aplicar textos de directiva
@@ -2090,6 +2099,12 @@ class FilaMariscalesApp {
             this.updateElementText('galeria-description', textos.galeria.descripcion);
         }
         
+        if (textos.musica) {
+            this.updateElementText('musica-title', textos.musica.titulo);
+            this.updateElementText('musica-subtitle', textos.musica.subtitulo);
+            this.updateElementText('musica-description', textos.musica.descripcion);
+        }
+        
         // Aplicar textos de noticias
         if (textos.noticias) {
             this.updateElementText('noticias-title', textos.noticias.titulo);
@@ -2106,6 +2121,36 @@ class FilaMariscalesApp {
             this.updateElementText('contacto-email', textos.contacto.email);
             this.updateElementText('contacto-telefono', textos.contacto.telefono);
             this.updateElementText('contacto-horario', textos.contacto.horario_atencion);
+        }
+        
+        if (textos.calendario) {
+            this.updateElementText('calendario-title', textos.calendario.titulo);
+            this.updateElementText('calendario-subtitle', textos.calendario.subtitulo);
+            this.updateElementText('calendario-description', textos.calendario.descripcion);
+        }
+        
+        if (textos.actividades) {
+            this.updateElementText('actividades-title', textos.actividades.titulo);
+            this.updateElementText('actividades-subtitle', textos.actividades.subtitulo);
+            this.updateElementText('actividades-description', textos.actividades.descripcion);
+        }
+        
+        if (textos.recursos) {
+            this.updateElementText('recursos-title', textos.recursos.titulo);
+            this.updateElementText('recursos-subtitle', textos.recursos.subtitulo);
+            this.updateElementText('recursos-description', textos.recursos.descripcion);
+        }
+        
+        if (textos.libro) {
+            this.updateElementText('libro-title', textos.libro.titulo);
+            this.updateElementText('libro-subtitle', textos.libro.subtitulo);
+            this.updateElementText('libro-description', textos.libro.descripcion);
+        }
+        
+        if (textos.reservas) {
+            this.updateElementText('reservas-title', textos.reservas.titulo);
+            this.updateElementText('reservas-subtitle', textos.reservas.subtitulo);
+            this.updateElementText('reservas-description', textos.reservas.descripcion);
         }
         
         // Aplicar textos del footer
