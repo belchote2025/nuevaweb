@@ -3,12 +3,12 @@
         "titulo": "Fil\u00e1 Mariscales 2025: Nueva Temporada prueba 2",
         "resumen": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y actividades programadas. prueba1",
         "contenido": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y un programa especial de actividades que incluye presentaciones, ensayos, eventos sociales y la participaci\u00f3n en las fiestas de Moros y Cristianos de Elche. Este a\u00f1o contamos con un equipo renovado y nuevas propuestas para mantener viva la tradici\u00f3n templaria. prueba 1",
-        "imagen_url": "https:\/\/images.unsplash.com\/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         "fecha_publicacion": "2025-01-15",
         "autor": "Administrador",
         "destacada": false,
-        "id": "68f2261ee36a9",
-        "updated_at": "2025-10-17 13:18:54"
+        "imagen_url": "uploads\/images\/carousel\/carousel_691b293a55748.png",
+        "id": "691b293a57ec1",
+        "updated_at": "2025-11-17 14:55:06"
     },
     {
         "titulo": "Fil\u00e1 Mariscales 2025: Nueva Temporada prueba 3",
@@ -42,5 +42,16 @@
         "destacada": true,
         "id": "691b1f2909a4b",
         "updated_at": "2025-11-17 14:12:09"
+    },
+    {
+        "titulo": "Fil\u00e1 Mariscales 2025: Nueva Temporada prueba 2",
+        "resumen": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y actividades programadas. prueba1",
+        "contenido": "La Fil\u00e1 Mariscales de Caballeros Templarios inicia oficialmente la temporada 2025 con nuevas incorporaciones y un programa especial de actividades que incluye presentaciones, ensayos, eventos sociales y la participaci\u00f3n en las fiestas de Moros y Cristianos de Elche. Este a\u00f1o contamos con un equipo renovado y nuevas propuestas para mantener viva la tradici\u00f3n templaria. prueba 1",
+        "imagen_url": "",
+        "fecha_publicacion": "2025-01-15",
+        "autor": "Administrador",
+        "destacada": false,
+        "id": "691b293e2f104",
+        "updated_at": "2025-11-17 14:55:10"
     }
 ]
