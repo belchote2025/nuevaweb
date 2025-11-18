@@ -43,6 +43,7 @@ class FilaMariscalesApp {
     init() {
         this.loadActiveTheme();
         this.setupEventListeners();
+        this.setupFloatingButtons();
         this.loadInitialData();
         this.setupSmoothScrolling();
         this.setupNavbarScroll();
@@ -256,6 +257,63 @@ class FilaMariscalesApp {
         
         console.log('✅ Dropdowns configurados:', dropdownToggles.length);
     }
+    
+    setupFloatingButtons() {
+        if (!document.body || document.querySelector('.floating-buttons-container')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'floating-buttons-container';
+        container.innerHTML = `
+            <button id="backToTop" class="floating-btn back-to-top" title="Volver arriba">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            <a href="https://wa.me/${this.getWhatsAppNumber()}" target="_blank" class="floating-btn whatsapp" title="Contactar por WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+        `;
+
+        document.body.appendChild(container);
+
+        const backToTopBtn = container.querySelector('#backToTop');
+        const whatsappBtn = container.querySelector('.floating-btn.whatsapp');
+
+        const updateBackToTopVisibility = () => {
+            if (!backToTopBtn) return;
+            backToTopBtn.style.display = window.pageYOffset > 300 ? 'flex' : 'none';
+        };
+
+        window.addEventListener('scroll', updateBackToTopVisibility);
+        updateBackToTopVisibility();
+
+        if (backToTopBtn) {
+            backToTopBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        const updateWhatsAppLink = () => {
+            if (!whatsappBtn) return;
+            whatsappBtn.href = `https://wa.me/${this.getWhatsAppNumber()}`;
+        };
+
+        updateWhatsAppLink();
+
+        const updateNumberGlobal = (number) => {
+            if (!number) return;
+            localStorage.setItem('admin_whatsapp_number', number);
+            updateWhatsAppLink();
+        };
+
+        if (!window.updateWhatsAppNumber) {
+            window.updateWhatsAppNumber = updateNumberGlobal;
+        }
+    }
 
     // ===== TEMAS DINÁMICOS =====
     async loadActiveTheme() {
@@ -370,6 +428,10 @@ class FilaMariscalesApp {
         const g = (bigint >> 8) & 255;
         const b = bigint & 255;
         return `${r}, ${g}, ${b}`;
+    }
+
+    getWhatsAppNumber() {
+        return localStorage.getItem('admin_whatsapp_number') || '34600000000';
     }
 
     // ===== CARGA DE DATOS INICIALES =====
@@ -590,12 +652,22 @@ class FilaMariscalesApp {
                         const activeItem = e.target.querySelector('.carousel-item.active');
                         const nextItem = e.relatedTarget;
                         
-                        // Verificar que los elementos existen y tienen classList
+                        // Aplicar fade-out al item activo
                         if (activeItem && typeof activeItem.classList === 'object') {
                             activeItem.classList.add('fade-out');
+                            // Remover active después de un breve delay para permitir la transición
+                            setTimeout(() => {
+                                if (activeItem.classList.contains('fade-out')) {
+                                    activeItem.classList.remove('active');
+                                }
+                            }, 50);
                         }
+                        
+                        // Preparar el siguiente item para fade-in
                         if (nextItem && typeof nextItem.classList === 'object') {
                             nextItem.classList.add('fade-in');
+                            // Asegurar que el siguiente item tenga la clase active
+                            nextItem.classList.add('active');
                         }
                     } catch (error) {
                         console.warn('Error en transición del carrusel:', error);
@@ -611,7 +683,12 @@ class FilaMariscalesApp {
                         if (items && items.length > 0) {
                             items.forEach(item => {
                                 if (item && typeof item.classList === 'object') {
-                                    item.classList.remove('fade-out', 'fade-in');
+                                    // Remover clases de animación pero mantener active en el item actual
+                                    if (item.classList.contains('active')) {
+                                        item.classList.remove('fade-out', 'fade-in');
+                                    } else {
+                                        item.classList.remove('fade-out', 'fade-in', 'active');
+                                    }
                                 }
                             });
                         }

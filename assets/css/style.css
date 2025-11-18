@@ -6,7 +6,7 @@
 
 .navbar .nav-link,
 .navbar .navbar-brand {
-    color: #fff !important;
+    color: var(--templar-red) !important;
 }
 
 .navbar .nav-link:hover,
@@ -298,7 +298,7 @@ body::after {
 }
 
 .nav-logo {
-    color: var(--templar-white);
+    color: var(--templar-red);
     font-size: 1.8rem;
     font-weight: bold;
 }
@@ -310,7 +310,7 @@ body::after {
 }
 
 .nav-link {
-    color: var(--templar-white);
+    color: var(--templar-red);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
@@ -365,7 +365,10 @@ section.bg-dark, .bg-dark.section, #contacto.bg-dark {
 .carousel-item {
     height: 100vh;
     position: relative;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+    transform: scale(1);
 }
 
 .carousel-image {
@@ -726,14 +729,43 @@ section.bg-dark, .bg-dark.section, #contacto.bg-dark {
     }
 }
 
-#home-carousel .carousel-item.fade-out {
-    opacity: 0.7;
-    transform: scale(0.98);
+/* Transiciones suaves para el carousel */
+.carousel-item.fade-out {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#home-carousel .carousel-item.fade-in {
+.carousel-item.fade-in {
     opacity: 1;
     transform: scale(1);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Asegurar que el item activo siempre sea visible */
+.carousel-item.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Prevenir parpadeos durante la transición */
+.carousel-item:not(.active):not(.fade-in) {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.carousel-item.active,
+.carousel-item.fade-in {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+/* Durante la transición, el item que entra debe estar por encima */
+.carousel-item.fade-in {
+    z-index: 2;
 }
 
 /* Responsive para el carousel moderno */
@@ -1468,7 +1500,7 @@ p {
     }
     
     .navbar-nav .dropdown-item {
-        color: var(--templar-white) !important;
+        color: var(--templar-red) !important;
         padding: 0.75rem 1rem;
         border-radius: 4px;
         margin: 0.25rem 0;
@@ -1479,7 +1511,7 @@ p {
     
     .navbar-nav .dropdown-item:hover {
         background-color: var(--templar-red) !important;
-        color: var(--templar-white) !important;
+        color: #fff !important;
         transform: translateX(5px);
     }
     
@@ -1518,7 +1550,7 @@ p {
     }
     
     .navbar-nav .nav-link {
-        color: var(--templar-white) !important;
+        color: var(--templar-red) !important;
         padding: 0.75rem 1rem;
         border-radius: 4px;
         margin: 0.25rem 0;
@@ -1527,13 +1559,13 @@ p {
     
     .navbar-nav .nav-link:hover {
         background-color: rgba(220, 20, 60, 0.2);
-        color: var(--templar-white) !important;
+        color: var(--templar-red) !important;
         transform: translateX(5px);
     }
     
     .navbar-nav .nav-link.active {
         background-color: var(--templar-red) !important;
-        color: var(--templar-white) !important;
+        color: #fff !important;
     }
     
     /* Forzar visibilidad de dropdowns */
@@ -2188,6 +2220,106 @@ footer::before {
 
 .service-card:nth-child(3) {
     animation-delay: 0.4s;
+}
+
+/* ===== BOTÓN DE NOTIFICACIONES ===== */
+.notification-toggle {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.notification-toggle small {
+    color: #fff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.btn-notification {
+    background: linear-gradient(135deg, var(--templar-red), var(--templar-red-light));
+    color: #fff;
+    border: none;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.btn-notification i {
+    pointer-events: none;
+}
+
+.btn-notification:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.btn-notification.inactive {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--templar-red);
+    color: var(--templar-red);
+}
+
+.btn-notification.inactive:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.btn-notification.active {
+    background: linear-gradient(135deg, #f04f4f, var(--templar-red));
+}
+
+/* ===== BOTONES FLOTANTES (FRONT) ===== */
+.floating-buttons-container {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    z-index: 1040;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.floating-buttons-container .floating-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    color: #fff;
+    background: var(--templar-red);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.floating-buttons-container .floating-btn i {
+    font-size: 1.25rem;
+}
+
+.floating-buttons-container .floating-btn.whatsapp {
+    background: #25D366;
+}
+
+.floating-buttons-container .floating-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4);
+}
+
+.floating-buttons-container .floating-btn.back-to-top {
+    display: none;
+    background: linear-gradient(135deg, var(--templar-red), var(--templar-red-light, #ff5f5f));
 }
 
 

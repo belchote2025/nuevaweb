@@ -13,6 +13,8 @@ class AnimationController {
         this.setupTextAnimations();
         this.setupFormAnimations();
         this.setupGalleryAnimations();
+        // setupCarouselAnimations desactivado - se maneja en main.js para evitar conflictos
+        // this.setupCarouselAnimations();
     }
 
     // ===== ANIMACIONES DE SCROLL =====

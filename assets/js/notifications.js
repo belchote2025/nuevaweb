@@ -257,12 +257,13 @@ class NotificationManager {
         const statusText = document.getElementById('notification-status');
         
         if (toggleBtn) {
+            toggleBtn.classList.remove('inactive', 'active');
             if (this.subscription) {
                 toggleBtn.innerHTML = '<i class="fas fa-bell-slash me-2"></i>Desactivar Notificaciones';
-                toggleBtn.className = 'btn btn-outline-danger';
+                toggleBtn.className = 'btn btn-notification btn-lg rounded-circle active';
             } else {
                 toggleBtn.innerHTML = '<i class="fas fa-bell me-2"></i>Activar Notificaciones';
-                toggleBtn.className = 'btn btn-outline-primary';
+                toggleBtn.className = 'btn btn-notification btn-lg rounded-circle inactive';
             }
         }
 
