@@ -4,69 +4,75 @@
         "name": "Administrador",
         "email": "admin@filamariscales.com",
         "role": "admin",
-        "password_hash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+        "password_hash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC\/.og\/at2.uheWG\/igi",
         "created_at": "2025-01-01 00:00:00",
         "updated_at": "2025-01-01 00:00:00",
         "active": true
     },
     {
         "id": "user-68e8d89674bcb",
-        "name": "AINHOA",
-        "email": "admin@filamariscales.com",
-        "role": "viewer",
-        "password_hash": "$2y$10$LgxCizWPX6vGB1PuNMl4WOi\/lkes9apOaiU02XS8VdIIpRc74j3Le",
+        "name": "eduardo santa cruz",
+        "email": "charo1106@gmail.com.com",
+        "role": "socio",
+        "password_hash": "$2y$10$QkoCW6DLR2gPl68a2QHme.8F2g3pn1facxsHFlvtm020ix577.vzu",
         "created_at": "2025-10-10 11:57:42",
-        "updated_at": "2025-10-10 11:57:42",
-        "active": false
+        "updated_at": "2025-11-18 10:32:43",
+        "active": true,
+        "nombre": "eduardo santa cruz",
+        "telefono": "636781798",
+        "direccion": "capita antoni mena 69 9 1",
+        "fecha_ingreso": "",
+        "numero_socio": "15",
+        "socio_id": "socio-691c3d3b578fc"
     },
     {
         "id": "socio-001",
-        "name": "Juan Pérez",
+        "name": "Juan P\u00e9rez",
         "email": "juan.perez@filamariscales.com",
         "role": "socio",
-        "password_hash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+        "password_hash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC\/.og\/at2.uheWG\/igi",
         "created_at": "2024-12-01 10:00:00",
         "updated_at": "2024-12-01 10:00:00",
         "active": true
     },
     {
         "id": "socio-002",
-        "name": "María García",
+        "name": "Mar\u00eda Garc\u00eda",
         "email": "maria.garcia@filamariscales.com",
         "role": "socio",
-        "password_hash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+        "password_hash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC\/.og\/at2.uheWG\/igi",
         "created_at": "2024-11-15 14:30:00",
         "updated_at": "2024-11-15 14:30:00",
         "active": true
     },
     {
         "id": "socio-003",
-        "name": "Carlos López",
+        "name": "Carlos L\u00f3pez",
         "email": "carlos.lopez@filamariscales.com",
         "role": "socio",
-        "password_hash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+        "password_hash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC\/.og\/at2.uheWG\/igi",
         "created_at": "2024-10-20 09:15:00",
         "updated_at": "2024-10-20 09:15:00",
         "active": true
     },
     {
         "id": "socio-004",
-        "name": "Ana Martínez",
+        "name": "Ana Mart\u00ednez",
         "email": "ana.martinez@filamariscales.com",
         "role": "socio",
-        "password_hash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+        "password_hash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC\/.og\/at2.uheWG\/igi",
         "created_at": "2024-09-10 16:45:00",
         "updated_at": "2024-09-10 16:45:00",
         "active": true
+    },
+    {
+        "id": "user-691c33c83ee07",
+        "name": "eduardo",
+        "email": "prueba1@prueba.es",
+        "role": "socio",
+        "password_hash": "$2y$10$vLU2C.\/VLpGeFpChjKZ48ujv1aThOztLJcByhg1TNq2lXh9Gg3Ygq",
+        "created_at": "2025-11-18 09:52:24",
+        "updated_at": "2025-11-18 09:52:24",
+        "active": true
     }
 ]
-
-
-
-
-
-
-
-
-
-

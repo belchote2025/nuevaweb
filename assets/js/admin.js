@@ -173,10 +173,14 @@ class AdminApp {
                     this.updateReservaEstado(id, estado);
                 } else if (resetPasswordBtn) {
                     e.preventDefault();
-                    const id = resetPasswordBtn.dataset.id;
+                    const socioId = resetPasswordBtn.dataset.socioId || resetPasswordBtn.dataset.id;
                     const nombre = resetPasswordBtn.dataset.nombre;
                     const email = resetPasswordBtn.dataset.email;
-                    this.resetSocioPassword(id, nombre, email);
+                    if (!socioId) {
+                        this.showNotification('No se pudo identificar el socio para resetear la contraseña', 'error');
+                        return;
+                    }
+                    this.resetSocioPassword(socioId, nombre, email);
                 } else if (estadoSolicitudBtn) {
                     e.preventDefault();
                     const id = estadoSolicitudBtn.dataset.id;
@@ -322,8 +326,7 @@ class AdminApp {
             'musica': 'Añadiendo nueva música...',
             'productos': 'Creando nuevo producto...',
             'contactos': 'Cargando contactos...',
-            'reservas': 'Cargando reservas...',
-            'socios': 'Cargando gestión de socios...'
+            'reservas': 'Cargando reservas...'
         };
         
         if (messages[section]) {
@@ -345,12 +348,6 @@ class AdminApp {
     }
 
     showSection(section) {
-        // Verificar acceso a secciones restringidas
-        if (section === 'socios' && !this.canAccessSocios()) {
-            this.showNotification('No tienes permisos para acceder a esta sección', 'error');
-            return;
-        }
-        
         ADMIN_CONFIG.CURRENT_SECTION = section;
         
         // Update navigation
@@ -372,7 +369,6 @@ class AdminApp {
             'users': 'Usuarios',
             'musica': 'Música',
             'carousel': 'Carrusel',
-            'socios': 'Socios',
             'textos': 'Textos',
             'fondos': 'Fondos',
             'reservas': 'Reservas'
@@ -429,16 +425,18 @@ class AdminApp {
             // Esperar a que se complete la autenticación
             await this.checkAuth();
             
-            const [noticias, eventos, productos, contactos, galeria, socios, musica, reservas] = await Promise.all([
+            const [noticias, eventos, productos, contactos, galeria, usuarios, musica, reservas] = await Promise.all([
                 this.fetchData('noticias'),
                 this.fetchData('eventos'),
                 this.fetchData('productos'),
                 this.fetchData('contactos'),
                 this.fetchData('galeria'),
-                this.fetchData('socios'),
+                this.fetchData('users'),
                 this.fetchData('musica'),
                 this.fetchData('reservas')
             ]);
+
+            const socios = (usuarios || []).filter(user => (user.role || '').toLowerCase() === 'socio');
 
             // Actualizar contadores
             document.getElementById('noticias-count').textContent = noticias.length;
@@ -774,41 +772,6 @@ class AdminApp {
                         <div class="mt-1"><span class="badge ${value==='confirmada'?'bg-success':value==='cancelada'?'bg-danger':'bg-warning text-dark'}">${value||'pendiente'}</span></div>
                     </td>`;
                 }
-                
-                // Formatear contraseñas para socios
-                if (ADMIN_CONFIG.CURRENT_SECTION === 'socios' && col.key === 'password') {
-                    if (!value) {
-                        return `<td>
-                            <span class="badge bg-danger">
-                                <i class="fas fa-exclamation-triangle me-1"></i>Sin contraseña
-                            </span>
-                        </td>`;
-                    }
-                    
-                    // Mostrar información útil sobre la contraseña
-                    const passwordLength = value.length;
-                    const isHashed = value.startsWith('$2y$');
-                    const strength = passwordLength > 50 ? 'Fuerte' : passwordLength > 30 ? 'Media' : 'Débil';
-                    const strengthClass = passwordLength > 50 ? 'bg-success' : passwordLength > 30 ? 'bg-warning' : 'bg-danger';
-                    
-                    return `<td>
-                        <div class="password-info">
-                            <div class="d-flex align-items-center">
-                                <span class="badge ${strengthClass} me-2">
-                                    <i class="fas fa-shield-alt me-1"></i>${strength}
-                                </span>
-                                <small class="text-muted">${isHashed ? 'Hash encriptado' : 'Texto plano'}</small>
-                            </div>
-                            <div class="mt-1">
-                                <button class="btn btn-sm btn-outline-info toggle-password" 
-                                        data-id="${item.id}" data-hash="${value}" title="Ver hash completo">
-                                    <i class="fas fa-eye me-1"></i>Ver Hash
-                                </button>
-                            </div>
-                        </div>
-                    </td>`;
-                }
-                
                 // Acciones rápidas para solicitudes (cambiar estado)
                 if (ADMIN_CONFIG.CURRENT_SECTION === 'solicitudes' && col.key === 'estado') {
                     return `<td>
@@ -826,8 +789,8 @@ class AdminApp {
                     <button class="btn btn-sm btn-outline-primary me-1 btn-edit" data-id="${item.id ?? item.imagen_id ?? item._id}">
                         <i class="fas fa-edit"></i>
                     </button>
-                    ${ADMIN_CONFIG.CURRENT_SECTION === 'socios' ? `
-                        <button class="btn btn-sm btn-outline-warning me-1 btn-reset-password" data-id="${item.id}" data-nombre="${item.nombre}" data-email="${item.email}">
+                    ${ADMIN_CONFIG.CURRENT_SECTION === 'users' && (((item.role || '').toLowerCase() === 'socio') || (item.sources && item.sources.socios)) ? `
+                        <button class="btn btn-sm btn-outline-warning me-1 btn-reset-password" data-id="${item.id}" data-socio-id="${item.socio_id || ''}" data-nombre="${item.name || item.nombre || ''}" data-email="${item.email || ''}">
                             <i class="fas fa-key"></i>
                         </button>
                     ` : ''}
@@ -856,64 +819,6 @@ class AdminApp {
                 </td>
             </tr>
         `).join('');
-        
-        // Event listeners para botones de mostrar/ocultar contraseña
-        if (section === 'socios') {
-            // Usar setTimeout para asegurar que el DOM esté completamente renderizado
-            setTimeout(() => {
-                tableBody.querySelectorAll('.toggle-password').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const hash = btn.dataset.hash;
-                        const icon = btn.querySelector('i');
-                        
-                        if (btn.textContent.includes('Ver Hash')) {
-                            // Mostrar hash completo
-                            btn.innerHTML = '<i class="fas fa-eye-slash me-1"></i>Ocultar Hash';
-                            btn.title = 'Ocultar hash completo';
-                            
-                            // Crear modal temporal para mostrar el hash
-                            const modal = document.createElement('div');
-                            modal.className = 'modal fade';
-                            modal.innerHTML = `
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Hash de Contraseña</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p class="text-muted mb-3">Este es el hash encriptado de la contraseña. No se puede convertir de vuelta a texto plano por seguridad.</p>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" value="${hash}" readonly id="hashInput">
-                                                <button class="btn btn-outline-secondary" type="button" onclick="navigator.clipboard.writeText('${hash}')">
-                                                    <i class="fas fa-copy"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                            document.body.appendChild(modal);
-                            const bsModal = new bootstrap.Modal(modal);
-                            bsModal.show();
-                            
-                            // Limpiar modal cuando se cierre
-                            modal.addEventListener('hidden.bs.modal', () => {
-                                document.body.removeChild(modal);
-                            });
-                        } else {
-                            // Volver al estado original
-                            btn.innerHTML = '<i class="fas fa-eye me-1"></i>Ver Hash';
-                            btn.title = 'Ver hash completo';
-                        }
-                    });
-                });
-            }, 100);
-        }
     }
 
     getColumnsConfig(section) {
@@ -922,6 +827,25 @@ class AdminApp {
                 { key: 'name', title: 'Nombre', type: 'text' },
                 { key: 'email', title: 'Email', type: 'text' },
                 { key: 'role', title: 'Rol', type: 'text' },
+                { key: 'telefono', title: 'Teléfono', type: 'text', formatter: (value) => value || '—' },
+                { key: 'numero_socio', title: 'Número Socio', type: 'text', formatter: (value) => value || '—' },
+                { 
+                    key: 'fecha_ingreso', 
+                    title: 'Fecha Ingreso', 
+                    type: 'date',
+                    formatter: (value) => value ? new Date(value).toLocaleDateString('es-ES') : '—'
+                },
+                { key: 'direccion', title: 'Dirección', type: 'text', formatter: (value) => value || '—' },
+                { 
+                    key: 'origin', 
+                    title: 'Origen', 
+                    type: 'text',
+                    formatter: (value, item) => {
+                        if (item?.sources?.users && item?.sources?.socios) return 'Usuarios + Socios';
+                        if (item?.sources?.socios) return 'Socios';
+                        return 'Usuarios';
+                    }
+                },
                 { 
                     key: 'created_at', 
                     title: 'Fecha Creación', 
@@ -1033,16 +957,6 @@ class AdminApp {
                 { key: 'num_personas', title: 'Plazas', type: 'number' },
                 { key: 'estado', title: 'Estado', type: 'text' },
                 { key: 'fecha_reserva', title: 'Fecha Reserva', type: 'date' }
-            ],
-            'socios': [
-                { key: 'nombre', title: 'Nombre', type: 'text' },
-                { key: 'email', title: 'Email', type: 'text' },
-                { key: 'telefono', title: 'Teléfono', type: 'text' },
-                { key: 'direccion', title: 'Dirección', type: 'text' },
-                { key: 'fecha_ingreso', title: 'Fecha de Ingreso', type: 'date' },
-                { key: 'numero_socio', title: 'Número Socio', type: 'text' },
-                { key: 'password', title: 'Contraseña', type: 'password' },
-                { key: 'activo', title: 'Activo', type: 'boolean' }
             ],
             'textos': [
                 { key: 'seccion', title: 'Sección', type: 'text' },
@@ -1167,12 +1081,6 @@ class AdminApp {
     // ===== MODALES =====
     showAddModal() {
         console.log('Mostrando modal de añadir para sección:', ADMIN_CONFIG.CURRENT_SECTION);
-        
-        // Verificar permisos para crear socios
-        if (ADMIN_CONFIG.CURRENT_SECTION === 'socios' && !this.isAdmin()) {
-            this.showNotification('Solo los administradores pueden crear socios', 'error');
-            return;
-        }
         
         ADMIN_CONFIG.EDITING_ITEM = null;
         this.showItemModal('Añadir', this.getFormFields(ADMIN_CONFIG.CURRENT_SECTION));
@@ -1339,29 +1247,13 @@ class AdminApp {
         }).join('');
         
         const modalElement = document.getElementById('itemModal');
-        
-        // Forzar visibilidad del modal
-        modalElement.style.display = 'block';
-        modalElement.classList.add('show');
-        modalElement.setAttribute('aria-hidden', 'false');
-        
-        // Crear backdrop manualmente si no existe
-        let backdrop = document.querySelector('.modal-backdrop');
-        if (!backdrop) {
-            backdrop = document.createElement('div');
-            backdrop.className = 'modal-backdrop fade show';
-            backdrop.style.zIndex = '9998';
-            document.body.appendChild(backdrop);
+        if (!modalElement) {
+            console.error('Modal #itemModal no encontrado');
+            return;
         }
         
-        // Prevenir scroll del body
-        document.body.classList.add('modal-open');
-        
-        const modal = new bootstrap.Modal(modalElement);
-        
-        // Manejar eventos del modal para accesibilidad
+        if (!modalElement.dataset.listenersAttached) {
         modalElement.addEventListener('shown.bs.modal', () => {
-            // Enfocar el primer campo del formulario una vez visible
             setTimeout(() => {
                 const firstInput = modalElement.querySelector('input:not([type="checkbox"]), textarea, select');
                 if (firstInput) {
@@ -1371,17 +1263,16 @@ class AdminApp {
         });
         
         modalElement.addEventListener('hidden.bs.modal', () => {
-            // Limpiar el formulario cuando se cierra
             document.getElementById('form-fields').innerHTML = '';
-            // Remover backdrop
-            if (backdrop) {
-                backdrop.remove();
-            }
-            document.body.classList.remove('modal-open');
-        });
+                modalElement.setAttribute('aria-hidden', 'true');
+            });
+            
+            modalElement.dataset.listenersAttached = 'true';
+        }
         
-        // Usar método personalizado en lugar de Bootstrap
-        this.showCustomModal();
+        modalElement.setAttribute('aria-hidden', 'false');
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        modal.show();
         
         // Event listener para botones de subir imagen y limpiar errores
         setTimeout(() => {
@@ -1404,387 +1295,35 @@ class AdminApp {
         }, 100);
     }
 
-    // ===== MÉTODO ALTERNATIVO PARA MOSTRAR MODAL =====
-    showCustomModal() {
-        // Crear modal completamente nuevo
-        this.createNewModal();
-        console.log('Modal completamente nuevo creado y mostrado');
-    }
-    
-    createNewModal() {
-        // Remover modal existente si existe
-        const existingModal = document.getElementById('newItemModal');
-        if (existingModal) {
-            existingModal.remove();
-        }
-        
-        // Crear el HTML del modal
-        const modalHTML = `
-            <div id="newItemModal" style="
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                width: 100% !important;
-                height: 100% !important;
-                background-color: rgba(0, 0, 0, 0.5) !important;
-                z-index: 99999 !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-            ">
-                <div style="
-                    background-color: white !important;
-                    border-radius: 8px !important;
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
-                    max-width: 800px !important;
-                    width: 90% !important;
-                    max-height: 90% !important;
-                    overflow-y: auto !important;
-                    position: relative !important;
-                ">
-                    <div style="
-                        padding: 20px !important;
-                        border-bottom: 1px solid #dee2e6 !important;
-                        display: flex !important;
-                        justify-content: space-between !important;
-                        align-items: center !important;
-                    ">
-                        <h5 id="newModalTitle" style="margin: 0 !important;">Editar</h5>
-                        <button id="newModalClose" style="
-                            background: none !important;
-                            border: none !important;
-                            font-size: 24px !important;
-                            cursor: pointer !important;
-                            color: #6c757d !important;
-                        ">&times;</button>
-                    </div>
-                    <div style="padding: 20px !important;">
-                        <form id="newItemForm">
-                            <div id="newFormFields">
-                                <!-- Los campos se generarán aquí -->
-                            </div>
-                        </form>
-                    </div>
-                    <div style="
-                        padding: 20px !important;
-                        border-top: 1px solid #dee2e6 !important;
-                        display: flex !important;
-                        justify-content: flex-end !important;
-                        gap: 10px !important;
-                    ">
-                        <button id="newModalCancel" type="button" style="
-                            padding: 8px 16px !important;
-                            border: 1px solid #6c757d !important;
-                            background: white !important;
-                            color: #6c757d !important;
-                            border-radius: 4px !important;
-                            cursor: pointer !important;
-                        ">Cancelar</button>
-                        <button id="newModalSave" type="button" style="
-                            padding: 8px 16px !important;
-                            border: none !important;
-                            background: #007bff !important;
-                            color: white !important;
-                            border-radius: 4px !important;
-                            cursor: pointer !important;
-                        ">Guardar</button>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        // Insertar el modal en el body
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
-        
-        // Prevenir scroll del body
-        document.body.style.overflow = 'hidden';
-        
-        // Configurar event listeners
-        this.setupNewModalEvents();
-        
-        // Llenar el modal con los datos
-        this.populateNewModal();
-    }
-    
-    setupNewModalEvents() {
-        const modal = document.getElementById('newItemModal');
-        const closeBtn = document.getElementById('newModalClose');
-        const cancelBtn = document.getElementById('newModalCancel');
-        const saveBtn = document.getElementById('newModalSave');
-        
-        // Cerrar con botón X
-        closeBtn.onclick = () => this.hideNewModal();
-        
-        // Cerrar con botón Cancelar
-        cancelBtn.onclick = () => this.hideNewModal();
-        
-        // Guardar - verificar si se está editando
-        saveBtn.onclick = () => {
-            if (ADMIN_CONFIG.EDITING_ITEM) {
-                console.log('Botón guardar: Modo edición detectado, usando saveItemFromNewModal');
-                this.saveItemFromNewModal();
-            } else {
-                console.log('Botón guardar: Modo creación, usando saveNewItem');
-                this.saveNewItem();
-            }
-        };
-        
-        // Cerrar con backdrop
-        modal.onclick = (e) => {
-            if (e.target === modal) {
-                this.hideNewModal();
-            }
-        };
-    }
-    
-    populateNewModal() {
-        const title = document.getElementById('newModalTitle');
-        const formFields = document.getElementById('newFormFields');
-        
-        // Obtener datos del modal original
-        const originalTitle = document.getElementById('modal-title').textContent;
-        const originalFields = document.getElementById('form-fields').innerHTML;
-        
-        title.textContent = originalTitle;
-        formFields.innerHTML = originalFields;
-        
-        // Configurar event listeners para botones de subir imagen
-        setTimeout(() => {
-            // Botones de subir imagen
-            formFields.querySelectorAll('.btn-upload-image').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const fieldKey = btn.dataset.field;
-                    const uploadType = btn.dataset.type;
-                    this.uploadImage(fieldKey, uploadType, btn);
-                });
-            });
-            
-            // Limpiar errores cuando el usuario empieza a escribir
-            formFields.querySelectorAll('input, textarea, select').forEach(input => {
-                input.addEventListener('input', (e) => {
-                    e.target.classList.remove('is-invalid');
-                });
-            });
-            
-            // Enfocar el primer campo
-            const firstInput = formFields.querySelector('input:not([type="checkbox"]), textarea, select');
-            if (firstInput) {
-                firstInput.focus();
-            }
-        }, 100);
-    }
-    
-    hideNewModal() {
-        // Remover el modal nuevo
-        const modal = document.getElementById('newItemModal');
-        if (modal) {
-            modal.remove();
-        }
-        
-        // Limpiar cualquier backdrop que pueda haber quedado
-        const backdrops = document.querySelectorAll('.modal-backdrop, .custom-modal-backdrop');
-        backdrops.forEach(backdrop => backdrop.remove());
-        
-        // Remover clases del body
-        document.body.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
-        
-        // Limpiar cualquier estilo que pueda haber quedado
-        document.body.removeAttribute('style');
-        
-        console.log('Nuevo modal ocultado y limpieza completa realizada');
-    }
-    
-    async saveNewItem() {
-        try {
-            // Obtener los datos del formulario del nuevo modal
-            const formData = this.getFormDataFromNewModal();
-            const section = ADMIN_CONFIG.CURRENT_SECTION;
-            
-            console.log('Guardando desde nuevo modal en sección:', section);
-            console.log('¿Está editando?', !!ADMIN_CONFIG.EDITING_ITEM);
-            
-            // Si está editando, usar saveItem en lugar de saveNewItem
-            if (ADMIN_CONFIG.EDITING_ITEM) {
-                console.log('Modo edición detectado, usando saveItem');
-                this.saveItem();
+    hideItemModal() {
+        const modalElement = document.getElementById('itemModal');
+        if (!modalElement) {
+            console.warn('hideItemModal: modal no encontrado');
                 return;
             }
             
-            // Verificar si hay archivos para subir
-            const fileFields = {};
-            const nonFileData = {};
-            
-            Object.entries(formData).forEach(([key, value]) => {
-                if (value instanceof File) {
-                    fileFields[key] = value;
+        const instance = window.bootstrap ? window.bootstrap.Modal.getInstance(modalElement) : null;
+        if (instance) {
+            instance.hide();
                 } else {
-                    nonFileData[key] = value;
-                }
-            });
-            
-            const hasFiles = Object.keys(fileFields).length > 0;
-            
-            if (hasFiles) {
-                // Si hay archivos, subirlos primero y luego crear con las URLs
-                console.log('Archivos detectados, subiendo primero...');
-                
-                // Subir cada archivo y obtener su URL
-                for (const [fieldKey, file] of Object.entries(fileFields)) {
-                    try {
-                        const uploadResult = await this.uploadFileToServer(file, this.getUploadTypeForField(fieldKey));
-                        if (uploadResult.success) {
-                            nonFileData[fieldKey] = uploadResult.data.path;
-                            console.log(`Archivo ${fieldKey} subido:`, uploadResult.data.path);
-                        } else {
-                            this.showNotification(`Error subiendo archivo ${fieldKey}: ${uploadResult.message}`, 'error');
-                            return;
-                        }
-                    } catch (error) {
-                        console.error(`Error subiendo archivo ${fieldKey}:`, error);
-                        this.showNotification(`Error subiendo archivo ${fieldKey}`, 'error');
-                        return;
-                    }
-                }
-            }
-            
-            // Preparar los datos para el envío (solo para creación)
-            let payload = {
-                type: section,
-                data: nonFileData
-            };
-            
-            // Determinar el endpoint correcto
-            const isUsers = section === 'users';
-            const isFondos = section === 'fondos';
-            const endpoint = isUsers ? 'users.php' : (isFondos ? 'fondos.php' : 'admin.php');
-            
-            // Mostrar indicador de carga
-            const saveButton = document.getElementById('newModalSave');
-            const originalButtonText = saveButton.innerHTML;
-            saveButton.disabled = true;
-            saveButton.innerHTML = '<span style="display: inline-block; width: 16px; height: 16px; border: 2px solid #ffffff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></span> Guardando...';
-            
-            try {
-                // Construir body según endpoint
-                const body = isUsers ? JSON.stringify(formData) : (isFondos ? JSON.stringify(formData) : JSON.stringify(payload));
-                const method = isFondos ? 'POST' : 'POST'; // Para fondos siempre POST (crear nuevo)
-                const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    console.log('Nuevo elemento guardado correctamente:', result);
-                    this.showNotification('Elemento guardado correctamente', 'success');
-                    this.hideNewModal();
-                    console.log('Recargando datos de la sección:', section);
-                    this.loadSectionData(section);
-                    
-                    // Si es carousel, notificar a otras pestañas para recargar
-                    if (section === 'carousel') {
-                        this.broadcastCarouselUpdate();
-                    }
-                    
-                    // Limpiar estado de edición DESPUÉS de cargar los datos
-                    ADMIN_CONFIG.EDITING_ITEM = null;
-                } else {
-                    console.error('Error guardando nuevo elemento:', result);
-                    this.showNotification(result.message || 'Error al guardar el elemento', 'error');
-                }
-            } finally {
-                // Restaurar el botón
-                saveButton.disabled = false;
-                saveButton.innerHTML = originalButtonText;
-            }
-        } catch (error) {
-            console.error('Error guardando elemento:', error);
-            this.showNotification('Error al procesar la solicitud', 'error');
-        }
-    }
-    
-    getFormDataFromNewModal() {
-        const formData = {};
-        const formFields = document.getElementById('newFormFields');
-        
-        // Obtener todos los inputs del nuevo modal
-        const inputs = formFields.querySelectorAll('input, textarea, select');
-        
-        inputs.forEach(input => {
-            if (input.type === 'checkbox') {
-                formData[input.id] = input.checked;
-            } else if (input.type === 'file') {
-                // Si existe un hidden con la URL subida, usarlo
-                const hidden = document.getElementById(`${input.id}_uploaded_url`);
-                if (hidden && hidden.value) {
-                    formData[input.id] = hidden.value;
-                } else if (input.files && input.files.length > 0) {
-                    // Si aún no está subida, conservar el File para el flujo de subida previa
-                    formData[input.id] = input.files[0];
-                } else {
-                    formData[input.id] = input.value;
-                }
-            } else {
-                formData[input.id] = input.value;
-            }
-        });
-        
-        return formData;
-    }
-    
-    hideCustomModal() {
-        // Siempre intentar cerrar también el modal personalizado nuevo si estuviera abierto
-        try {
-            this.hideNewModal();
-        } catch (e) {
-            console.warn('No se pudo cerrar el nuevo modal (puede no existir):', e?.message);
+            modalElement.classList.remove('show');
+            modalElement.style.display = 'none';
+            modalElement.setAttribute('aria-hidden', 'true');
         }
         
-        const modalElement = document.getElementById('itemModal');
-        if (!modalElement) {
-            console.warn('hideCustomModal: modal principal no encontrado');
-            document.querySelectorAll('.modal-backdrop, .custom-modal-backdrop').forEach(el => el.remove());
-            document.body.classList.remove('modal-open');
-            document.body.style.removeProperty('overflow');
-            document.body.style.removeProperty('paddingRight');
-            return;
-        }
-        
-        // Si Bootstrap ya tiene una instancia del modal, usar su API oficial
-        const bootstrapInstance = window.bootstrap ? window.bootstrap.Modal.getInstance(modalElement) : null;
-        if (bootstrapInstance) {
-            bootstrapInstance.hide();
-        }
-        
-        // Fallback manual por si la instancia no existe
-        modalElement.style.display = 'none';
-        modalElement.classList.remove('show');
-        modalElement.removeAttribute('style');
-        modalElement.setAttribute('aria-hidden', 'true');
-        
-        // Restaurar scroll del body
-        document.body.classList.remove('modal-open');
-        document.body.style.removeProperty('overflow');
-        document.body.style.removeProperty('paddingRight');
-        
-        // Limpiar formulario
         const formFields = document.getElementById('form-fields');
         if (formFields) {
             formFields.innerHTML = '';
         }
-        
-        // Limpiar cualquier backdrop que haya quedado (bootstrap o personalizado)
-        document.querySelectorAll('.modal-backdrop, .custom-modal-backdrop').forEach(backdrop => backdrop.remove());
-        
-        console.log('Modal personalizado ocultado correctamente');
     }
+
+    
+    
+    
+    
+    
+    
+    
 
     getFormFields(section) {
         const fields = {
@@ -1806,6 +1345,10 @@ class AdminApp {
                 { key: 'name', label: 'Nombre', type: 'text', required: true },
                 { key: 'email', label: 'Email', type: 'email', required: true },
                 { key: 'role', label: 'Rol', type: 'select', options: this.getRoleOptions(), required: true },
+                { key: 'telefono', label: 'Teléfono', type: 'text' },
+                { key: 'direccion', label: 'Dirección', type: 'textarea' },
+                { key: 'fecha_ingreso', label: 'Fecha de Ingreso', type: 'date' },
+                { key: 'numero_socio', label: 'Número de Socio', type: 'text' },
                 { key: 'password', label: 'Contraseña' + (ADMIN_CONFIG.EDITING_ITEM ? ' (dejar en blanco para no cambiar)' : ''), 
                   type: 'password', required: !ADMIN_CONFIG.EDITING_ITEM },
                 { key: 'active', label: 'Activo', type: 'checkbox' }
@@ -1864,15 +1407,6 @@ class AdminApp {
                 { key: 'cargo', label: 'Cargo', type: 'text', required: true },
                 { key: 'imagen', label: 'Imagen', type: 'file', accept: 'image/*', uploadType: 'directiva' },
                 { key: 'descripcion', label: 'Descripción', type: 'textarea' }
-            ],
-            'socios': [
-                { key: 'nombre', label: 'Nombre', type: 'text', required: true },
-                { key: 'email', label: 'Email', type: 'email', required: true },
-                { key: 'telefono', label: 'Teléfono', type: 'text' },
-                { key: 'direccion', label: 'Dirección', type: 'textarea' },
-                { key: 'fecha_ingreso', label: 'Fecha de Ingreso', type: 'date', required: true },
-                { key: 'numero_socio', label: 'Número de Socio', type: 'text' },
-                { key: 'activo', label: 'Activo', type: 'checkbox' }
             ],
             'contactos': [
                 { key: 'nombre', label: 'Nombre', type: 'text', required: true },
@@ -1983,6 +1517,10 @@ class AdminApp {
             console.log('Datos del formulario:', formData);
             console.log('Modo edición:', !!ADMIN_CONFIG.EDITING_ITEM);
             console.log('Elemento a editar:', ADMIN_CONFIG.EDITING_ITEM);
+
+            if (section === 'users' && ADMIN_CONFIG.EDITING_ITEM?.socio_id) {
+                formData.socio_id = ADMIN_CONFIG.EDITING_ITEM.socio_id;
+            }
             
             // Validación de campos requeridos
             const requiredFields = this.getFormFields(section).filter(f => f.required);
@@ -2117,7 +1655,7 @@ class AdminApp {
                 
                 if (result.success) {
                     this.showNotification('Elemento guardado correctamente', 'success');
-                    this.hideCustomModal();
+                    this.hideItemModal();
                     this.loadSectionData(section);
                     
                     // Si es carousel, notificar a otras pestañas para recargar
@@ -2370,139 +1908,6 @@ class AdminApp {
         return item.id ?? item.imagen_id ?? item._id ?? null;
     }
 
-    // ===== EDICIÓN DESDE MODAL NUEVO =====
-    async saveItemFromNewModal() {
-        try {
-            // Obtener los datos del formulario del nuevo modal
-            const formData = this.getFormDataFromNewModal();
-            const section = ADMIN_CONFIG.CURRENT_SECTION;
-            
-            console.log('Editando desde nuevo modal en sección:', section);
-            console.log('Elemento a editar:', ADMIN_CONFIG.EDITING_ITEM);
-            console.log('Datos del formulario:', formData);
-            
-            // Verificar si hay archivos para subir
-            const fileFields = {};
-            const nonFileData = {};
-            
-            Object.entries(formData).forEach(([key, value]) => {
-                if (value instanceof File) {
-                    fileFields[key] = value;
-                } else {
-                    nonFileData[key] = value;
-                }
-            });
-            
-            const hasFiles = Object.keys(fileFields).length > 0;
-            
-            let payload;
-            let headers = {
-                'Content-Type': 'application/json'
-            };
-            
-            if (hasFiles) {
-                // Si hay archivos, subirlos primero y luego actualizar con las URLs
-                console.log('Archivos detectados, subiendo primero...');
-                
-                // Subir cada archivo y obtener su URL
-                for (const [fieldKey, file] of Object.entries(fileFields)) {
-                    try {
-                        const uploadResult = await this.uploadFileToServer(file, this.getUploadTypeForField(fieldKey));
-                        if (uploadResult.success) {
-                            nonFileData[fieldKey] = uploadResult.data.path;
-                            console.log(`Archivo ${fieldKey} subido:`, uploadResult.data.path);
-                        } else {
-                            this.showNotification(`Error subiendo archivo ${fieldKey}: ${uploadResult.message}`, 'error');
-                            return;
-                        }
-                    } catch (error) {
-                        console.error(`Error subiendo archivo ${fieldKey}:`, error);
-                        this.showNotification(`Error subiendo archivo ${fieldKey}`, 'error');
-                        return;
-                    }
-                }
-                
-                // Ahora enviar con JSON usando las URLs de los archivos subidos
-                payload = {
-                    type: section,
-                    data: nonFileData,
-                    edit_id: this.getItemId(ADMIN_CONFIG.EDITING_ITEM)
-                };
-                console.log('Enviando con JSON (archivos ya subidos)');
-            } else {
-                // Si no hay archivos, usar JSON normal
-                payload = {
-                    type: section,
-                    data: nonFileData,
-                    edit_id: this.getItemId(ADMIN_CONFIG.EDITING_ITEM)
-                };
-                console.log('Enviando con JSON (sin archivos)');
-            }
-            
-            console.log('Payload de edición:', payload);
-            
-            // Determinar el endpoint correcto
-            const isUsers = section === 'users';
-            const isFondos = section === 'fondos';
-            const endpoint = isUsers ? 'users.php' : (isFondos ? 'fondos.php' : 'admin.php');
-            
-            // Mostrar indicador de carga
-            const saveButton = document.querySelector('#newModalSave');
-            const originalButtonText = saveButton.innerHTML;
-            saveButton.disabled = true;
-            saveButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
-            
-            try {
-                // Construir body según endpoint
-                let body;
-                if (isFondos) {
-                    // Para fondos, incluir el ID en el cuerpo para actualización
-                    const fondoData = { ...formData };
-                    fondoData.id = ADMIN_CONFIG.EDITING_ITEM.id;
-                    body = JSON.stringify(fondoData);
-                } else {
-                    // Para noticias y otros elementos, usar el formato estándar
-                    body = isUsers ? JSON.stringify(formData) : JSON.stringify(payload);
-                }
-                
-                const method = isFondos ? 'PUT' : 'POST';
-                const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}${endpoint}`, {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: body
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    this.showNotification('Elemento actualizado correctamente', 'success');
-                    this.hideNewModal();
-                    this.loadSectionData(section);
-                    
-                    // Si es carousel, notificar a otras pestañas para recargar
-                    if (section === 'carousel') {
-                        this.broadcastCarouselUpdate();
-                    }
-                    
-                    // Limpiar estado de edición DESPUÉS de cargar los datos
-                    ADMIN_CONFIG.EDITING_ITEM = null;
-                } else {
-                    console.error('Error actualizando elemento:', result);
-                    this.showNotification(result.message || 'Error al actualizar el elemento', 'error');
-                }
-            } finally {
-                // Restaurar el botón
-                saveButton.disabled = false;
-                saveButton.innerHTML = originalButtonText;
-            }
-        } catch (error) {
-            console.error('Error en saveItemFromNewModal:', error);
-            this.showNotification('Error al actualizar el elemento', 'error');
-        }
-    }
-
     // ===== RESERVAS: CAMBIO RÁPIDO DE ESTADO =====
     async updateReservaEstado(id, estado) {
         if (!id) return;
@@ -2614,7 +2019,7 @@ class AdminApp {
                         hidden = document.createElement('input');
                         hidden.type = 'hidden';
                         hidden.id = `${fieldKey}_uploaded_url`;
-                        const container = document.getElementById('newFormFields') || document.body;
+                        const container = document.getElementById('form-fields') || document.body;
                         container.appendChild(hidden);
                     }
                     hidden.value = result.data.path;
@@ -3027,11 +2432,6 @@ class AdminApp {
                 { value: 'role:socio', label: 'Socios' },
                 { value: 'active:true', label: 'Activos' },
                 { value: 'active:false', label: 'Inactivos' }
-            ],
-            'socios': [
-                { value: '', label: 'Todos' },
-                { value: 'activo:true', label: 'Activos' },
-                { value: 'activo:false', label: 'Inactivos' }
             ],
             'contactos': [
                 { value: '', label: 'Todos' },
@@ -3617,7 +3017,7 @@ class AdminApp {
                 }
                 
                 // Recargar datos
-                await this.loadSectionData('socios');
+                await this.loadSectionData('users');
                 
             } else {
                 this.showNotification(result.message || 'Error al resetear la contraseña', 'error');
@@ -3986,7 +3386,7 @@ function clearAllBackdrops() {
     document.body.style.paddingRight = '';
     
     // Remover cualquier modal que pueda estar oculto
-    const modals = document.querySelectorAll('#itemModal, #newItemModal');
+    const modals = document.querySelectorAll('#itemModal');
     modals.forEach(modal => {
         modal.style.display = 'none';
         modal.classList.remove('show');
