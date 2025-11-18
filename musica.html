@@ -416,11 +416,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Botón de scroll hacia arriba -->
-        <button id="scrollTopBtn" class="btn btn-danger rounded-circle position-fixed bottom-0 end-0 m-4" style="display: none; width: 50px; height: 50px; z-index: 1000;" title="Volver arriba">
-            <i class="fas fa-arrow-up"></i>
-        </button>
     </footer>
     
     <style>
@@ -467,14 +462,6 @@
             color: #DC143C !important;
         }
         
-        #scrollTopBtn {
-            transition: all 0.3s ease;
-        }
-        
-        #scrollTopBtn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
-        }
         
         @media (max-width: 768px) {
             footer .text-md-end {
@@ -495,24 +482,6 @@
                 yearElement.textContent = new Date().getFullYear();
             }
             
-            // Botón de scroll hacia arriba
-            const scrollTopBtn = document.getElementById('scrollTopBtn');
-            if (scrollTopBtn) {
-                window.addEventListener('scroll', function() {
-                    if (window.pageYOffset > 300) {
-                        scrollTopBtn.style.display = 'block';
-                    } else {
-                        scrollTopBtn.style.display = 'none';
-                    }
-                });
-                
-                scrollTopBtn.addEventListener('click', function() {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                });
-            }
         });
     </script>
 

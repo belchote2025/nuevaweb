@@ -2226,7 +2226,7 @@ footer::before {
 .notification-toggle {
     position: fixed;
     right: 25px;
-    bottom: 25px;
+    bottom: 180px;
     z-index: 1050;
     display: flex;
     flex-direction: column;
@@ -2242,40 +2242,108 @@ footer::before {
 }
 
 .btn-notification {
-    background: linear-gradient(135deg, var(--templar-red), var(--templar-red-light));
+    background: linear-gradient(135deg, var(--templar-red) 0%, #8B0000 100%);
     color: #fff;
-    border: none;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-    width: 72px;
-    height: 72px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(220, 20, 60, 0.4), 
+                0 0 0 0 rgba(220, 20, 60, 0.7),
+                inset 0 2px 10px rgba(255, 255, 255, 0.2);
+    width: auto;
+    min-width: 200px;
+    height: auto;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 50px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.btn-notification::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-notification:hover::before {
+    width: 300px;
+    height: 300px;
 }
 
 .btn-notification i {
     pointer-events: none;
+    margin-right: 8px;
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
 }
 
 .btn-notification:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(220, 20, 60, 0.5), 
+                0 0 0 4px rgba(220, 20, 60, 0.2),
+                inset 0 2px 15px rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-notification:hover i {
+    transform: rotate(-15deg) scale(1.1);
+}
+
+.btn-notification:active {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(220, 20, 60, 0.4);
 }
 
 .btn-notification.inactive {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid var(--templar-red);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.95) 100%);
+    border: 3px solid var(--templar-red);
     color: var(--templar-red);
+    box-shadow: 0 8px 25px rgba(220, 20, 60, 0.2),
+                inset 0 2px 10px rgba(220, 20, 60, 0.1);
 }
 
 .btn-notification.inactive:hover {
-    background: rgba(255, 255, 255, 0.18);
+    background: linear-gradient(135deg, #fff 0%, rgba(248, 249, 250, 1) 100%);
+    box-shadow: 0 12px 35px rgba(220, 20, 60, 0.3),
+                0 0 0 4px rgba(220, 20, 60, 0.15),
+                inset 0 2px 15px rgba(220, 20, 60, 0.15);
+    transform: translateY(-4px) scale(1.05);
+}
+
+.btn-notification.inactive:hover i {
+    transform: rotate(15deg) scale(1.1);
 }
 
 .btn-notification.active {
-    background: linear-gradient(135deg, #f04f4f, var(--templar-red));
+    background: linear-gradient(135deg, var(--templar-red) 0%, #8B0000 100%);
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 8px 25px rgba(220, 20, 60, 0.4), 
+                    0 0 0 0 rgba(220, 20, 60, 0.7),
+                    inset 0 2px 10px rgba(255, 255, 255, 0.2);
+    }
+    50% {
+        box-shadow: 0 8px 25px rgba(220, 20, 60, 0.6), 
+                    0 0 0 8px rgba(220, 20, 60, 0),
+                    inset 0 2px 10px rgba(255, 255, 255, 0.3);
+    }
 }
 
 /* ===== BOTONES FLOTANTES (FRONT) ===== */
@@ -2287,6 +2355,16 @@ footer::before {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    animation: float-container 3s ease-in-out infinite;
+}
+
+@keyframes float-container {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .floating-buttons-container .floating-btn {
@@ -2302,24 +2380,202 @@ footer::before {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
     cursor: pointer;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
+    animation: float-btn 2.5s ease-in-out infinite;
+    position: relative;
+}
+
+.floating-buttons-container .floating-btn:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.floating-buttons-container .floating-btn:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+@keyframes float-btn {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-8px) scale(1.02);
+    }
 }
 
 .floating-buttons-container .floating-btn i {
     font-size: 1.25rem;
+    transition: transform 0.3s ease;
 }
 
 .floating-buttons-container .floating-btn.whatsapp {
     background: #25D366;
+    animation: float-whatsapp 2.8s ease-in-out infinite;
+}
+
+@keyframes float-whatsapp {
+    0%, 100% {
+        transform: translateY(0) scale(1) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-6px) scale(1.02) rotate(2deg);
+    }
+    50% {
+        transform: translateY(-10px) scale(1.03) rotate(0deg);
+    }
+    75% {
+        transform: translateY(-6px) scale(1.02) rotate(-2deg);
+    }
 }
 
 .floating-buttons-container .floating-btn:hover {
-    transform: translateY(-4px);
+    transform: translateY(-4px) scale(1.1) !important;
     box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4);
+    animation-play-state: paused;
+}
+
+.floating-buttons-container .floating-btn:hover i {
+    transform: scale(1.2);
 }
 
 .floating-buttons-container .floating-btn.back-to-top {
     display: none;
     background: linear-gradient(135deg, var(--templar-red), var(--templar-red-light, #ff5f5f));
+}
+
+.floating-buttons-container .floating-btn.back-to-top[style*="display: flex"] {
+    display: flex !important;
+    animation: float-btn 2.5s ease-in-out infinite;
+}
+
+/* ===== KEYFRAMES PARA ANIMACIONES MÓVILES ===== */
+@keyframes float-container-mobile {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes float-btn-mobile {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-6px) scale(1.01);
+    }
+}
+
+@keyframes float-whatsapp-mobile {
+    0%, 100% {
+        transform: translateY(0) scale(1) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-8px) scale(1.02) rotate(1deg);
+    }
+}
+
+/* ===== RESPONSIVE PARA BOTONES FLOTANTES ===== */
+@media (max-width: 991.98px) {
+    .floating-buttons-container {
+        z-index: 1045;
+    }
+    
+    .notification-toggle {
+        z-index: 1055;
+    }
+}
+
+@media (max-width: 768px) {
+    .floating-buttons-container {
+        right: 15px;
+        bottom: 15px;
+        gap: 10px;
+        animation: float-container-mobile 3.5s ease-in-out infinite;
+    }
+    
+    .floating-buttons-container .floating-btn {
+        width: 50px;
+        height: 50px;
+        animation: float-btn-mobile 2.8s ease-in-out infinite;
+    }
+    
+    .floating-buttons-container .floating-btn i {
+        font-size: 1.1rem;
+    }
+    
+    .floating-buttons-container .floating-btn.whatsapp {
+        animation: float-whatsapp-mobile 3s ease-in-out infinite;
+    }
+    
+    /* Ajustar botón de notificaciones en móvil */
+    .notification-toggle {
+        right: 15px;
+        bottom: 140px;
+    }
+    
+    .btn-notification {
+        min-width: 160px;
+        padding: 10px 18px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .floating-buttons-container {
+        right: 12px;
+        bottom: 12px;
+        gap: 8px;
+    }
+    
+    .floating-buttons-container .floating-btn {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .floating-buttons-container .floating-btn i {
+        font-size: 1rem;
+    }
+    
+    .notification-toggle {
+        right: 12px;
+        bottom: 120px;
+    }
+    
+    .btn-notification {
+        min-width: 140px;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+    
+    .btn-notification i {
+        font-size: 0.95rem;
+        margin-right: 6px;
+    }
+}
+
+/* Soporte para safe-area en dispositivos con notch */
+@supports (padding: max(0px)) {
+    @media (max-width: 768px) {
+        .floating-buttons-container {
+            bottom: max(15px, env(safe-area-inset-bottom));
+            right: max(15px, env(safe-area-inset-right));
+        }
+        
+        .notification-toggle {
+            right: max(15px, env(safe-area-inset-right));
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .floating-buttons-container {
+            bottom: max(12px, env(safe-area-inset-bottom));
+            right: max(12px, env(safe-area-inset-right));
+        }
+        
+        .notification-toggle {
+            right: max(12px, env(safe-area-inset-right));
+        }
+    }
 }
 
 
