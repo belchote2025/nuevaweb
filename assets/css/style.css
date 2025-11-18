@@ -1,3 +1,62 @@
+/* ===== MOTOR DE TEMAS DINÁMICOS ===== */
+.navbar {
+    background-color: var(--templar-red) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand {
+    color: #fff !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+    color: var(--templar-red-light, #FFD700) !important;
+}
+
+.btn-primary,
+.btn-primary:focus,
+.btn-primary:active,
+.bg-primary {
+    background-color: var(--templar-red) !important;
+    border-color: var(--templar-red) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--templar-red-light) !important;
+    border-color: var(--templar-red-light) !important;
+}
+
+.btn-outline-primary {
+    color: var(--templar-red) !important;
+    border-color: var(--templar-red) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--templar-red) !important;
+    color: #fff !important;
+}
+
+a {
+    color: var(--templar-red);
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+    color: var(--templar-red-light);
+}
+
+.badge.bg-primary,
+.text-primary {
+    background-color: var(--templar-red) !important;
+    color: #fff !important;
+}
+
+.section-title::after {
+    background-color: var(--templar-red-light);
+}
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Roboto+Slab:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&family=Inter:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Roboto:wght@300;400;700&display=swap');
+
 /* Reset y estilos base */
 * {
     margin: 0;
@@ -33,15 +92,19 @@
     --bs-dark-rgb: 0, 0, 0;
     --bs-light: var(--templar-white);
     --bs-light-rgb: 255, 255, 255;
+    --templar-font-heading: "Cinzel", serif;
+    --templar-font-body: "Open Sans", sans-serif;
+    --theme-text-color: #212529;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--templar-font-body, 'Open Sans', sans-serif);
     line-height: 1.6;
-    color: var(--templar-black);
+    color: var(--theme-text-color, var(--templar-black));
     background-color: var(--site-bg-color);
     position: relative;
     min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Fallback en caso de que la imagen no se cargue */
@@ -50,11 +113,19 @@ body {
     background: var(--site-bg-image, var(--site-bg-color));
 }
 
+h1, h2, h3, h4, h5, h6,
+.section-title,
+.navbar-brand,
+.hero-title,
+.hero-subtitle {
+    font-family: var(--templar-font-heading, 'Cinzel', serif);
+}
+
 /* Asegurar que el contenido sea visible */
 section {
     background: rgba(255, 255, 255, 0.95) !important;
     border: 2px solid var(--templar-red);
-    color: var(--templar-black) !important;
+    color: var(--theme-text-color, var(--templar-black)) !important;
     padding: 2rem 0;
     margin: 1rem 0;
     min-height: 200px;

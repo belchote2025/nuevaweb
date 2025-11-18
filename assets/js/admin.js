@@ -80,6 +80,10 @@ class AdminApp {
             } finally {
                 this.authCheckPromise = null;
             }
+            
+            if (!value && field.default) {
+                value = field.default;
+            }
         })();
         
         return this.authCheckPromise;
@@ -157,6 +161,7 @@ class AdminApp {
                 const replyContactBtn = e.target.closest('.btn-reply-contact');
                 const viewMessageBtn = e.target.closest('.btn-view-message');
                 const changeStatusBtn = e.target.closest('.btn-change-status');
+                const applyThemeBtn = e.target.closest('.btn-apply-theme');
                 
                 if (editBtn) {
                     e.preventDefault();
@@ -216,6 +221,10 @@ class AdminApp {
                     const id = changeStatusBtn.dataset.id;
                     const estado = changeStatusBtn.dataset.estado;
                     this.changeContactStatus(id, estado);
+                } else if (applyThemeBtn) {
+                    e.preventDefault();
+                    const id = applyThemeBtn.dataset.id;
+                    this.applyTheme(id);
                 }
             });
         }
@@ -813,6 +822,11 @@ class AdminApp {
                             <i class="fas fa-flag"></i>
                         </button>
                     ` : ''}
+                    ${ADMIN_CONFIG.CURRENT_SECTION === 'temas' ? `
+                        <button class="btn btn-sm btn-outline-success me-1 btn-apply-theme" data-id="${item.id ?? item._id}">
+                            <i class="fas fa-fill-drip me-1"></i>${item.activo ? 'Activo' : 'Aplicar'}
+                        </button>
+                    ` : ''}
                     <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${item.id ?? item.imagen_id ?? item._id}">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -1021,8 +1035,50 @@ class AdminApp {
             ],
             'temas': [
                 { key: 'nombre', title: 'Nombre', type: 'text' },
-                { key: 'descripcion', title: 'Descripción', type: 'text' },
-                { key: 'activo', title: 'Activo', type: 'boolean' }
+                { key: 'descripcion', title: 'Descripción', type: 'text', formatter: (value) => value || '—' },
+                { 
+                    key: 'colores', 
+                    title: 'Paleta', 
+                    type: 'custom',
+                    formatter: (value, item) => {
+                        const colors = value || item.colores || {};
+                        const primario = colors.primario || '#DC143C';
+                        const secundario = colors.secundario || '#FFD700';
+                        const fondo = colors.fondo || '#F8F9FA';
+                        const texto = colors.texto || '#212529';
+                        return `
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                ${[
+                                    { label: 'Primario', color: primario },
+                                    { label: 'Secundario', color: secundario },
+                                    { label: 'Fondo', color: fondo },
+                                    { label: 'Texto', color: texto }
+                                ].map(c => `
+                                    <div class="d-flex align-items-center">
+                                        <span title="${c.label}: ${c.color}" style="
+                                            display:inline-block;
+                                            width:18px;
+                                            height:18px;
+                                            border-radius:50%;
+                                            border:1px solid #dee2e6;
+                                            background:${c.color};
+                                            margin-right:4px;
+                                        "></span>
+                                        <small class="text-muted">${c.label}</small>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                },
+                { 
+                    key: 'activo', 
+                    title: 'Estado', 
+                    type: 'boolean',
+                    formatter: (value) => value
+                        ? '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Activo</span>'
+                        : '<span class="badge bg-secondary">Inactivo</span>'
+                }
             ],
             'alertas': [
                 { key: 'titulo', title: 'Título', type: 'text' },
@@ -1141,6 +1197,20 @@ class AdminApp {
         const formFields = document.getElementById('form-fields');
         formFields.innerHTML = fields.map(field => {
             let value = data ? (data[field.key] || '') : '';
+            const disabledAttr = field.disabled ? 'disabled' : '';
+            
+            if (ADMIN_CONFIG.CURRENT_SECTION === 'temas') {
+                if (field.key.startsWith('color_')) {
+                    const colorKey = field.key.replace('color_', '');
+                    value = (data && data.colores && data.colores[colorKey]) || field.default || '#000000';
+                } else if (field.key === 'fuente_titulos') {
+                    value = data?.tipografia?.titulos || field.default || field.options?.[0]?.value || '';
+                } else if (field.key === 'fuente_texto') {
+                    value = data?.tipografia?.texto || field.default || field.options?.[0]?.value || '';
+                } else if (field.key === 'imagen_fondo') {
+                    value = data?.imagen_fondo || '';
+                }
+            }
             
             // Auto-completar fecha actual para alertas nuevas
             if (!data && field.key === 'fecha' && ADMIN_CONFIG.CURRENT_SECTION === 'alertas') {
@@ -1160,16 +1230,17 @@ class AdminApp {
                 case 'email':
                 case 'url':
                 case 'password':
-                    inputHtml = `<input type="${field.type}" class="form-control" id="${field.key}" value="${value}" ${field.required ? 'required' : ''}>`;
+                case 'color':
+                    inputHtml = `<input type="${field.type}" class="form-control" id="${field.key}" value="${value}" ${field.required ? 'required' : ''} ${disabledAttr}>`;
                     break;
                 case 'textarea':
-                    inputHtml = `<textarea class="form-control" id="${field.key}" rows="3" ${field.required ? 'required' : ''}>${value}</textarea>`;
+                    inputHtml = `<textarea class="form-control" id="${field.key}" rows="3" ${field.required ? 'required' : ''} ${disabledAttr}>${value}</textarea>`;
                     break;
                 case 'number':
-                    inputHtml = `<input type="number" class="form-control" id="${field.key}" value="${value}" ${field.required ? 'required' : ''}>`;
+                    inputHtml = `<input type="number" class="form-control" id="${field.key}" value="${value}" ${field.required ? 'required' : ''} ${disabledAttr}>`;
                     break;
                 case 'date':
-                    inputHtml = `<input type="date" class="form-control" id="${field.key}" value="${value}" ${field.required ? 'required' : ''}>`;
+                    inputHtml = `<input type="date" class="form-control" id="${field.key}" value="${value}" ${field.required ? 'required' : ''} ${disabledAttr}>`;
                     break;
                 case 'datetime-local':
                     // Convertir formato de fecha Y-m-d H:i:s a datetime-local si viene del JSON
@@ -1177,23 +1248,23 @@ class AdminApp {
                     if (value && value.includes(' ') && !value.includes('T')) {
                         datetimeValue = value.replace(' ', 'T').substring(0, 16);
                     }
-                    inputHtml = `<input type="datetime-local" class="form-control" id="${field.key}" value="${datetimeValue}" ${field.required ? 'required' : ''}>`;
+                    inputHtml = `<input type="datetime-local" class="form-control" id="${field.key}" value="${datetimeValue}" ${field.required ? 'required' : ''} ${disabledAttr}>`;
                     break;
                 case 'time':
-                    inputHtml = `<input type="time" class="form-control" id="${field.key}" value="${value}" ${field.required ? 'required' : ''}>`;
+                    inputHtml = `<input type="time" class="form-control" id="${field.key}" value="${value}" ${field.required ? 'required' : ''} ${disabledAttr}>`;
                     break;
                 case 'file':
-                    inputHtml = `<input type="file" class="form-control" id="${field.key}" ${field.accept ? `accept="${field.accept}"` : ''} ${field.required ? 'required' : ''}>`;
+                    inputHtml = `<input type="file" class="form-control" id="${field.key}" ${field.accept ? `accept="${field.accept}"` : ''} ${field.required ? 'required' : ''} ${disabledAttr}>`;
                     break;
                 case 'select':
                     const options = field.options.map(opt => 
                         `<option value="${opt.value}" ${value === opt.value ? 'selected' : ''}>${opt.label}</option>`
                     ).join('');
-                    inputHtml = `<select class="form-control" id="${field.key}" ${field.required ? 'required' : ''}>${options}</select>`;
+                    inputHtml = `<select class="form-control" id="${field.key}" ${field.required ? 'required' : ''} ${disabledAttr}>${options}</select>`;
                     break;
                 case 'checkbox':
                     inputHtml = `<div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="${field.key}" ${value ? 'checked' : ''}>
+                        <input type="checkbox" class="form-check-input" id="${field.key}" ${value ? 'checked' : ''} ${disabledAttr}>
                         <label class="form-check-label" for="${field.key}">
                             ${field.label}
                         </label>
@@ -1471,6 +1542,28 @@ class AdminApp {
                     { value: 'general', label: 'General' }
                 ], required: true },
                 { key: 'activa', label: 'Activa', type: 'checkbox' }
+            ],
+            'temas': [
+                { key: 'nombre', label: 'Nombre del tema', type: 'text', required: true },
+                { key: 'descripcion', label: 'Descripción', type: 'textarea', required: true },
+                { key: 'color_primario', label: 'Color primario', type: 'color', required: true, default: '#DC143C' },
+                { key: 'color_secundario', label: 'Color secundario', type: 'color', required: true, default: '#FFD700' },
+                { key: 'color_fondo', label: 'Color de fondo', type: 'color', required: true, default: '#F8F9FA' },
+                { key: 'color_texto', label: 'Color de texto', type: 'color', required: true, default: '#212529' },
+                { key: 'fuente_titulos', label: 'Fuente para títulos', type: 'select', options: [
+                    { value: '"Cinzel", serif', label: 'Cinzel' },
+                    { value: '"Playfair Display", serif', label: 'Playfair Display' },
+                    { value: '"Montserrat", sans-serif', label: 'Montserrat' },
+                    { value: '"Roboto Slab", serif', label: 'Roboto Slab' }
+                ], required: true },
+                { key: 'fuente_texto', label: 'Fuente para textos', type: 'select', options: [
+                    { value: '"Open Sans", sans-serif', label: 'Open Sans' },
+                    { value: '"Inter", sans-serif', label: 'Inter' },
+                    { value: '"Lato", sans-serif', label: 'Lato' },
+                    { value: '"Roboto", sans-serif', label: 'Roboto' }
+                ], required: true },
+                { key: 'imagen_fondo', label: 'Imagen de fondo (opcional)', type: 'url' },
+                { key: 'activo', label: 'Activo (solo lectura)', type: 'checkbox', disabled: true }
             ],
             'reservas': [
                 { key: 'id', label: 'ID', type: 'text' },
@@ -1753,6 +1846,27 @@ class AdminApp {
         // Añadir el ID si estamos editando
         if (isEditing) {
             formData.id = this.getItemId(ADMIN_CONFIG.EDITING_ITEM);
+        }
+
+        if (ADMIN_CONFIG.CURRENT_SECTION === 'temas') {
+            formData.colores = {
+                primario: formData.color_primario || '#DC143C',
+                secundario: formData.color_secundario || '#FFD700',
+                fondo: formData.color_fondo || '#F8F9FA',
+                texto: formData.color_texto || '#212529'
+            };
+            formData.tipografia = {
+                titulos: formData.fuente_titulos || '"Cinzel", serif',
+                texto: formData.fuente_texto || '"Open Sans", sans-serif'
+            };
+            formData.imagen_fondo = formData.imagen_fondo || '';
+
+            delete formData.color_primario;
+            delete formData.color_secundario;
+            delete formData.color_fondo;
+            delete formData.color_texto;
+            delete formData.fuente_titulos;
+            delete formData.fuente_texto;
         }
         
         console.log('\n=== FIN getFormData ===');
@@ -2899,6 +3013,64 @@ class AdminApp {
     async resetSocioPassword(id, nombre, email) {
         // Mostrar modal de opciones
         this.showResetPasswordOptions(id, nombre, email);
+    }
+
+    async applyTheme(themeId) {
+        try {
+            const themes = ADMIN_CONFIG.CURRENT_DATA || [];
+            const targetTheme = themes.find(theme => String(this.getItemId(theme)) === String(themeId));
+
+            if (!targetTheme) {
+                this.showNotification('No se encontró el tema seleccionado', 'error');
+                return;
+            }
+
+            if (targetTheme.activo) {
+                this.showNotification('Este tema ya está activo', 'info');
+                return;
+            }
+
+            this.showNotification('Aplicando tema...', 'info');
+
+            const updates = [];
+            const currentActive = themes.find(theme => theme.activo && this.getItemId(theme) !== this.getItemId(targetTheme));
+
+            if (currentActive) {
+                updates.push(this.saveTheme({ ...currentActive, activo: false }));
+            }
+
+            updates.push(this.saveTheme({ ...targetTheme, activo: true }));
+
+            await Promise.all(updates);
+
+            this.showNotification(`Tema "${targetTheme.nombre}" aplicado correctamente`, 'success');
+            await this.loadSectionData('temas');
+        } catch (error) {
+            console.error('Error aplicando tema:', error);
+            this.showNotification('Error al aplicar el tema', 'error');
+        }
+    }
+
+    async saveTheme(theme) {
+        const payload = {
+            type: 'temas',
+            data: theme,
+            edit_id: this.getItemId(theme)
+        };
+
+        const response = await fetch(`${ADMIN_CONFIG.API_BASE_URL}admin.php`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || 'Error al guardar el tema');
+        }
     }
 
     showResetPasswordOptions(id, nombre, email) {

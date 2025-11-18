@@ -9,6 +9,11 @@
             "fondo": "#F8F9FA",
             "texto": "#333333"
         },
+        "tipografia": {
+            "titulos": "\"Cinzel\", serif",
+            "texto": "\"Open Sans\", sans-serif"
+        },
+        "imagen_fondo": "assets/images/backgrounds/fondo.jpg",
         "activo": true,
         "created_at": "2025-10-21 16:30:00"
     },
@@ -22,6 +27,11 @@
             "fondo": "#FFFFFF",
             "texto": "#212529"
         },
+        "tipografia": {
+            "titulos": "\"Montserrat\", sans-serif",
+            "texto": "\"Inter\", sans-serif"
+        },
+        "imagen_fondo": "uploads/images/backgrounds/backgrounds_68f1fc1f4c61f.jpg",
         "activo": false,
         "created_at": "2025-10-21 16:30:00"
     },
@@ -35,7 +45,66 @@
             "fondo": "#ECF0F1",
             "texto": "#2C3E50"
         },
+        "tipografia": {
+            "titulos": "\"Playfair Display\", serif",
+            "texto": "\"Lato\", sans-serif"
+        },
+        "imagen_fondo": "uploads/images/backgrounds/backgrounds_68f20b300c093.jpg",
         "activo": false,
         "created_at": "2025-10-21 16:30:00"
+    },
+    {
+        "id": "tema-nocturno",
+        "nombre": "Tema Nocturno",
+        "descripcion": "Contraste moderno con fondo oscuro y acentos neón",
+        "colores": {
+            "primario": "#8A2BE2",
+            "secundario": "#00D1FF",
+            "fondo": "#0F172A",
+            "texto": "#F8FAFC"
+        },
+        "tipografia": {
+            "titulos": "\"Montserrat\", sans-serif",
+            "texto": "\"Inter\", sans-serif"
+        },
+        "imagen_fondo": "uploads/images/backgrounds/backgrounds_68f207f1d665c.jpg",
+        "activo": false,
+        "created_at": "2025-11-18 12:10:00"
+    },
+    {
+        "id": "tema-arenal",
+        "nombre": "Tema Arenal",
+        "descripcion": "Inspirado en la luz mediterránea y las arenas templarias",
+        "colores": {
+            "primario": "#C47F00",
+            "secundario": "#F4C95D",
+            "fondo": "#FFF5E6",
+            "texto": "#5C3D2E"
+        },
+        "tipografia": {
+            "titulos": "\"Roboto Slab\", serif",
+            "texto": "\"Open Sans\", sans-serif"
+        },
+        "imagen_fondo": "uploads/images/backgrounds/backgrounds_68f207f1d665c.jpg",
+        "activo": false,
+        "created_at": "2025-11-18 12:15:00"
+    },
+    {
+        "id": "tema-heraldico",
+        "nombre": "Tema Heráldico",
+        "descripcion": "Paleta inspirada en los escudos históricos templarios",
+        "colores": {
+            "primario": "#8B0000",
+            "secundario": "#C0B283",
+            "fondo": "#F4F1EA",
+            "texto": "#2E2E2E"
+        },
+        "tipografia": {
+            "titulos": "\"Cinzel\", serif",
+            "texto": "\"Roboto\", sans-serif"
+        },
+        "imagen_fondo": "uploads/images/backgrounds/backgrounds_68f208ddae620.jpg",
+        "activo": false,
+        "created_at": "2025-11-18 12:20:00"
     }
 ]

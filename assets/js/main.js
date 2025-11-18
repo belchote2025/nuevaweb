@@ -5,16 +5,43 @@ const CONFIG = {
     SITE_NAME: 'Filá Mariscales de Caballeros Templarios',
     VERSION: '2.0.0',
     // Detectar si estamos en HTTPS o HTTP
-    BASE_URL: window.location.protocol + '//' + window.location.host + window.location.pathname.replace(/\/[^\/]*$/, '/')
+    BASE_URL: window.location.protocol + '//' + window.location.host + window.location.pathname.replace(/\/[^\/]*$/, '/'),
+    THEME_DEFAULTS: {
+        colores: {
+            primario: '#DC143C',
+            secundario: '#FFD700',
+            fondo: '#F8F9FA',
+            texto: '#212529'
+        },
+        tipografia: {
+            titulos: '"Cinzel", serif',
+            texto: '"Open Sans", sans-serif'
+        }
+    }
 };
+
+const THEME_FONT_MAP = {
+    '"Cinzel", serif': 'Cinzel:wght@400;600;700',
+    '"Playfair Display", serif': 'Playfair+Display:wght@400;600;700',
+    '"Montserrat", sans-serif': 'Montserrat:wght@400;600;700',
+    '"Roboto Slab", serif': 'Roboto+Slab:wght@400;600;700',
+    '"Open Sans", sans-serif': 'Open+Sans:wght@300;400;600;700',
+    '"Inter", sans-serif': 'Inter:wght@300;400;600;700',
+    '"Lato", sans-serif': 'Lato:wght@300;400;700',
+    '"Roboto", sans-serif': 'Roboto:wght@300;400;700'
+};
+
+const LOADED_THEME_FONTS = new Set();
 
 // ===== CLASE PRINCIPAL DE LA APLICACIÓN =====
 class FilaMariscalesApp {
     constructor() {
+        this.currentTheme = null;
         this.init();
     }
 
     init() {
+        this.loadActiveTheme();
         this.setupEventListeners();
         this.loadInitialData();
         this.setupSmoothScrolling();
@@ -228,6 +255,121 @@ class FilaMariscalesApp {
         });
         
         console.log('✅ Dropdowns configurados:', dropdownToggles.length);
+    }
+
+    // ===== TEMAS DINÁMICOS =====
+    async loadActiveTheme() {
+        try {
+            const response = await fetch(`${CONFIG.API_BASE_URL}theme.php`, {
+                method: 'GET',
+                cache: 'no-cache'
+            });
+            if (!response.ok) throw new Error('Respuesta no válida del servidor de temas');
+            const result = await response.json();
+            if (result.success && result.data) {
+                this.currentTheme = result.data;
+                this.applyTheme(result.data);
+            }
+        } catch (error) {
+            console.warn('No se pudo cargar el tema activo, usando valores por defecto:', error);
+            this.applyTheme(CONFIG.THEME_DEFAULTS);
+        }
+    }
+
+    applyTheme(theme) {
+        if (!theme) return;
+        const colores = theme.colores || CONFIG.THEME_DEFAULTS.colores;
+        const tipografia = theme.tipografia || CONFIG.THEME_DEFAULTS.tipografia;
+
+        const primary = colores.primario || CONFIG.THEME_DEFAULTS.colores.primario;
+        const secondary = colores.secundario || CONFIG.THEME_DEFAULTS.colores.secundario;
+        const fondo = colores.fondo || CONFIG.THEME_DEFAULTS.colores.fondo;
+        const texto = colores.texto || CONFIG.THEME_DEFAULTS.colores.texto;
+
+        this.setCSSVar('--templar-red', primary);
+        this.setCSSVar('--templar-red-light', secondary);
+        this.setCSSVar('--templar-red-dark', this.adjustColor(primary, -25));
+        this.setCSSVar('--templar-gray', texto);
+        this.setCSSVar('--templar-gray-light', this.adjustColor(texto, 30));
+        this.setCSSVar('--templar-black', texto);
+        this.setCSSVar('--site-bg-color', fondo);
+        this.setCSSVar('--theme-text-color', texto);
+        this.setCSSVar('--bs-primary', primary);
+        this.setCSSVar('--bs-primary-rgb', this.hexToRgb(primary));
+        this.setCSSVar('--bs-secondary', secondary);
+
+        this.setCSSVar('--templar-font-heading', tipografia.titulos || CONFIG.THEME_DEFAULTS.tipografia.titulos);
+        this.setCSSVar('--templar-font-body', tipografia.texto || CONFIG.THEME_DEFAULTS.tipografia.texto);
+
+        this.ensureFontLoaded(tipografia.titulos || CONFIG.THEME_DEFAULTS.tipografia.titulos);
+        this.ensureFontLoaded(tipografia.texto || CONFIG.THEME_DEFAULTS.tipografia.texto);
+
+        if (colores.texto) {
+            document.body.style.color = colores.texto;
+        }
+        if (colores.fondo) {
+            document.body.style.backgroundColor = colores.fondo;
+        }
+
+        if (theme.imagen_fondo) {
+            this.setCSSVar('--site-bg-image', `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('${theme.imagen_fondo}') center/cover fixed`);
+        } else {
+            document.documentElement.style.removeProperty('--site-bg-image');
+        }
+
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) {
+            metaTheme.setAttribute('content', primary);
+        }
+
+        document.body.dataset.theme = theme.id || 'default-theme';
+    }
+
+    setCSSVar(variable, value) {
+        if (!variable || typeof value === 'undefined' || value === null) return;
+        document.documentElement.style.setProperty(variable, value);
+    }
+
+    ensureFontLoaded(fontValue) {
+        if (!fontValue) return;
+        const fontKey = THEME_FONT_MAP[fontValue];
+        if (!fontKey || LOADED_THEME_FONTS.has(fontKey)) return;
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = `https://fonts.googleapis.com/css2?family=${fontKey}&display=swap`;
+        document.head.appendChild(link);
+        LOADED_THEME_FONTS.add(fontKey);
+    }
+
+    adjustColor(hex, amount = 0) {
+        if (!hex) return '#000000';
+        let color = hex.replace('#', '');
+        if (color.length === 3) {
+            color = color.split('').map(ch => ch + ch).join('');
+        }
+        const num = parseInt(color, 16);
+        let r = (num >> 16) + amount;
+        let g = ((num >> 8) & 0x00FF) + amount;
+        let b = (num & 0x0000FF) + amount;
+
+        r = Math.max(Math.min(255, r), 0);
+        g = Math.max(Math.min(255, g), 0);
+        b = Math.max(Math.min(255, b), 0);
+
+        return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
+    }
+
+    hexToRgb(hex) {
+        if (!hex) return '220, 20, 60';
+        let color = hex.replace('#', '');
+        if (color.length === 3) {
+            color = color.split('').map(ch => ch + ch).join('');
+        }
+        const bigint = parseInt(color, 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return `${r}, ${g}, ${b}`;
     }
 
     // ===== CARGA DE DATOS INICIALES =====
