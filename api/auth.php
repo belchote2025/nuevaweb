@@ -160,6 +160,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
             'nombre' => $_SESSION['socio_nombre'],
             'id' => $_SESSION['socio_id'],
             'role' => $usuario_actual['rol'] ?? 'socio',
+            'numero_socio' => $usuario_actual['numero_socio'] ?? '',
+            'telefono' => $usuario_actual['telefono'] ?? '',
+            'direccion' => $usuario_actual['direccion'] ?? '',
+            'fecha_ingreso' => $usuario_actual['fecha_ingreso'] ?? '',
             'login_time' => $_SESSION['login_time']
         ]);
     } else {

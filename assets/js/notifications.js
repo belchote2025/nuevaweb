@@ -107,7 +107,15 @@ class NotificationManager {
         // Botón de activar/desactivar notificaciones
         const toggleBtn = document.getElementById('notification-toggle');
         if (toggleBtn) {
-            toggleBtn.addEventListener('click', () => this.toggleNotifications());
+            // Remover listeners anteriores si existen para evitar duplicados
+            const newToggleBtn = toggleBtn.cloneNode(true);
+            toggleBtn.parentNode.replaceChild(newToggleBtn, toggleBtn);
+            
+            newToggleBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.toggleNotifications();
+            });
         }
 
         // Botón de enviar notificación (solo para admin)
@@ -145,15 +153,37 @@ class NotificationManager {
             return;
         }
 
+        const toggleBtn = document.getElementById('notification-toggle');
+        if (toggleBtn) {
+            // Deshabilitar botón durante la operación
+            toggleBtn.disabled = true;
+            toggleBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+        }
+
         try {
+            let success = false;
             if (this.subscription) {
-                await this.unsubscribe();
+                success = await this.unsubscribe();
             } else {
-                await this.subscribe();
+                success = await this.subscribe();
             }
+            
+            // Siempre actualizar la UI al finalizar, independientemente del resultado
+            this.updateNotificationUI();
         } catch (error) {
             console.error('Error alternando notificaciones:', error);
             this.showMessage('Error al cambiar configuración de notificaciones', 'error');
+            // Restaurar UI en caso de error
+            this.updateNotificationUI();
+        } finally {
+            // Asegurar que el botón siempre se restaure
+            if (toggleBtn) {
+                toggleBtn.disabled = false;
+                // Si por alguna razón la UI no se actualizó, forzar actualización
+                if (toggleBtn.innerHTML.includes('Procesando')) {
+                    this.updateNotificationUI();
+                }
+            }
         }
     }
 
@@ -162,18 +192,22 @@ class NotificationManager {
             // Verificar que tengamos un registro válido
             if (!this.registration) {
                 this.showMessage('Service Worker no disponible. Las notificaciones requieren HTTPS válido o localhost.', 'error');
-                return;
+                return false;
             }
             
             // Solicitar permisos
             const permission = await Notification.requestPermission();
             if (permission !== 'granted') {
                 this.showMessage('Permisos de notificación denegados', 'error');
-                return;
+                return false;
             }
 
             // Obtener clave pública VAPID
             const response = await fetch('api/notifications.php?action=vapid-key');
+            if (!response.ok) {
+                throw new Error('Error al obtener clave VAPID');
+            }
+            
             const data = await response.json();
             
             if (!data.success) {
@@ -201,30 +235,38 @@ class NotificationManager {
                 })
             });
 
+            if (!subscribeResponse.ok) {
+                throw new Error('Error al enviar suscripción al servidor');
+            }
+
             const result = await subscribeResponse.json();
             
             if (result.success) {
                 this.showMessage('Notificaciones activadas correctamente', 'success');
-                this.updateNotificationUI();
+                return true;
             } else {
-                throw new Error(result.message);
+                throw new Error(result.message || 'Error al activar notificaciones');
             }
 
         } catch (error) {
             console.error('Error suscribiéndose:', error);
             this.showMessage('Error activando notificaciones: ' + error.message, 'error');
+            // Limpiar suscripción si falló
+            this.subscription = null;
+            throw error; // Re-lanzar para que toggleNotifications lo maneje
         }
     }
 
     async unsubscribe() {
         try {
-            if (!this.subscription) return;
+            if (!this.subscription) {
+                return false;
+            }
 
             // Verificar que tengamos un registro válido
             if (!this.registration) {
                 this.subscription = null;
-                this.updateNotificationUI();
-                return;
+                return true; // Considerar éxito si no hay registro
             }
 
             // Desuscribir del navegador
@@ -244,11 +286,14 @@ class NotificationManager {
 
             this.subscription = null;
             this.showMessage('Notificaciones desactivadas', 'info');
-            this.updateNotificationUI();
+            return true;
 
         } catch (error) {
             console.error('Error desuscribiéndose:', error);
             this.showMessage('Error desactivando notificaciones', 'error');
+            // Limpiar suscripción incluso si falló
+            this.subscription = null;
+            throw error; // Re-lanzar para que toggleNotifications lo maneje
         }
     }
 
@@ -257,13 +302,17 @@ class NotificationManager {
         const statusText = document.getElementById('notification-status');
         
         if (toggleBtn) {
+            // Preservar clases base y solo cambiar el estado
             toggleBtn.classList.remove('inactive', 'active');
+            
             if (this.subscription) {
                 toggleBtn.innerHTML = '<i class="fas fa-bell-slash me-2"></i>Desactivar Notificaciones';
-                toggleBtn.className = 'btn btn-notification btn-lg rounded-circle active';
+                toggleBtn.classList.add('active');
+                toggleBtn.title = 'Desactivar Notificaciones';
             } else {
                 toggleBtn.innerHTML = '<i class="fas fa-bell me-2"></i>Activar Notificaciones';
-                toggleBtn.className = 'btn btn-notification btn-lg rounded-circle inactive';
+                toggleBtn.classList.add('inactive');
+                toggleBtn.title = 'Activar Notificaciones';
             }
         }
 

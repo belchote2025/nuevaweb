@@ -74,5 +74,21 @@
         "created_at": "2025-11-18 09:52:24",
         "updated_at": "2025-11-18 09:52:24",
         "active": true
+    },
+    {
+        "id": "user-691c8081c497b",
+        "name": "charo",
+        "nombre": "charo",
+        "email": "charo1106@gmail.com",
+        "role": "socio",
+        "password_hash": "$2y$10$nbpUAL4gXX9KjqdOwJOJbejyd7TiutxYp6XvFx1R78pYGTAk8dEyC",
+        "created_at": "2025-11-18 15:19:45",
+        "updated_at": "2025-11-18 15:19:45",
+        "active": true,
+        "telefono": "688704737",
+        "direccion": "capita antoni mena 69 9 1",
+        "fecha_ingreso": "2025-11-18",
+        "numero_socio": "20",
+        "socio_id": "socio-691c8081d92c7"
     }
 ]

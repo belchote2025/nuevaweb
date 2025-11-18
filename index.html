@@ -468,10 +468,184 @@
     
     <!-- Botón de notificaciones para usuarios -->
     <div class="notification-toggle">
-        <button class="btn btn-notification btn-lg rounded-circle inactive" id="notification-toggle" title="Activar Notificaciones">
-            <i class="fas fa-bell"></i>
+        <button class="btn btn-notification btn-lg inactive" id="notification-toggle" title="Activar Notificaciones">
+            <i class="fas fa-bell me-2"></i>Activar Notificaciones
         </button>
         <small id="notification-status" class="d-block text-center mt-2 text-white"></small>
     </div>
+
+    <!-- Modal Solicitud de Socio -->
+    <div class="modal fade" id="solicitudSocioModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>Solicitud de Socio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="solicitudSocioForm">
+                    <div class="modal-body">
+                        <div id="solicitud-alert" class="alert alert-danger d-none" role="alert"></div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="solicitudNombre" class="form-label">Nombre completo *</label>
+                                <input type="text" class="form-control" id="solicitudNombre" name="nombre" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="solicitudEmail" class="form-label">Correo electrónico *</label>
+                                <input type="email" class="form-control" id="solicitudEmail" name="email" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="solicitudTelefono" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="solicitudTelefono" name="telefono">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="solicitudEdad" class="form-label">Edad</label>
+                                <input type="number" class="form-control" id="solicitudEdad" name="edad" min="18" max="100">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="solicitudPassword" class="form-label">Contraseña *</label>
+                                <input type="password" class="form-control" id="solicitudPassword" name="password" required>
+                                <small class="form-text text-muted">Mínimo 8 caracteres</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="solicitudPasswordConfirm" class="form-label">Confirmar Contraseña *</label>
+                                <input type="password" class="form-control" id="solicitudPasswordConfirm" name="password_confirm" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="solicitudMotivo" class="form-label">Motivo para unirse a la Filá *</label>
+                            <textarea class="form-control" id="solicitudMotivo" name="motivo" rows="3" required placeholder="Cuéntanos por qué quieres formar parte de nuestra hermandad..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="solicitudExperiencia" class="form-label">Experiencia previa</label>
+                            <textarea class="form-control" id="solicitudExperiencia" name="experiencia" rows="2" placeholder="¿Tienes experiencia en filás, música, organización de eventos...?"></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="solicitudAcepta" name="acepta" required>
+                            <label class="form-check-label" for="solicitudAcepta">
+                                Acepto los estatutos y reglamento de la Filá Mariscales *
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-text">Enviar Solicitud</span>
+                            <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Manejo de solicitud de socio
+        document.addEventListener('DOMContentLoaded', function() {
+            const solicitudForm = document.getElementById('solicitudSocioForm');
+            if (solicitudForm) {
+                // Validar que las contraseñas coincidan
+                const password = document.getElementById('solicitudPassword');
+                const confirmPassword = document.getElementById('solicitudPasswordConfirm');
+                
+                function validatePassword() {
+                    if (password.value !== confirmPassword.value) {
+                        confirmPassword.setCustomValidity('Las contraseñas no coinciden');
+                        return false;
+                    } else if (password.value.length < 8) {
+                        password.setCustomValidity('La contraseña debe tener al menos 8 caracteres');
+                        return false;
+                    } else {
+                        confirmPassword.setCustomValidity('');
+                        password.setCustomValidity('');
+                        return true;
+                    }
+                }
+
+                if (password && confirmPassword) {
+                    password.onchange = validatePassword;
+                    confirmPassword.onkeyup = validatePassword;
+                }
+
+                solicitudForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    if (!validatePassword()) {
+                        return false;
+                    }
+                    
+                    const alertBox = document.getElementById('solicitud-alert');
+                    const btn = solicitudForm.querySelector('button[type="submit"]');
+                    const btnText = btn.querySelector('.btn-text');
+                    const btnSpinner = btn.querySelector('.spinner-border');
+
+                    alertBox.classList.add('d-none');
+                    btn.disabled = true;
+                    btnText.textContent = 'Enviando...';
+                    btnSpinner.classList.remove('d-none');
+
+                    try {
+                        const formData = new FormData(solicitudForm);
+                        const data = {
+                            nombre: formData.get('nombre'),
+                            email: formData.get('email'),
+                            telefono: formData.get('telefono') || '',
+                            edad: formData.get('edad') || '',
+                            direccion: formData.get('direccion') || '',
+                            motivo: formData.get('motivo'),
+                            experiencia: formData.get('experiencia') || '',
+                            fecha_ingreso: new Date().toISOString().split('T')[0],
+                            password: formData.get('password'),
+                            activo: false, // Pendiente de aprobación
+                            numero_socio: Math.floor(1000 + Math.random() * 9000).toString(),
+                            updated_at: new Date().toISOString()
+                        };
+
+                        // Enviar datos al servidor
+                        const response = await fetch('api/solicitudes.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        });
+
+                        const result = await response.json();
+
+                        if (response.ok && result.success) {
+                            alertBox.textContent = '¡Solicitud enviada correctamente! Te contactaremos pronto.';
+                            alertBox.classList.remove('alert-danger', 'd-none');
+                            alertBox.classList.add('alert-success');
+                            solicitudForm.reset();
+                            
+                            // Cerrar el modal después de 3 segundos
+                            setTimeout(() => {
+                                const modal = bootstrap.Modal.getInstance(document.getElementById('solicitudSocioModal'));
+                                if (modal) {
+                                    modal.hide();
+                                }
+                                alertBox.classList.add('d-none');
+                            }, 3000);
+                        } else {
+                            throw new Error(result.message || 'Error al enviar la solicitud');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alertBox.textContent = error.message || 'Error al enviar la solicitud. Por favor, inténtalo de nuevo.';
+                        alertBox.classList.remove('d-none', 'alert-success');
+                        alertBox.classList.add('alert-danger');
+                    } finally {
+                        btn.disabled = false;
+                        btnText.textContent = 'Enviar Solicitud';
+                        btnSpinner.classList.add('d-none');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

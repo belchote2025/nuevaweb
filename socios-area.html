@@ -9,6 +9,27 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="assets/css/style.css?v=2.0" rel="stylesheet">
+    <style>
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+        }
+        .card-header {
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+        }
+        #stats-container .card {
+            transition: all 0.3s ease;
+        }
+        #stats-container .card:hover {
+            transform: translateY(-5px);
+        }
+        .badge {
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
@@ -42,107 +63,501 @@
         </div>
     </nav>
 
-    <main class="container" style="margin-top: 90px;">
+    <main class="container" style="margin-top: 90px; padding-bottom: 2rem;">
         <div id="access-alert" class="alert alert-danger d-none" role="alert"></div>
 
+        <!-- Header mejorado -->
         <div class="row mb-4">
             <div class="col-12">
-                <h1 class="h3">Área privada para Socios</h1>
-                <p class="text-muted mb-0">Contenido exclusivo para miembros de la Filá y administradores.</p>
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div>
+                        <h1 class="h2 mb-2"><i class="fas fa-shield-alt text-primary me-2"></i>Área Privada de Socios</h1>
+                        <p class="text-muted mb-0">Bienvenido, <span id="welcome-name" class="fw-semibold">Socio</span>. Contenido exclusivo para miembros de la Filá.</p>
+                    </div>
+                    <div class="mt-3 mt-md-0">
+                        <span class="badge bg-primary fs-6 px-3 py-2">
+                            <i class="fas fa-user-check me-2"></i><span id="user-role-badge">Socio</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas rápidas -->
+        <div class="row mb-4" id="stats-container">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body text-center">
+                        <div class="display-4 text-primary mb-2">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h5 class="card-title mb-1" id="stats-actividades">0</h5>
+                        <p class="text-muted small mb-0">Próximas Actividades</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body text-center">
+                        <div class="display-4 text-success mb-2">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h5 class="card-title mb-1" id="stats-comunicados">0</h5>
+                        <p class="text-muted small mb-0">Comunicados</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body text-center">
+                        <div class="display-4 text-warning mb-2">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h5 class="card-title mb-1" id="stats-mensajes">0</h5>
+                        <p class="text-muted small mb-0">Mensajes No Leídos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body text-center">
+                        <div class="display-4 text-info mb-2">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h5 class="card-title mb-1" id="stats-socios">-</h5>
+                        <p class="text-muted small mb-0">Total Socios</p>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-lg-8">
-                <div class="card mb-4">
-                    <div class="card-header d-flex align-items-center">
-                        <i class="fas fa-bullhorn text-primary me-2"></i>
-                        Comunicados Internos
+            <!-- Columna principal - más ancha -->
+            <div class="col-xl-8 col-lg-7">
+                <!-- Comunicados mejorados -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-bullhorn me-2"></i>
+                            <strong>Comunicados Internos</strong>
+                        </div>
+                        <button class="btn btn-sm btn-light" id="refresh-comunicados" title="Actualizar">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
                     </div>
                     <div class="card-body" id="comunicados-container">
-                        <div class="text-muted">No hay comunicados disponibles.</div>
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="text-muted mt-2">Cargando comunicados...</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card mb-4">
-                    <div class="card-header d-flex align-items-center">
-                        <i class="fas fa-calendar-check text-primary me-2"></i>
-                        Próximas Actividades
+                <!-- Actividades mejoradas -->
+                <div class="card mb-4 border-0 shadow-sm" style="min-height: 200px;">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-calendar-check me-2"></i>
+                            <strong>Próximas Actividades</strong>
+                        </div>
+                        <a href="eventos.html" class="btn btn-sm btn-light">
+                            Ver todas <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
                     </div>
-                    <div class="card-body" id="actividades-container">
-                        <div class="text-muted">Cargando actividades...</div>
+                    <div class="card-body" id="actividades-container" style="max-height: 500px; overflow-y: auto;">
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-success" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="text-muted mt-2">Cargando actividades...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historial de participación -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-info text-white d-flex align-items-center">
+                        <i class="fas fa-history me-2"></i>
+                        <strong>Mi Historial</strong>
+                    </div>
+                    <div class="card-body" id="historial-container">
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3 border rounded">
+                                    <div class="h4 text-primary mb-1" id="historial-eventos">0</div>
+                                    <small class="text-muted">Eventos Participados</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3 border rounded">
+                                    <div class="h4 text-success mb-1" id="historial-reservas">0</div>
+                                    <small class="text-muted">Reservas Realizadas</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3 border rounded">
+                                    <div class="h4 text-warning mb-1" id="historial-mensajes">0</div>
+                                    <small class="text-muted">Mensajes Enviados</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-4">
-                <div class="card mb-4">
-                    <div class="card-header d-flex align-items-center">
-                        <i class="fas fa-id-card text-primary me-2"></i>
-                        Mi Perfil
+            <!-- Sidebar mejorado -->
+            <div class="col-xl-4 col-lg-5">
+                <!-- Perfil mejorado -->
+                <div class="card mb-4 border-0 shadow-sm sticky-top" style="top: 100px; z-index: 10;">
+                    <div class="card-header bg-gradient text-white" style="background: linear-gradient(135deg, var(--templar-red), #8B0000);">
+                        <i class="fas fa-id-card me-2"></i>
+                        <strong>Mi Perfil</strong>
                     </div>
                     <div class="card-body">
-                        <div class="mb-2"><strong>Nombre:</strong> <span id="profile-name">-</span></div>
-                        <div class="mb-2"><strong>Email:</strong> <span id="profile-email">-</span></div>
-                        <div class="mb-2"><strong>Rol:</strong> <span id="profile-role">-</span></div>
+                        <div class="text-center mb-3">
+                            <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center shadow" 
+                                 style="width: 90px; height: 90px; font-size: 2.5rem;">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                            <div class="mt-2">
+                                <div class="fw-bold fs-5" id="profile-name">-</div>
+                                <div class="badge bg-primary mt-1" id="profile-role-badge">-</div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label class="text-muted small d-block mb-1">
+                                <i class="fas fa-id-badge me-1"></i>Número de Socio
+                            </label>
+                            <div class="fw-bold text-primary fs-5" id="profile-numero">-</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small d-block mb-1">
+                                <i class="fas fa-envelope me-1"></i>Email
+                            </label>
+                            <div class="text-break small" id="profile-email">-</div>
+                        </div>
+                        <div class="mb-3" id="profile-telefono-container" style="display: none;">
+                            <label class="text-muted small d-block mb-1">
+                                <i class="fas fa-phone me-1"></i>Teléfono
+                            </label>
+                            <div class="small" id="profile-telefono">-</div>
+                        </div>
+                        <div class="mb-3" id="profile-fecha-container" style="display: none;">
+                            <label class="text-muted small d-block mb-1">
+                                <i class="fas fa-calendar-alt me-1"></i>Fecha de Ingreso
+                            </label>
+                            <div class="small" id="profile-fecha">-</div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" id="btn-edit-profile">
+                                <i class="fas fa-edit me-2"></i>Editar Perfil
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" id="btn-change-password">
+                                <i class="fas fa-key me-2"></i>Cambiar Contraseña
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card mb-4">
-                    <div class="card-header d-flex align-items-center">
-                        <i class="fas fa-comments text-primary me-2"></i>
-                        Chat interno
+                <!-- Chat mejorado -->
+                <div class="card mb-4 border-0 shadow-sm" style="margin-top: 0;">
+                    <div class="card-header bg-warning text-dark d-flex align-items-center">
+                        <i class="fas fa-comments me-2"></i>
+                        <strong>Chat Interno</strong>
                     </div>
                     <div class="card-body">
-                        <p class="text-muted">Habla con otros socios o abre privados.</p>
-                        <a href="chat.html" class="btn btn-outline-primary w-100">
-                            <i class="fas fa-comments me-2"></i>Abrir chat
-                            <span class="badge bg-danger ms-2 d-none" id="chat-badge-card">0</span>
+                        <p class="text-muted small mb-3">Comunícate con otros socios en tiempo real.</p>
+                        <a href="chat.html" class="btn btn-warning w-100 position-relative" style="z-index: 1;">
+                            <i class="fas fa-comments me-2"></i>Abrir Chat
+                            <span class="badge bg-danger position-absolute top-0 start-100 translate-middle d-none" id="chat-badge-card" style="z-index: 2; transform: translate(-50%, -50%);">0</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="card mb-4">
-                    <div class="card-header d-flex align-items-center">
-                        <i class="fas fa-download text-primary me-2"></i>
-                        Descargas para Socios
+                <!-- Descargas mejoradas -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-info text-white d-flex align-items-center">
+                        <i class="fas fa-download me-2"></i>
+                        <strong>Descargas</strong>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled mb-0">
-                            <li class="mb-2"><i class="fas fa-file-pdf text-danger me-2"></i><a href="#">Estatutos (PDF)</a></li>
-                            <li class="mb-2"><i class="fas fa-file-word text-primary me-2"></i><a href="#">Reglamento (DOCX)</a></li>
-                            <li class="mb-2"><i class="fas fa-image text-success me-2"></i><a href="#">Logotipos (ZIP)</a></li>
+                            <li class="mb-3 p-2 border rounded hover-lift">
+                                <a href="#" class="text-decoration-none d-flex align-items-center">
+                                    <i class="fas fa-file-pdf text-danger me-3 fs-4"></i>
+                                    <div>
+                                        <div class="fw-semibold">Estatutos</div>
+                                        <small class="text-muted">Documento PDF</small>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="mb-3 p-2 border rounded hover-lift">
+                                <a href="#" class="text-decoration-none d-flex align-items-center">
+                                    <i class="fas fa-file-word text-primary me-3 fs-4"></i>
+                                    <div>
+                                        <div class="fw-semibold">Reglamento</div>
+                                        <small class="text-muted">Documento DOCX</small>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="mb-0 p-2 border rounded hover-lift">
+                                <a href="#" class="text-decoration-none d-flex align-items-center">
+                                    <i class="fas fa-file-archive text-success me-3 fs-4"></i>
+                                    <div>
+                                        <div class="fw-semibold">Logotipos</div>
+                                        <small class="text-muted">Archivo ZIP</small>
+                                    </div>
+                                </a>
+                            </li>
                         </ul>
+                    </div>
+                </div>
+
+                <!-- Accesos rápidos -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-dark text-white d-flex align-items-center">
+                        <i class="fas fa-bolt me-2"></i>
+                        <strong>Accesos Rápidos</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="eventos.html" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-calendar me-2"></i>Eventos
+                            </a>
+                            <a href="galeria.html" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-images me-2"></i>Galería
+                            </a>
+                            <a href="noticias.html" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-newspaper me-2"></i>Noticias
+                            </a>
+                            <a href="reservas.html" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-ticket-alt me-2"></i>Reservas
+                            </a>
+                            <a href="contacto.html" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-envelope me-2"></i>Contacto
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notificaciones recientes -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-danger text-white d-flex align-items-center">
+                        <i class="fas fa-bell me-2"></i>
+                        <strong>Notificaciones</strong>
+                    </div>
+                    <div class="card-body" id="notificaciones-container">
+                        <div class="text-muted small text-center py-2">No hay notificaciones nuevas</div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="bg-dark text-white py-4 mt-5">
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
-                    <h5>Filá Mariscales</h5>
-                    <p class="mb-0">Caballeros Templarios de Elche</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <div class="social-links">
-                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                <!-- Información de la Filá -->
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <div class="footer-brand mb-3">
+                        <h4 class="text-white mb-2">
+                            <i class="fas fa-shield-alt me-2 text-danger"></i>
+                            Filá Mariscales
+                        </h4>
+                        <p class="text-muted small mb-2">Caballeros Templarios de Elche</p>
+                        <p id="footer-description" class="text-muted small">Manteniendo viva la tradición templaria y fomentando la hermandad entre nuestros miembros desde nuestros inicios.</p>
+                    </div>
+                    <div class="social-links mt-4">
+                        <a href="#" class="social-link me-3" title="Facebook" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link me-3" title="Instagram" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link me-3" title="Twitter" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link me-3" title="YouTube" aria-label="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="https://wa.me/34600000000" class="social-link" title="WhatsApp" aria-label="WhatsApp" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
                     </div>
                 </div>
+                
+                <!-- Enlaces Rápidos -->
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">La Filá</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="index.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Inicio</a></li>
+                        <li><a href="historia.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Historia</a></li>
+                        <li><a href="directiva.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Directiva</a></li>
+                        <li><a href="socios.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Socios</a></li>
+                        <li><a href="contacto.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Actividades -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">Actividades</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="calendario.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Calendario</a></li>
+                        <li><a href="eventos.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Eventos</a></li>
+                        <li><a href="galeria.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Galería</a></li>
+                        <li><a href="musica.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Música</a></li>
+                        <li><a href="reservas.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Reservas</a></li>
+                        <li><a href="noticias.html" class="text-muted text-decoration-none"><i class="fas fa-chevron-right me-2 small"></i>Noticias</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Información de Contacto -->
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-3">Contacto</h5>
+                    <ul class="list-unstyled footer-contact">
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2 text-danger"></i>
+                            <span class="text-muted small">Elche, Comunidad Valenciana</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2 text-danger"></i>
+                            <a href="mailto:info@filamariscales.com" class="text-muted text-decoration-none small">info@filamariscales.com</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2 text-danger"></i>
+                            <a href="tel:+34600000000" class="text-muted text-decoration-none small">+34 600 000 000</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fab fa-whatsapp me-2 text-success"></i>
+                            <a href="https://wa.me/34600000000" class="text-muted text-decoration-none small" target="_blank">WhatsApp</a>
+                        </li>
+                        <li class="mt-3">
+                            <a href="contacto.html" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-paper-plane me-2"></i>Envíanos un mensaje
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <hr class="my-3">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p class="mb-0">&copy; 2025 Realizado por: Eduardo Santa Cruz</p>
+            
+            <!-- Línea divisoria -->
+            <hr class="my-4 border-secondary">
+            
+            <!-- Copyright y Créditos -->
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <p id="footer-copyright" class="mb-0 text-muted small">
+                        &copy; <span id="current-year">2025</span> Filá Mariscales de Caballeros Templarios. Todos los derechos reservados.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 text-muted small">
+                        Realizado por: <a href="#" class="text-danger text-decoration-none">Eduardo Santa Cruz</a>
+                    </p>
                 </div>
             </div>
         </div>
     </footer>
+    
+    <style>
+        /* Estilos para evitar solapamientos */
+        #actividades-container {
+            scrollbar-width: thin;
+            scrollbar-color: var(--templar-red) rgba(0,0,0,0.1);
+        }
+        
+        #actividades-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        #actividades-container::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+        }
+        
+        #actividades-container::-webkit-scrollbar-thumb {
+            background: var(--templar-red);
+            border-radius: 3px;
+        }
+        
+        #chat-badge-card {
+            min-width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+        }
+        
+        .card.mb-4 {
+            position: relative;
+            overflow: visible;
+        }
+        
+        @media (max-width: 991px) {
+            .sticky-top {
+                position: relative !important;
+                top: 0 !important;
+            }
+        }
+        
+        /* Estilos del footer mejorado */
+        footer .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        footer .footer-links a {
+            transition: all 0.3s ease;
+        }
+        
+        footer .footer-links a:hover {
+            color: #DC143C !important;
+            padding-left: 5px;
+        }
+        
+        footer .social-link {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        footer .social-link:hover {
+            background: var(--templar-red);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+        
+        footer .footer-contact a {
+            transition: color 0.3s ease;
+        }
+        
+        footer .footer-contact a:hover {
+            color: #DC143C !important;
+        }
+        
+        @media (max-width: 768px) {
+            footer .text-md-end {
+                text-align: center !important;
+            }
+            
+            footer .text-md-start {
+                text-align: center !important;
+            }
+        }
+    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -169,43 +584,266 @@
             if (!session) return;
 
             // Mostrar usuario
+            const userName = session.nombre || session.name || session.email.split('@')[0];
             document.getElementById('user-email').textContent = session.email;
             document.getElementById('user-role').textContent = session.role;
+            document.getElementById('user-role-badge').textContent = session.role;
+            document.getElementById('welcome-name').textContent = userName;
+            document.getElementById('profile-name').textContent = userName;
             document.getElementById('profile-email').textContent = session.email;
             document.getElementById('profile-role').textContent = session.role;
-
-            // Opcional: nombre si está disponible
-            // Se podría ampliar el endpoint para devolver nombre
-
-            // Cargar actividades desde eventos
-            try {
-                const resp = await fetch('data/eventos.json');
-                const eventos = await resp.json();
-                const proximos = eventos.slice(0, 5).map(e => `
-                    <div class="d-flex justify-content-between align-items-start border-bottom py-2">
-                        <div>
-                            <div class="fw-semibold">${e.titulo}</div>
-                            <small class="text-muted">${e.descripcion}</small>
-                        </div>
-                        <span class="badge bg-primary">${new Date(e.fecha).toLocaleDateString('es-ES')}</span>
-                    </div>
-                `).join('');
-                document.getElementById('actividades-container').innerHTML = proximos || '<div class="text-muted">No hay próximas actividades.</div>';
-            } catch (e) {
-                document.getElementById('actividades-container').innerHTML = '<div class="text-muted">No se pudieron cargar las actividades.</div>';
+            document.getElementById('profile-role-badge').textContent = session.role;
+            
+            // Número de socio real
+            const numeroSocio = session.numero_socio || '';
+            if (numeroSocio) {
+                document.getElementById('profile-numero').textContent = numeroSocio;
+            } else {
+                // Intentar obtener desde API si no está en sesión
+                fetchUserData(session.email).then(userData => {
+                    if (userData && userData.numero_socio) {
+                        document.getElementById('profile-numero').textContent = userData.numero_socio;
+                    } else {
+                        document.getElementById('profile-numero').textContent = 'Pendiente';
+                        document.getElementById('profile-numero').classList.add('text-muted');
+                    }
+                });
+            }
+            
+            // Mostrar teléfono y fecha si están disponibles
+            if (session.telefono) {
+                document.getElementById('profile-telefono').textContent = session.telefono;
+                document.getElementById('profile-telefono-container').style.display = 'block';
+            }
+            if (session.fecha_ingreso) {
+                const fecha = new Date(session.fecha_ingreso);
+                document.getElementById('profile-fecha').textContent = fecha.toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                document.getElementById('profile-fecha-container').style.display = 'block';
             }
 
-            // Comunicados (placeholder)
-            document.getElementById('comunicados-container').innerHTML = `
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>Bienvenido al área privada. Próximamente añadiremos comunicados oficiales.
-                </div>
-            `;
+            // Cargar estadísticas
+            await loadStats(session);
+
+            // Cargar actividades desde eventos
+            await loadActividades();
+
+            // Cargar comunicados
+            await loadComunicados();
+
+            // Cargar notificaciones
+            await loadNotificaciones();
+
             // Iniciar contador de no leídos del chat
             try {
                 await updateChatNotifications();
                 setInterval(updateChatNotifications, 7000);
             } catch (e) {}
+        }
+
+        async function fetchUserData(email) {
+            try {
+                const resp = await fetch('api/users.php');
+                const data = await resp.json();
+                if (data.success && data.data) {
+                    return data.data.find(u => u.email === email);
+                }
+            } catch (e) {
+                console.error('Error obteniendo datos del usuario:', e);
+            }
+            return null;
+        }
+
+        async function loadStats(session) {
+            try {
+                // Cargar eventos para contar actividades
+                const respEventos = await fetch('data/eventos.json');
+                const eventos = await respEventos.json();
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                const proximos = eventos.filter(e => {
+                    const fechaEvento = new Date(e.fecha);
+                    fechaEvento.setHours(0, 0, 0, 0);
+                    return fechaEvento >= hoy;
+                }).length;
+                document.getElementById('stats-actividades').textContent = proximos;
+
+                // Cargar usuarios para contar socios
+                try {
+                    const respUsers = await fetch('api/users.php');
+                    const usersData = await respUsers.json();
+                    if (usersData.success && usersData.data) {
+                        const socios = usersData.data.filter(u => u.role === 'socio' || u.role === 'admin').length;
+                        document.getElementById('stats-socios').textContent = socios;
+                    }
+                } catch (e) {
+                    document.getElementById('stats-socios').textContent = '-';
+                }
+
+                // Cargar historial del usuario
+                await loadHistorial(session);
+
+                // Actualizar mensajes no leídos
+                await updateChatNotifications();
+            } catch (e) {
+                console.error('Error cargando estadísticas:', e);
+            }
+        }
+
+        async function loadHistorial(session) {
+            try {
+                // Contar eventos participados (simulado - se puede mejorar con datos reales)
+                const respEventos = await fetch('data/eventos.json');
+                const eventos = await respEventos.json();
+                const eventosPasados = eventos.filter(e => {
+                    const fechaEvento = new Date(e.fecha);
+                    fechaEvento.setHours(0, 0, 0, 0);
+                    return fechaEvento < new Date();
+                }).length;
+                document.getElementById('historial-eventos').textContent = eventosPasados;
+
+                // Contar reservas (simulado - se puede mejorar con datos reales)
+                try {
+                    const respReservas = await fetch('data/reservas.json');
+                    const reservas = await respReservas.json();
+                    const misReservas = Array.isArray(reservas) 
+                        ? reservas.filter(r => r.email === session.email).length 
+                        : 0;
+                    document.getElementById('historial-reservas').textContent = misReservas;
+                } catch (e) {
+                    document.getElementById('historial-reservas').textContent = '0';
+                }
+
+                // Contar mensajes (simulado)
+                document.getElementById('historial-mensajes').textContent = '0';
+            } catch (e) {
+                console.error('Error cargando historial:', e);
+            }
+        }
+
+        async function loadNotificaciones() {
+            try {
+                const resp = await fetch('api/notifications.php?action=get_user_notifications', {
+                    credentials: 'include'
+                });
+                const data = await resp.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const html = data.data.slice(0, 5).map(n => `
+                        <div class="border-bottom py-2 mb-2">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold small">${n.title || 'Notificación'}</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">${n.body || ''}</div>
+                                </div>
+                                <span class="badge bg-danger ms-2">Nueva</span>
+                            </div>
+                        </div>
+                    `).join('');
+                    document.getElementById('notificaciones-container').innerHTML = html;
+                } else {
+                    document.getElementById('notificaciones-container').innerHTML = 
+                        '<div class="text-muted small text-center py-2">No hay notificaciones nuevas</div>';
+                }
+            } catch (e) {
+                document.getElementById('notificaciones-container').innerHTML = 
+                    '<div class="text-muted small text-center py-2">No hay notificaciones nuevas</div>';
+            }
+        }
+
+        async function loadActividades() {
+            try {
+                const resp = await fetch('data/eventos.json');
+                const eventos = await resp.json();
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                
+                const proximos = eventos
+                    .filter(e => {
+                        const fechaEvento = new Date(e.fecha);
+                        fechaEvento.setHours(0, 0, 0, 0);
+                        return fechaEvento >= hoy;
+                    })
+                    .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+                    .slice(0, 5);
+
+                if (proximos.length > 0) {
+                    const html = proximos.map(e => {
+                        const fecha = new Date(e.fecha);
+                        const fechaStr = fecha.toLocaleDateString('es-ES', { 
+                            day: 'numeric', 
+                            month: 'short',
+                            year: 'numeric'
+                        });
+                        return `
+                            <div class="d-flex justify-content-between align-items-start border-bottom py-3 mb-2 hover-lift">
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold mb-1">${e.titulo || 'Sin título'}</div>
+                                    <small class="text-muted">${e.descripcion || 'Sin descripción'}</small>
+                                </div>
+                                <div class="text-end ms-3">
+                                    <span class="badge bg-success">${fechaStr}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    document.getElementById('actividades-container').innerHTML = html;
+                } else {
+                    document.getElementById('actividades-container').innerHTML = 
+                        '<div class="alert alert-info"><i class="fas fa-info-circle me-2"></i>No hay próximas actividades programadas.</div>';
+                }
+            } catch (e) {
+                document.getElementById('actividades-container').innerHTML = 
+                    '<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>No se pudieron cargar las actividades.</div>';
+            }
+        }
+
+        async function loadComunicados() {
+            try {
+                // Intentar cargar comunicados desde API o datos
+                const resp = await fetch('api/contactos.php?action=get&tipo=comunicado');
+                const data = await resp.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const comunicados = data.data.slice(0, 5);
+                    const html = comunicados.map(c => {
+                        const fecha = new Date(c.fecha || c.created_at);
+                        const fechaStr = fecha.toLocaleDateString('es-ES', { 
+                            day: 'numeric', 
+                            month: 'short',
+                            year: 'numeric'
+                        });
+                        return `
+                            <div class="border-bottom py-3 mb-2">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="mb-0 fw-semibold">${c.asunto || c.nombre || 'Comunicado'}</h6>
+                                    <span class="badge bg-primary">${fechaStr}</span>
+                                </div>
+                                <p class="text-muted small mb-0">${c.mensaje || c.descripcion || 'Sin contenido'}</p>
+                            </div>
+                        `;
+                    }).join('');
+                    document.getElementById('comunicados-container').innerHTML = html;
+                    document.getElementById('stats-comunicados').textContent = comunicados.length;
+                } else {
+                    document.getElementById('comunicados-container').innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>Bienvenido al área privada. Próximamente añadiremos comunicados oficiales.
+                        </div>
+                    `;
+                    document.getElementById('stats-comunicados').textContent = '0';
+                }
+            } catch (e) {
+                document.getElementById('comunicados-container').innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Bienvenido al área privada. Próximamente añadiremos comunicados oficiales.
+                    </div>
+                `;
+                document.getElementById('stats-comunicados').textContent = '0';
+            }
         }
 
         async function updateChatNotifications() {
@@ -221,22 +859,175 @@
                         b.textContent = n;
                         if (n > 0) b.classList.remove('d-none'); else b.classList.add('d-none');
                     });
+                    // Actualizar estadística
+                    document.getElementById('stats-mensajes').textContent = n;
                 }
             } catch (e) {
                 // ignorar errores de red
             }
         }
 
+        // Actualizar año del footer
+        function updateFooterYear() {
+            const yearElement = document.getElementById('current-year');
+            if (yearElement) {
+                yearElement.textContent = new Date().getFullYear();
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            updateFooterYear();
             loadPrivateContent();
 
+            // Botón de logout
             document.getElementById('btnLogout').addEventListener('click', async function() {
                 try {
                     await fetch('api/auth.php?action=logout');
                 } catch (e) {}
                 window.location.href = 'socios.html';
             });
+
+            // Botón de refrescar comunicados
+            const refreshBtn = document.getElementById('refresh-comunicados');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', async function() {
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    await loadComunicados();
+                    this.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                });
+            }
+
+            // Botón de editar perfil
+            const editProfileBtn = document.getElementById('btn-edit-profile');
+            if (editProfileBtn) {
+                editProfileBtn.addEventListener('click', function() {
+                    showEditProfileModal();
+                });
+            }
+
+            // Botón de cambiar contraseña
+            const changePasswordBtn = document.getElementById('btn-change-password');
+            if (changePasswordBtn) {
+                changePasswordBtn.addEventListener('click', function() {
+                    showChangePasswordModal();
+                });
+            }
         });
+
+        function showEditProfileModal() {
+            // Obtener datos actuales
+            const nombre = document.getElementById('profile-name').textContent;
+            const email = document.getElementById('profile-email').textContent;
+            const telefono = document.getElementById('profile-telefono').textContent || '';
+
+            const modalHTML = `
+                <div class="modal fade" id="editProfileModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar Perfil</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form id="editProfileForm">
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nombre completo</label>
+                                        <input type="text" class="form-control" id="edit-nombre" value="${nombre}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" id="edit-telefono" value="${telefono}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="edit-email" value="${email}" readonly>
+                                        <small class="text-muted">El email no se puede modificar</small>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remover modal anterior si existe
+            const existingModal = document.getElementById('editProfileModal');
+            if (existingModal) existingModal.remove();
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+            modal.show();
+
+            // Manejar envío del formulario
+            document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                // Aquí se implementaría la lógica de actualización
+                alert('Función de edición de perfil próximamente disponible.');
+                modal.hide();
+            });
+        }
+
+        function showChangePasswordModal() {
+            const modalHTML = `
+                <div class="modal fade" id="changePasswordModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-warning text-dark">
+                                <h5 class="modal-title"><i class="fas fa-key me-2"></i>Cambiar Contraseña</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form id="changePasswordForm">
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Contraseña actual</label>
+                                        <input type="password" class="form-control" id="current-password" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Nueva contraseña</label>
+                                        <input type="password" class="form-control" id="new-password" minlength="8" required>
+                                        <small class="text-muted">Mínimo 8 caracteres</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Confirmar nueva contraseña</label>
+                                        <input type="password" class="form-control" id="confirm-password" minlength="8" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-warning">Cambiar Contraseña</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const existingModal = document.getElementById('changePasswordModal');
+            if (existingModal) existingModal.remove();
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+            modal.show();
+
+            document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const newPass = document.getElementById('new-password').value;
+                const confirmPass = document.getElementById('confirm-password').value;
+                
+                if (newPass !== confirmPass) {
+                    alert('Las contraseñas no coinciden');
+                    return;
+                }
+                
+                // Aquí se implementaría la lógica de cambio de contraseña
+                alert('Función de cambio de contraseña próximamente disponible.');
+                modal.hide();
+            });
+        }
     </script>
 </body>
 </html>

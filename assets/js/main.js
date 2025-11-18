@@ -652,22 +652,30 @@ class FilaMariscalesApp {
                         const activeItem = e.target.querySelector('.carousel-item.active');
                         const nextItem = e.relatedTarget;
                         
-                        // Aplicar fade-out al item activo
+                        // Aplicar fade-out al item activo de forma suave
                         if (activeItem && typeof activeItem.classList === 'object') {
+                            // Asegurar que el item activo tenga la transición correcta
+                            activeItem.style.transition = 'opacity 0.8s ease-in-out, transform 0.8s ease-in-out';
+                            // Forzar reflow para asegurar que la transición se aplique
+                            void activeItem.offsetHeight;
                             activeItem.classList.add('fade-out');
-                            // Remover active después de un breve delay para permitir la transición
-                            setTimeout(() => {
-                                if (activeItem.classList.contains('fade-out')) {
-                                    activeItem.classList.remove('active');
-                                }
-                            }, 50);
                         }
                         
                         // Preparar el siguiente item para fade-in
                         if (nextItem && typeof nextItem.classList === 'object') {
+                            // Establecer estado inicial
+                            nextItem.style.opacity = '0';
+                            nextItem.style.transform = 'scale(0.98)';
+                            nextItem.style.transition = 'opacity 0.8s ease-in-out, transform 0.8s ease-in-out';
+                            // Forzar reflow
+                            void nextItem.offsetHeight;
+                            // Aplicar fade-in
                             nextItem.classList.add('fade-in');
-                            // Asegurar que el siguiente item tenga la clase active
-                            nextItem.classList.add('active');
+                            // Usar requestAnimationFrame para asegurar transición suave
+                            requestAnimationFrame(() => {
+                                nextItem.style.opacity = '1';
+                                nextItem.style.transform = 'scale(1)';
+                            });
                         }
                     } catch (error) {
                         console.warn('Error en transición del carrusel:', error);
@@ -689,6 +697,9 @@ class FilaMariscalesApp {
                                     } else {
                                         item.classList.remove('fade-out', 'fade-in', 'active');
                                     }
+                                    // Limpiar estilos inline
+                                    item.style.opacity = '';
+                                    item.style.transform = '';
                                 }
                             });
                         }

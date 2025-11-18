@@ -360,15 +360,24 @@ section.bg-dark, .bg-dark.section, #contacto.bg-dark {
 
 .carousel-inner {
     height: 100vh;
+    overflow: hidden;
 }
 
+/* Desactivar transición por defecto de Bootstrap para usar nuestras personalizadas */
 .carousel-item {
     height: 100vh;
     position: relative;
-    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
-                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: scale(1);
+    will-change: opacity, transform;
+    transition: none !important;
+}
+
+.carousel-item.active {
     opacity: 1;
     transform: scale(1);
+    transition: opacity 0.8s ease-in-out, 
+                transform 0.8s ease-in-out !important;
 }
 
 .carousel-image {
@@ -731,23 +740,17 @@ section.bg-dark, .bg-dark.section, #contacto.bg-dark {
 
 /* Transiciones suaves para el carousel */
 .carousel-item.fade-out {
-    opacity: 0;
-    transform: scale(0.95);
-    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
-                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0 !important;
+    transform: scale(0.98) !important;
+    transition: opacity 0.8s ease-in-out, 
+                transform 0.8s ease-in-out !important;
 }
 
 .carousel-item.fade-in {
-    opacity: 1;
-    transform: scale(1);
-    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
-                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Asegurar que el item activo siempre sea visible */
-.carousel-item.active {
-    opacity: 1;
-    transform: scale(1);
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    transition: opacity 0.8s ease-in-out, 
+                transform 0.8s ease-in-out !important;
 }
 
 /* Prevenir parpadeos durante la transición */
